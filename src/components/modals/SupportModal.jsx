@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
+import { putContribute } from '../../api/donations';
 import styled from 'styled-components';
-import ModalContainer from './ModalContainer';
-import closeBtn from '../../assets/img/btn_delete_24px.svg';
-import creditImg from '../../assets/icon/credit.svg';
 import axios from 'axios';
+import ModalContainer from './ModalContainer';
+import Button from '../Button';
+import closeBtn from '../../assets/image/btn_delete_24px.svg';
+import creditImg from '../../assets/icon/credit.svg';
 
-// 후원하기 모달창 (list 페이지에서 이미지 src, idolId를 넘겨주어야 합니다.)
-const SupportModal = ({ idolImgSrc, idolId, setModalClose }) => {
+// 후원하기 모달창 (list 페이지에서 donations 자료를 넘겨주어야 합니다.)
+const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) => {
     const [userDonation, setUserDonation] = useState('');
     const [error, setError] = useState(false);
     const [isLoading, setLoading] = useState(false);
@@ -41,11 +43,9 @@ const SupportModal = ({ idolImgSrc, idolId, setModalClose }) => {
 
         try {
             setLoading(true);
-            const response = await axios.put(`https://fandom-k-api.vercel.app/9-4/donations/${idolId}/contribute`, {
-                amount: userDonation,
-            });
-
-            if (response.status === 200) {
+            const response = await putContribute(idolId, userDonation);
+            
+            if (response) {
                 localStorage.setItem('credit', currentCredit - userDonation);
                 setUserDonation('');
             }
@@ -70,8 +70,8 @@ const SupportModal = ({ idolImgSrc, idolId, setModalClose }) => {
                 <IdolBox>
                     <IdolImg src={idolImgSrc} alt="아이돌 이미지" />
                     <DonationTitleBox>
-                        <h3>강남역 광고</h3>
-                        <p>민지 2023 첫 광고</p>
+                        <h3>{title}</h3>
+                        <p>{subTitle}</p>
                     </DonationTitleBox>
                 </IdolBox>
                 <DonationForm onSubmit={handleSubmit}>
@@ -88,9 +88,9 @@ const SupportModal = ({ idolImgSrc, idolId, setModalClose }) => {
                         </InputBox>
                         {error && <p>갖고 있는 크레딧보다 더 많이 후원할 수 없어요</p>}
                     </InputContainer>
-                    <button type="submit" disabled={isDisabled}>
+                    <DonationBtn type="submit" disabled={isDisabled || userDonation === ''} width="295">
                         {isLoading ? '잠시만 기다리세요.' : '후원하기'}
-                    </button>
+                    </DonationBtn>
                 </DonationForm>
             </ContentsBox>
         </ModalContainer>
@@ -199,9 +199,17 @@ const InputBox = styled.div`
             color: var(--gray100);
         }
     }
+`;
 
-    button:disabled {
+const DonationBtn = styled(Button)`
+    &:disabled {
         cursor: default;
+        background: none;
+        background-color: var(--gray200);
+
+        &:hover {
+            opacity: 1;
+        }
     }
 `;
 

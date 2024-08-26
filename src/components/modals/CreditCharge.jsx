@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import ModalContainer from './ModalContainer';
 import styled from 'styled-components';
-import closeBtn from '../../assets/img/btn_delete_24px.svg';
+import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
+import Button from '../Button';
 
 // 크레딧 충전 모달창
 const CreditCharge = ({ setModalClose }) => {
@@ -18,7 +19,7 @@ const CreditCharge = ({ setModalClose }) => {
     // 사용자가 선택한 버튼 감지 및 값 할당함수
     const handleChangeRadio = (e) => {
         const { value } = e.target;
-        
+
         setChargeAmount(Number(value));
     };
 
@@ -48,14 +49,15 @@ const CreditCharge = ({ setModalClose }) => {
                         <Credit key={credit.total} selected={chargeAmount === credit.total}>
                             <CreditRadioBox>
                                 <img src={creditImg} alt="크레딧" />
-                                <CreditAmount selected={chargeAmount === credit.total}>
-                                    {credit.total}
-                                </CreditAmount>
+                                <CreditAmount selected={chargeAmount === credit.total}>{credit.total}</CreditAmount>
                             </CreditRadioBox>
                             <input type="radio" name="credit" value={credit.total} onChange={handleChangeRadio} />
                         </Credit>
                     ))}
-                    <ChargeBtn type="submit">충전하기</ChargeBtn>
+                    <ChargeBtn type="submit" width="295">
+                        <img src={creditImg} alt="크레딧" />
+                        충전하기
+                    </ChargeBtn>
                 </CreditForm>
             </ContentsBox>
         </ModalContainer>
@@ -118,6 +120,10 @@ const CreditAmount = styled.span`
     color: ${({ selected }) => (selected ? 'white' : 'var(--gray200)')};
 `;
 
-const ChargeBtn = styled.button`
+const ChargeBtn = styled(Button)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
     margin-top: 10px;
 `;

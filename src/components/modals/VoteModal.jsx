@@ -1,16 +1,15 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import styled from 'styled-components';
 import ModalContainer from './ModalContainer';
-import axios from 'axios';
-import closeBtn from '../../assets/img/btn_delete_24px.svg';
+import Button from '../Button';
+import { postVotes } from '../../api/votes';
+import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import mobileArrow from '../../assets/icon/icj_arrow_left.svg';
 
 // 투표하기 모달 (width값은 list 페이지가 모바일 규격이 됐을 때 받아서 반응형 스타일을 하기 위해서 필요합니다)
-const VoteModal = ({ title = 'female', idolImgSrc, idolId, width = 481 }) => {
-    const navigate = useNavigate();
-    const [voteIdol, setVoteIdol] = useState('');
-
+const VoteModal = ({ idolList = [], title = 'female', idolId, width }) => {
+    const isMobile = width <= 767;
+    
     // 모달창 닫는 함수
     const handleModalClose = () => {
         setModalClose((prev) => !prev);
@@ -21,9 +20,9 @@ const VoteModal = ({ title = 'female', idolImgSrc, idolId, width = 481 }) => {
         const { value } = e.target;
 
         setVoteIdol(value);
-  };
+    };
 
-    // 투표하기 버튼 누르면 실행되는 함수 
+    // 투표하기 버튼 누르면 실행되는 함수
     const handleVote = async (e) => {
         e.preventDefault();
 
@@ -32,13 +31,11 @@ const VoteModal = ({ title = 'female', idolImgSrc, idolId, width = 481 }) => {
             const adjustCredit = currentCredit - 1000;
             localStorage.setItem('credit', adjustCredit);
 
-            const response = await axios.post(`https://fandom-k-api.vercel.app/9-4/votes`, {
-                idolId,
-            });
+            const response = await postVotes(idolId);
 
-            if (response.status === 200) {
+            if (response) {
                 alert('투표가 완료되었습니다.');
-                navigate('/list');
+                setModalClose((prev) => !prev);
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -51,33 +48,41 @@ const VoteModal = ({ title = 'female', idolImgSrc, idolId, width = 481 }) => {
         <ModalContainer>
             <ContentsBox>
                 <Title>
-                    {width <= 480 && (
+                    {isMobile && (
                         <button onClick={handleModalClose}>
                             <img src={mobileArrow} alt="닫기" />
                         </button>
                     )}
                     <h2>이달의 {title === 'female' ? '여자' : '남자'} 아이돌</h2>
-                    {width > 480 && (
+                    {!isMobile && (
                         <button onClick={handleModalClose}>
                             <img src={closeBtn} alt="닫기" />
                         </button>
                     )}
                 </Title>
                 <VoteForm onSubmit={handleVote}>
-                    {[1, 2, 3, 4, 5, 6].map((idol, i) => (
-                        <FormWrapper key={i}>
-                            <IdolVoteInfo>
-                                <img src={idolImgSrc} alt="아이돌" />
-                                <IdolNumber>{idol}</IdolNumber>
-                                <CurrentVoteBox>
-                                    <h3>뉴진스 민지 {idol}</h3>
-                                    <span>204,000표</span>
-                                </CurrentVoteBox>
-                            </IdolVoteInfo>
-                            <input type="radio" name="idol" value={idol} onChange={handleChangeVote} />
-                        </FormWrapper>
-                    ))}
-                    <button type="submit">투표하기</button>
+                    {idolList.length > 0 ? (
+                        idolList.map((idol) => (
+                            <FormWrapper key={idol.id}>
+                                <IdolVoteInfo>
+                                    <img src={idol.profilePicture} alt="아이돌" />
+                                    <IdolNumber>{idol.id}</IdolNumber>
+                                    <CurrentVoteBox>
+                                        <h3>
+                                            {idol.group} {idol.name}
+                                        </h3>
+                                        <span>{idol.totalVotes.toLocaleString('ko-KR')}표</span>
+                                    </CurrentVoteBox>
+                                </IdolVoteInfo>
+                                <input type="radio" name="idol" value={idol.name} onChange={handleChangeVote} />
+                            </FormWrapper>
+                        ))
+                    ) : (
+                        <EmptyList>표시할 아이돌이 없습니다.</EmptyList>
+                    )}
+                    <Button type="submit" width={`${isMobile ? '327' : '477'}`}>
+                        투표하기
+                    </Button>
                     <CreditAlert>
                         투표하는 데 <span>1000 크레딧</span>이 소모됩니다.
                     </CreditAlert>
@@ -176,7 +181,6 @@ const IdolVoteInfo = styled.div`
         background: linear-gradient(var(--brand100), var(--brand200));
         outline: 1px solid var(--brand100);
         outline-offset: 4px;
-        opacity: 50%;
     }
 `;
 
@@ -214,4 +218,10 @@ const CreditAlert = styled.p`
     span {
         color: var(--brand100);
     }
+`;
+
+const EmptyList = styled.p`
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
 `;

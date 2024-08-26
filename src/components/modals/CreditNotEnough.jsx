@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import ModalContainer from './ModalContainer';
-import closeBtn from '../../assets/img/btn_delete_24px.svg';
+import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
 
 // 크레딧 부족 시 모달
