@@ -58,7 +58,7 @@ const AppTitle = styled.div`
         }
     }
 
-    @media (max-width: 744px) {
+    @media (max-width: 768px) {
         padding: 100px 0 100px;
         height: 812px;
         &::before {
@@ -66,6 +66,11 @@ const AppTitle = styled.div`
             width: 393.68px;
             height: 329.84px;
             background-size: 393.68px 329.84px;
+        }
+
+        button {
+            width: 230px;
+            height: 48px;
         }
     }
 `;
@@ -87,10 +92,22 @@ const AppTitleLogo = styled.div`
     @media (max-width: 1200px) {
         h2 {
             font-size: 20px;
+            margin-bottom: 32px;
         }
         img {
             width: 325.34px;
             height: 62px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        img {
+            width: 236.64px;
+            height: 45.1px;
         }
     }
 `;

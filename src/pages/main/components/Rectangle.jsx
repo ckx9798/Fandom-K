@@ -15,6 +15,13 @@ const Rectangle = styled.div`
         left: 314px;
         top: 1394px;
     }
+
+    @media (max-width: 768px) {
+        width: 117px;
+        height: 2133px;
+        top: 1029px;
+        left: 129px;
+    }
 `;
 
 export default Rectangle;

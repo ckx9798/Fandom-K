@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
-const LandingContent = ({ backImg, mainImg, subText, mainText1, mainText2 }) => {
+const LandingContent = ({ backImg, mainImg, textPosition, subText, mainText1, mainText2 }) => {
     return (
         <ContentWrapper>
             <Content backImg={backImg}>
-                <ContentText>
+                <ContentText textPosition={textPosition}>
                     <span>{subText}</span>
                     <h2>{mainText1}</h2>
                     <h2>{mainText2}</h2>
@@ -44,20 +44,6 @@ const Content = styled.div`
         z-index: 1;
     }
 
-    span {
-        font-size: 16px;
-        font-weight: 500;
-        color: rgba(210, 192, 48, 1);
-        margin-bottom: 8px;
-    }
-
-    h2 {
-        margin: 0;
-        font-size: 24px;
-        font-weight: 700;
-        color: rgba(255, 255, 255, 1);
-    }
-
     &::before {
         content: '';
         position: absolute;
@@ -81,6 +67,7 @@ const Content = styled.div`
         gap: 47px;
         height: 744px;
         width: 744px;
+
         img {
             width: 200px;
             height: 433.07px;
@@ -97,11 +84,42 @@ const Content = styled.div`
             width: 240px;
             height: 520.25px;
         }
+
+        &::before {
+            height: 744px;
+        }
     }
 `;
 
 const ContentText = styled.div`
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    span {
+        font-size: 16px;
+        font-weight: 500;
+        color: rgba(210, 192, 48, 1);
+        margin-bottom: 8px;
+    }
+
+    h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 1);
+    }
+
+    @media (max-width: 1200px) {
+        h2 {
+            font-size: 20px;
+        }
+    }
+    @media (max-width: 768px) {
+        padding: 0px 32px;
+        span {
+            font-size: 14px;
+        }
+        align-items: ${({ textPosition }) => textPosition || 'center'};
+    }
 `;
