@@ -29,17 +29,36 @@ const StyledHeader = styled.div`
     align-items: center;
     position: relative;
 
-    image {
-        display: block;
-        height: 32px;
+    @media (max-width: 1200px) {
+        width: 744px;
+        height: 81px;
+    }
+
+    @media (max-width: 700px) {
+        width: 374px;
+        height: 44px;
     }
 `;
 
 const Logo = styled.img`
-    width: 168px;
+    display: block;
+    width: 167.92px;
+    height: 32px;
+
+    @media (max-width: 1023px) {
+        width: 120px;
+        height: 22.87px;
+    }
+
+    @media (max-width: 767px) {
+        width: 108px;
+        height: 20.58px;
+    }
 `;
 
 const UserProfile = styled.img`
+    display: block;
+    height: 32px;
     width: 32px;
     border-radius: 125px;
     position: absolute;
