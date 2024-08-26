@@ -1,7 +1,7 @@
-import Button from '../components/Button';
+import Button from '../../../components/Button';
 import styled from 'styled-components';
-import logoImg from '../assets/logo.svg';
-import mainImg from '../assets/Main.svg';
+import logoImg from '../../../assets/image/logo.svg';
+import mainImg from '../../../assets/image/Main.svg';
 
 const LandingTitle = () => {
     return (
