@@ -9,7 +9,7 @@ import home3Img from '../../assets/image/Home-3.svg';
 import LandingContent from './components/LandingContent';
 import LandingTitle from './components/LandingTitle';
 import GlobalStyle from '../../styles/GrobalStyle';
-
+import Rectangle from './components/Rectangle';
 const MainPage = () => {
     return (
         <>
@@ -48,30 +48,17 @@ export default MainPage;
 
 const StyledApp = styled.div`
     width: 1200px;
-    margin: 0 auto;
-    padding: 0;
     height: 4680px;
+    margin: 0 auto;
     position: relative;
 
     @media (max-width: 1200px) {
-        width: 100%;
+        width: 744px;
         height: 3432px;
     }
-`;
 
-const Rectangle = styled.div`
-    position: absolute;
-    left: 506px;
-    top: 1393px;
-    width: 187px;
-    height: 3091px;
-    z-index: 0;
-    background: linear-gradient(180deg, #030615 0%, #051d31 42.67%, #051e32 53.12%, #051c30 74.27%, #030b1c 100%);
-
-    @media (max-width: 1200px) {
-        width: 117px;
-        height: 1928px;
-        top: 1394px;
-        left: 314px;
+    @media (max-width: 768px) {
+        width: 375px;
+        height: 3248px;
     }
 `;

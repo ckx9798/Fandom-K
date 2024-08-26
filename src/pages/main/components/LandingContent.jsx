@@ -18,7 +18,6 @@ const LandingContent = ({ backImg, mainImg, subText, mainText1, mainText2 }) => 
 export default LandingContent;
 
 const ContentWrapper = styled.div`
-    width: 100%;
     background: linear-gradient(
         90deg,
         rgba(217, 217, 217, 0) 0%,
@@ -62,6 +61,7 @@ const Content = styled.div`
     &::before {
         content: '';
         position: absolute;
+        top: 0;
         width: 100%;
         height: 100%;
         background: radial-gradient(
@@ -73,14 +73,29 @@ const Content = styled.div`
             ),
             url(${({ backImg }) => backImg}) no-repeat center center;
         background-size: cover;
-
         z-index: -1;
     }
 
-    @media (max-width: 744px) {
+    @media (max-width: 1200px) {
+        padding-top: 84px;
+        gap: 47px;
+        height: 744px;
+        width: 744px;
         img {
             width: 200px;
             height: 433.07px;
+        }
+    }
+
+    @media (max-width: 744px) {
+        padding-top: 76px;
+        gap: 66px;
+        width: 375px;
+        height: 812px;
+
+        img {
+            width: 240px;
+            height: 520.25px;
         }
     }
 `;

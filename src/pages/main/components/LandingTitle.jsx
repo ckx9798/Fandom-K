@@ -48,11 +48,24 @@ const AppTitle = styled.div`
     }
 
     @media (max-width: 1200px) {
+        padding: 120px 0 120px;
+        height: 1200px;
         &::before {
             top: 301.4px;
             width: 713.98px;
             height: 598.2px;
             background-size: 713.98px 598.2px;
+        }
+    }
+
+    @media (max-width: 744px) {
+        padding: 100px 0 100px;
+        height: 812px;
+        &::before {
+            top: 241.08px;
+            width: 393.68px;
+            height: 329.84px;
+            background-size: 393.68px 329.84px;
         }
     }
 `;
@@ -69,5 +82,15 @@ const AppTitleLogo = styled.div`
 
     span {
         color: rgba(249, 109, 105, 1);
+    }
+
+    @media (max-width: 1200px) {
+        h2 {
+            font-size: 20px;
+        }
+        img {
+            width: 325.34px;
+            height: 62px;
+        }
     }
 `;
