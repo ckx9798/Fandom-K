@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import logo from '../assets/image/logo.svg';
 import userProfileImg from '../assets/image/userProfile.jpg';
 
@@ -9,9 +9,9 @@ const Header = () => {
 
     return (
         <StyledHeader>
-            <a href={currentPath}>
+            <Link to={currentPath}>
                 <Logo src={logo} alt="FANDOM-K 로고" />
-            </a>
+            </Link>
             <UserProfile src={userProfileImg} alt="유저 프로필 이미지" />
         </StyledHeader>
     );
@@ -28,13 +28,14 @@ const StyledHeader = styled.div`
     justify-content: center;
     align-items: center;
     position: relative;
+    margin: 0 auto;
 
     @media (max-width: 1200px) {
         width: 744px;
         height: 81px;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 768px) and (min-width: 374px) {
         width: 374px;
         height: 44px;
     }
