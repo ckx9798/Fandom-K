@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import chartImg from '../../assets/image/Chart.svg';
+import Header from '../../components/Header';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Button from '../../components/Button.jsx';
-import IdolCard from './IdolCard.jsX';
 import axios from 'axios';
+import Button from '../../components/Button.jsx';
+import chartImg from '../../assets/image/Chart.svg';
+import IdolCard from './IdolCard.jsX';
 import GenderToggleButton from './ChartGender.jsx';
+import VoteModal from '../../components/modals/VoteModal.jsx';
 
 const ListPage = () => {
     // 아이돌 데이터 get해오기
@@ -26,6 +28,7 @@ const ListPage = () => {
     // 버튼으로 성별 바꾸기
     const changeGender = (e) => {
         setIdolGender(e.target.value);
+        setIdolDataNum(10);
     };
     // 더보기 누르면 데이터 10 추가
     const loadMoreIdolData = () => {
@@ -42,6 +45,7 @@ const ListPage = () => {
             <ChartHeader>
                 <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
                 <Button width="128" height="32" border-radius="3" onClick={() => ViewVoteModalHandler()}>
+                    {isOpen === true ? <VoteModal /> : null}
                     <img src={chartImg} alt="차트이미지" />
                     <span> 차트 투표하기 </span>
                 </Button>
@@ -147,4 +151,5 @@ const ChartMoreBtn = styled.div`
     gap: 8px;
     font-size: 14px;
     font-weight: 700;
+    cursor: pointer;
 `;
