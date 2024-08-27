@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
-import { IdolList, IdolLists } from './AddInterestedIdols';
 
 const InterestedIdols = ({ selectedIdols }) => {
     const [idols, setIdols] = useState([...selectedIdols]);
@@ -14,13 +13,12 @@ const InterestedIdols = ({ selectedIdols }) => {
     return (
         <IdolWrapper>
             <h2>내가 관심있는 아이돌</h2>
-            <IdolLists>
-                <IdolList>
-                    {idols.map((idol) => {
-                        return <IdolProfile key={idol.id} idol={idol} selected={true} onDelete={onDelete} />;
-                    })}
-                </IdolList>
-            </IdolLists>
+
+            <InterestedIdolList>
+                {idols.map((idol) => {
+                    return <IdolProfile key={idol.id} idol={idol} selected={true} onDelete={onDelete} />;
+                })}
+            </InterestedIdolList>
         </IdolWrapper>
     );
 };
@@ -34,8 +32,7 @@ const IdolWrapper = styled.div`
     border-bottom: 1px solid #ffffff1a;
 `;
 
-const IdolCard = styled.div`
-    position: relative;
+const InterestedIdolList = styled.div`
     display: flex;
-    flex-direction: row;
+    gap: 24px;
 `;
