@@ -10,6 +10,7 @@ export const getDonations = async ({ cursor = null, pageSize = 10 }) => {
         .catch((error) => {
             return error;
         });
+    console.log(response);
     return response;
 };
 
