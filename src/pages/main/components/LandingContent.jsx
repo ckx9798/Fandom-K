@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import styled from 'styled-components';
 import useIntersectionObserver from '../../../hooks/main/useIntersectionObserver';
-
+import isPropValid from '@emotion/is-prop-valid';
 const LandingContent = ({ ...props }) => {
     const textRef = useRef(null);
     const imgRef = useRef(null);
@@ -43,7 +43,9 @@ const ContentWrapper = styled.div`
     );
 `;
 
-const Content = styled.div`
+const Content = styled.div.withConfig({
+    shouldForwardProp: (prop) => isPropValid(prop) && prop !== 'backImg',
+})`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -95,7 +97,9 @@ const Content = styled.div`
     }
 `;
 
-const ContentText = styled.div`
+const ContentText = styled.div.withConfig({
+    shouldForwardProp: (prop) => isPropValid(prop) && prop !== 'backImg',
+})`
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -132,7 +136,9 @@ const ContentText = styled.div`
     transition: opacity 1s ease-out, transform 1s ease-out;
 `;
 
-const StyledImage = styled.img`
+const StyledImage = styled.img.withConfig({
+    shouldForwardProp: (prop) => isPropValid(prop) && prop !== 'backImg',
+})`
     z-index: 1;
     opacity: 0;
     transform: ${({ textPosition }) => (textPosition === 'end' ? 'translateX(-100px)' : 'translateX(100px)')};
