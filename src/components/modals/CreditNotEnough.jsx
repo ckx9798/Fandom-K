@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import ModalContainer from './ModalContainer';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
+import { ContentsBoxStyle } from '../../styles/Modal';
 
 // 크레딧 부족 시 모달
 const CreditNotEnough = ({ setModalClose }) => {
@@ -30,13 +31,8 @@ const CreditNotEnough = ({ setModalClose }) => {
 
 export default CreditNotEnough;
 
-const ContentsBox = styled.div`
+const ContentsBox = styled(ContentsBoxStyle)`
     width: 343px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding: 24px 16px 32px 16px;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
 `;
 
 const CloseBtn = styled.button`

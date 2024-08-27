@@ -6,6 +6,7 @@ import ModalContainer from './ModalContainer';
 import Button from '../Button';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
+import { ContentsBoxStyle, TitleStyle } from '../../styles/Modal';
 
 // 후원하기 모달창 (list 페이지에서 donations 자료를 넘겨주어야 합니다.)
 const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) => {
@@ -61,14 +62,14 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
     return (
         <ModalContainer>
             <ContentsBox>
-                <Title>
+                <TitleStyle>
                     <h2>후원하기</h2>
                     <button onClick={handleModalClose}>
-                        <img src={closeBtn} alt="닫기" />
+                        <img src={closeBtn} alt='닫기' />
                     </button>
-                </Title>
+                </TitleStyle>
                 <IdolBox>
-                    <IdolImg src={idolImgSrc} alt="아이돌 이미지" />
+                    <IdolImg src={idolImgSrc} alt='아이돌 이미지' />
                     <DonationTitleBox>
                         <h3>{title}</h3>
                         <p>{subTitle}</p>
@@ -78,17 +79,17 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
                     <InputContainer>
                         <InputBox>
                             <input
-                                type="number"
-                                name="donation"
+                                type='number'
+                                name='donation'
                                 value={userDonation}
                                 onChange={handleUserDonation}
-                                placeholder="크레딧 입력"
+                                placeholder='크레딧 입력'
                             />
-                            <img src={creditImg} alt="크레딧" />
+                            <img src={creditImg} alt='크레딧' />
                         </InputBox>
                         {error && <p>갖고 있는 크레딧보다 더 많이 후원할 수 없어요</p>}
                     </InputContainer>
-                    <DonationBtn type="submit" disabled={isDisabled || userDonation === ''} width="295">
+                    <DonationBtn type='submit' disabled={isDisabled || userDonation === ''} width='295'>
                         {isLoading ? '잠시만 기다리세요.' : '후원하기'}
                     </DonationBtn>
                 </DonationForm>
@@ -99,33 +100,8 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
 
 export default SupportModal;
 
-const ContentsBox = styled.div`
+const ContentsBox = styled(ContentsBoxStyle)`
     width: 327px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding: 24px 16px 32px 16px;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-`;
-
-const Title = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-
-    h2 {
-        font-size: 18px;
-        font-weight: 600;
-        line-height: 21.48px;
-        color: var(--white200);
-    }
-
-    button {
-        background: none;
-        border: none;
-        padding: 0;
-    }
 `;
 
 const IdolBox = styled.div`

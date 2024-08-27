@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import ModalContainer from './ModalContainer';
 import styled from 'styled-components';
+import Button from '../Button';
+import { ContentsBoxStyle, TitleStyle } from '../../styles/Modal';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
-import Button from '../Button';
 
 // 크레딧 충전 모달창
 const CreditCharge = ({ setModalClose }) => {
@@ -38,24 +39,24 @@ const CreditCharge = ({ setModalClose }) => {
     return (
         <ModalContainer>
             <ContentsBox>
-                <Title>
+                <TitleStyle>
                     <h2>크레딧 충전하기</h2>
                     <button onClick={handleModalClose}>
-                        <img src={closeBtn} alt="닫기" />
+                        <img src={closeBtn} alt='닫기' />
                     </button>
-                </Title>
+                </TitleStyle>
                 <CreditForm onSubmit={handleCharge}>
                     {creditArr.map((credit) => (
                         <Credit key={credit.total} selected={chargeAmount === credit.total}>
                             <CreditRadioBox>
-                                <img src={creditImg} alt="크레딧" />
+                                <img src={creditImg} alt='크레딧' />
                                 <CreditAmount selected={chargeAmount === credit.total}>{credit.total}</CreditAmount>
                             </CreditRadioBox>
-                            <input type="radio" name="credit" value={credit.total} onChange={handleChangeRadio} />
+                            <input type='radio' name='credit' value={credit.total} onChange={handleChangeRadio} />
                         </Credit>
                     ))}
-                    <ChargeBtn type="submit" width="295">
-                        <img src={creditImg} alt="크레딧" />
+                    <ChargeBtn type='submit' width='295'>
+                        <img src={creditImg} alt='크레딧' />
                         충전하기
                     </ChargeBtn>
                 </CreditForm>
@@ -66,33 +67,8 @@ const CreditCharge = ({ setModalClose }) => {
 
 export default CreditCharge;
 
-const ContentsBox = styled.div`
+const ContentsBox = styled(ContentsBoxStyle)`
     width: 327px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding: 24px 16px 32px 16px;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-`;
-
-const Title = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-
-    h2 {
-        font-size: 18px;
-        font-weight: 600;
-        line-height: 21.48px;
-        color: var(--white200);
-    }
-
-    button {
-        background: none;
-        border: none;
-        padding: 0;
-    }
 `;
 
 const CreditForm = styled.form`

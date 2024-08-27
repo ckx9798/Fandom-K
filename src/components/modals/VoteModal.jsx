@@ -5,11 +5,12 @@ import Button from '../Button';
 import { postVotes } from '../../api/votes';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import mobileArrow from '../../assets/icon/icj_arrow_left.svg';
+import { ContentsBoxStyle, TitleStyle } from '../../styles/Modal';
 
 // 투표하기 모달 (width값은 list 페이지가 모바일 규격이 됐을 때 받아서 반응형 스타일을 하기 위해서 필요합니다)
 const VoteModal = ({ idolList = [], title = 'female', idolId, width }) => {
     const isMobile = width <= 767;
-    
+
     // 모달창 닫는 함수
     const handleModalClose = () => {
         setModalClose((prev) => !prev);
@@ -80,9 +81,7 @@ const VoteModal = ({ idolList = [], title = 'female', idolId, width }) => {
                     ) : (
                         <EmptyList>표시할 아이돌이 없습니다.</EmptyList>
                     )}
-                    <Button type="submit" width={`${isMobile ? '327' : '477'}`}>
-                        투표하기
-                    </Button>
+                    <VoteBtn type="submit" width='477'>투표하기</VoteBtn>
                     <CreditAlert>
                         투표하는 데 <span>1000 크레딧</span>이 소모됩니다.
                     </CreditAlert>
@@ -94,13 +93,8 @@ const VoteModal = ({ idolList = [], title = 'female', idolId, width }) => {
 
 export default VoteModal;
 
-const ContentsBox = styled.div`
+const ContentsBox = styled(ContentsBoxStyle)`
     width: 525px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding: 24px 16px 32px 16px;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
 
     @media (min-width: 480px) and (max-width: 767px) {
         width: 100vh;
@@ -109,25 +103,9 @@ const ContentsBox = styled.div`
     }
 `;
 
-const Title = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+const Title = styled(TitleStyle)`
     width: 477px;
     margin: auto;
-
-    h2 {
-        font-size: 18px;
-        font-weight: 600;
-        line-height: 21.48px;
-        color: var(--white200);
-    }
-
-    button {
-        background: none;
-        border: none;
-        padding: 0;
-    }
 
     @media (min-width: 480px) and (max-width: 767px) {
         justify-content: center;
@@ -224,4 +202,14 @@ const EmptyList = styled.p`
     color: white;
     text-align: center;
     margin-bottom: 20px;
+
+    @media (min-width: 480px) and (max-width: 767px) {
+        margin-bottom: 50px;
+    }
+`;
+
+const VoteBtn = styled(Button)`
+    @media (min-width: 480px) and (max-width: 767px) {
+        width: 327px;
+    }
 `;
