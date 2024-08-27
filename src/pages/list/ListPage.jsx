@@ -1,8 +1,10 @@
-import React from 'react';
-import './list.css';
+import React, { useEffect, useState } from 'react';
 import Data from './data.js';
 import qwe from '../../assets/image/ListPage-vote.png';
 import styled from 'styled-components';
+import Button from '../../components/Button.jsx';
+import IdolCard from './IdolCard.jsX';
+import axios from 'axios';
 
 const ChartContainer = styled.div`
     width: 1200px;
@@ -17,21 +19,20 @@ const ChartHeader = styled.div`
     width: 100%;
     display: flex;
     justify-content: space-between;
+    Button {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 13px;
+        padding: 2px 10px;
+    }
 `;
 const ChartHeaderTitle = styled.div`
     font-size: 24px;
     font-weight: 700;
     line-height: 26px;
     color: #ffffff;
-`;
-const ChartHeaderBtnText = styled.span`
-    width: 128px;
-    height: 32px;
-    background-color: pink;
-    border-radius: 3px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    line-height: 26px;
 `;
 
 const ChartThisMonth = styled.div`
@@ -76,21 +77,21 @@ const ChartMoreBtn = styled.div`
     color: #ffffff;
     background-color: #ffffff1a;
     border: 1px solid rgba(241, 238, 249, 0.8);
-    border-radius: 3px;
-    padding: 8px 120px 8px 120px;
+    border-radius: 6px;
     gap: 8px;
     font-size: 14px;
     font-weight: 700;
 `;
+
 const ListPage = () => {
     return (
         <ChartContainer>
             <ChartHeader>
                 <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
-                <button className="vote">
+                <Button width="128" height="32" border-radius="3">
                     <img src={qwe} />
-                    <ChartHeaderBtnText> 차트 투표하기 </ChartHeaderBtnText>
-                </button>
+                    <span> 차트 투표하기 </span>
+                </Button>
             </ChartHeader>
             <ChartThisMonth>
                 <button>이달의 여자 아이돌</button>
@@ -106,65 +107,5 @@ const ListPage = () => {
         </ChartContainer>
     );
 };
-
-const IdolCardBox = styled.div`
-    display: flex;
-    justify-content: space-between;
-    color: #ffffff;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-`;
-const IdolCardProfile = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin: 10px 0;
-`;
-const IdolCardProfileImg = styled.div`
-    width: 70px;
-    height: 70px;
-    border: 1px solid #f96d69;
-    border-radius: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    img {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-    }
-`;
-const IdolCardRank = styled.div`
-    font-size: 16px;
-    font-weight: 400;
-    color: #f96d69;
-`;
-const IdolCardName = styled.div`
-    font-size: 16px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.87);
-`;
-const IdolCardVotes = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 16px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
-`;
-function IdolCard({ item, rank }) {
-    return (
-        <IdolCardBox>
-            <IdolCardProfile>
-                <IdolCardProfileImg>
-                    <img src={item.profilePicture} alt="프로필이미지" />
-                </IdolCardProfileImg>
-                <IdolCardRank> {rank} </IdolCardRank>
-                <IdolCardName> {item.name} </IdolCardName>
-            </IdolCardProfile>
-            <IdolCardVotes>{item.totalVotes.toLocaleString()} 표</IdolCardVotes>
-        </IdolCardBox>
-    );
-}
 
 export default ListPage;
