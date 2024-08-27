@@ -30,7 +30,7 @@ const CreditStatus = () => {
 export default CreditStatus;
 
 const Container = styled.div`
-  width: 1200px;
+  width: 1280px;
   margin: auto;
   margin-top: 130px;
   padding: 30px 80px;
@@ -39,6 +39,16 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media (min-width: 768px) and (max-width: 1279px) {
+    width: 696px;
+    padding: 30px 50px;
+  }
+
+  @media (min-width: 375px) and (max-width: 767px) {
+    width: 327px;
+    padding: 30px;
+  }
 `;
 
 const MyCreditBox = styled.div`
@@ -72,6 +82,6 @@ const ChargeBtn = styled.button`
   color: var(--brand100);
   font-size: 16px;
   font-weight: 700;
-  letter-spacing: 5%;
+  letter-spacing: 1.5px;
   line-height: 26px;
 `;
