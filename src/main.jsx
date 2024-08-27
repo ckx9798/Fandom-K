@@ -6,7 +6,6 @@ import GrobalStyle from './styles/GrobalStyle';
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
         <GrobalStyle />
-
         <App />
     </BrowserRouter>,
 );
