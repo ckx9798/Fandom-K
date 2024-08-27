@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
 import deleteIcon from '../../../assets/icon/Icon-delete.svg';
 
-const InterestedIdols = () => {
+const InterestedIdols = ({ seletedIdols }) => {
     const checked = 'checked';
     return (
         <IdolWrapper>
             <h2>내가 관심있는 아이돌</h2>
             <IdolCard>
-                <IdolProfile idol={exp} checked={checked} />
+                <IdolProfile key={exp.id} idol={exp} checked={checked} />
                 <DeleteButton src={deleteIcon} alt="Delete icon" />
             </IdolCard>
         </IdolWrapper>
@@ -37,7 +37,8 @@ const IdolWrapper = styled.div`
 
 const IdolCard = styled.div`
     position: relative;
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
 `;
 
 const DeleteButton = styled.img`

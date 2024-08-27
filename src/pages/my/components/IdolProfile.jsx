@@ -22,7 +22,6 @@ const IdolCard = styled.div`
     flex-direction: column;
     align-items: center;
     margin-top: 32px;
-    position: relative;
 `;
 const IdolImg = styled.img`
     width: ${(props) => (props.checked === null ? '128' : '100')}px;
