@@ -1,0 +1,77 @@
+import { useState } from "react";
+import styled from "styled-components";
+import creditImg from '../../assets/icon/credit.svg';
+import CreditCharge from "../modals/CreditCharge";
+
+const CreditStatus = () => {
+  const [modalClose, setModalClose] = useState(false);
+  
+  const handleChargeModal = () => {
+    setModalClose((prev) => !prev);
+  }
+
+  const currentCredit = parseInt(localStorage.getItem('credit'), 10).toLocaleString('ko-KR');
+
+  return (
+    <Container>
+      <MyCreditBox>
+        <h2>내 크레딧</h2>
+        <MyCreditAmount>
+          <img src={creditImg} alt="크레딧" />
+          {currentCredit}
+        </MyCreditAmount>
+      </MyCreditBox>
+      <ChargeBtn onClick={handleChargeModal} >충전하기</ChargeBtn>
+      {modalClose && <CreditCharge setModalClose={setModalClose} />}
+    </Container>
+  )
+}
+
+export default CreditStatus;
+
+const Container = styled.div`
+  width: 1200px;
+  margin: auto;
+  margin-top: 130px;
+  padding: 30px 80px;
+  border: 1px solid rgba(241, 238, 249, 0.8);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const MyCreditBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+
+  h2 {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 16px;
+    line-height: 19.09px;
+  }
+`;
+
+const MyCreditAmount = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255, 255, 255, 0.87);
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+const ChargeBtn = styled.button`
+  background: none;
+  border: none;
+  color: var(--brand100);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 5%;
+  line-height: 26px;
+`;

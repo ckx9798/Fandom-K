@@ -1,8 +1,10 @@
+import CreditStatus from "../../components/list/CreditStatus";
+
 const ListPage = () => {
     return (
-        <div>
-            <p>list</p>
-        </div>
+      <>
+        <CreditStatus />
+      </>
     );
 };
 
