@@ -14,7 +14,6 @@ const MainPage = () => {
     return (
         <StyledLanding>
             <LandingTitle />
-
             <LandingContent
                 backImg={back1Img}
                 mainImg={home1Img}
@@ -23,7 +22,6 @@ const MainPage = () => {
                 mainText1="좋아하는 아이돌에게"
                 mainText2="쉽게 조공해 보세요"
             />
-
             <LandingContent
                 backImg={back2Img}
                 mainImg={home2Img}
@@ -32,7 +30,6 @@ const MainPage = () => {
                 mainText1="내 아티스트에게 1등의"
                 mainText2="영예를 선물하세요 "
             />
-
             <LandingContent
                 backImg={back3Img}
                 mainImg={home3Img}
@@ -41,7 +38,6 @@ const MainPage = () => {
                 mainText1="좋아하는 아티스트들의"
                 mainText2="소식을 모아보세요"
             />
-
             <Rectangle />
         </StyledLanding>
     );
