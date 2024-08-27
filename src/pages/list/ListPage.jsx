@@ -5,8 +5,8 @@ import styled from 'styled-components';
 const ListPage = () => {
     return (
         <Container>
-            <DonationList />
             <Header />
+            <DonationList />
         </Container>
     );
 };
@@ -15,5 +15,7 @@ export default ListPage;
 
 const Container = styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
 `;
