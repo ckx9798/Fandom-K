@@ -1,10 +1,76 @@
 import React, { useEffect, useState } from 'react';
-import Data from './data.js';
-import qwe from '../../assets/image/ListPage-vote.png';
+import chartImg from '../../assets/image/Chart.svg';
 import styled from 'styled-components';
 import Button from '../../components/Button.jsx';
 import IdolCard from './IdolCard.jsX';
 import axios from 'axios';
+import GenderToggleButton from './ChartGender.jsx';
+
+const ListPage = () => {
+    // 아이돌 데이터 get해오기
+    const [IdolData, setIdolData] = useState([]);
+    const [IdolGender, setIdolGender] = useState('female');
+    const [IdolDataNum, setIdolDataNum] = useState(10);
+    useEffect(() => {
+        axios
+            .get(
+                `https://fandom-k-api.vercel.app/8-3/charts/${IdolGender}?gender=${IdolGender}&pageSize=${IdolDataNum}`,
+            )
+            .then((res) => {
+                setIdolData([...res.data.idols]);
+            })
+            .catch((err) => {
+                console.error('Idols get 오류', err);
+            });
+    }, [IdolDataNum, IdolGender]);
+    // 버튼으로 성별 바꾸기
+    const changeGender = (e) => {
+        setIdolGender(e.target.value);
+    };
+    // 더보기 누르면 데이터 10 추가
+    const loadMoreIdolData = () => {
+        setIdolDataNum(IdolDataNum + 10);
+    };
+    // 투표하기 모달창 열기
+    const [isOpen, setIsOpen] = useState(false);
+    const ViewVoteModalHandler = () => {
+        setIsOpen(!isOpen);
+    };
+
+    return (
+        <ChartContainer>
+            <ChartHeader>
+                <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
+                <Button width="128" height="32" border-radius="3" onClick={() => ViewVoteModalHandler()}>
+                    <img src={chartImg} alt="차트이미지" />
+                    <span> 차트 투표하기 </span>
+                </Button>
+            </ChartHeader>
+            <ChartThisMonth>
+                <GenderToggleButton
+                    value="female"
+                    currentGender={IdolGender}
+                    onChange={changeGender}
+                    label="이달의 여자 아이돌"
+                />
+                <GenderToggleButton
+                    value="male"
+                    currentGender={IdolGender}
+                    onChange={changeGender}
+                    label="이달의 남자 아이돌"
+                />
+            </ChartThisMonth>
+            <ChartRankContainer>
+                {IdolData.map((item, i) => {
+                    return <IdolCard key={item.id} item={item} rank={i + 1} />;
+                })}
+            </ChartRankContainer>
+            <ChartMoreBtn onClick={loadMoreIdolData}>더 보기</ChartMoreBtn>
+        </ChartContainer>
+    );
+};
+
+export default ListPage;
 
 const ChartContainer = styled.div`
     width: 1200px;
@@ -82,30 +148,3 @@ const ChartMoreBtn = styled.div`
     font-size: 14px;
     font-weight: 700;
 `;
-
-const ListPage = () => {
-    return (
-        <ChartContainer>
-            <ChartHeader>
-                <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
-                <Button width="128" height="32" border-radius="3">
-                    <img src={qwe} />
-                    <span> 차트 투표하기 </span>
-                </Button>
-            </ChartHeader>
-            <ChartThisMonth>
-                <button>이달의 여자 아이돌</button>
-                <button className="inactive">이달의 남자 아이돌</button>
-            </ChartThisMonth>
-            <ChartRankContainer>
-                {Data.list.map((item, i) => {
-                    return <IdolCard item={item} rank={i + 1} />;
-                })}
-            </ChartRankContainer>
-
-            <ChartMoreBtn>더 보기</ChartMoreBtn>
-        </ChartContainer>
-    );
-};
-
-export default ListPage;
