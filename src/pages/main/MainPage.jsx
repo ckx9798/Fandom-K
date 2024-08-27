@@ -8,12 +8,10 @@ import home3Img from '../../assets/image/Home-3.svg';
 
 import LandingContent from './components/LandingContent';
 import LandingTitle from './components/LandingTitle';
-import GlobalStyle from '../../styles/GrobalStyle';
 
 const MainPage = () => {
     return (
         <>
-            <GlobalStyle />
             <StyledApp>
                 <LandingTitle />
 
