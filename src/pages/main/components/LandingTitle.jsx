@@ -1,28 +1,49 @@
-import Button from '../../../components/Button';
+import { useRef } from 'react';
 import styled from 'styled-components';
 import logoImg from '../../../assets/image/logo.svg';
 import mainImg from '../../../assets/image/Main.svg';
+import Button from '../../../components/Button';
+import { useNavigate } from 'react-router-dom';
+import useIntersectionObserver from '../../../hooks/main/useIntersectionObserver';
 
 const LandingTitle = () => {
+    const nav = useNavigate();
+    const titleRef = useRef(null);
+    const logoRef = useRef(null);
+    const buttonRef = useRef(null);
+
+    useIntersectionObserver(titleRef, 'fade-in');
+    useIntersectionObserver(logoRef, 'fade-in');
+    useIntersectionObserver(buttonRef, 'fade-in');
+
     return (
-        <AppTitle>
-            <AppTitleLogo>
-                <h2>
+        <StyledTitle>
+            <LandingTitleLogo>
+                <h2 ref={titleRef}>
                     내가 좋아하는 아이돌을
                     <br /> 가장 <span>쉽게 덕질</span> 하는 방법
                 </h2>
-                <img src={logoImg} alt="로고" width="509" height="97" />
-            </AppTitleLogo>
-            <Button width="477" height="48">
-                지금 시작하기
-            </Button>
-        </AppTitle>
+                <img ref={logoRef} onClick={() => nav('/list')} src={logoImg} alt="로고" width="509" height="97" />
+            </LandingTitleLogo>
+            <ButtonContainer ref={buttonRef}>
+                <Button
+                    onClick={() => {
+                        localStorage.clear();
+                        nav('/list');
+                    }}
+                    width="477"
+                    height="48"
+                >
+                    지금 시작하기
+                </Button>
+            </ButtonContainer>
+        </StyledTitle>
     );
 };
 
 export default LandingTitle;
 
-const AppTitle = styled.div`
+const StyledTitle = styled.div`
     box-sizing: border-box;
     position: relative;
     height: 1080px;
@@ -45,6 +66,11 @@ const AppTitle = styled.div`
         background-size: 932.4px 781.2px;
         opacity: 0.7;
         z-index: -1;
+    }
+
+    .fade-in {
+        opacity: 1;
+        transform: translateY(0);
     }
 
     @media (max-width: 1200px) {
@@ -75,7 +101,7 @@ const AppTitle = styled.div`
     }
 `;
 
-const AppTitleLogo = styled.div`
+const LandingTitleLogo = styled.div`
     h2 {
         font-size: 26px;
         font-weight: 700;
@@ -83,6 +109,18 @@ const AppTitleLogo = styled.div`
         margin-top: 0;
         margin-bottom: 29px;
         color: rgba(255, 255, 255, 1);
+
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+
+    img {
+        cursor: pointer;
+
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 1s ease-out, transform 1s ease-out;
     }
 
     span {
@@ -110,4 +148,10 @@ const AppTitleLogo = styled.div`
             height: 45.1px;
         }
     }
+`;
+
+const ButtonContainer = styled.div`
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
 `;

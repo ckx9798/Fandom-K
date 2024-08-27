@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import back1Img from '../../assets/image/Home-1-Back.svg';
 import back2Img from '../../assets/image/Home-2-Back.svg';
 import back3Img from '../../assets/image/Home-3-Back.svg';
@@ -6,14 +5,14 @@ import home1Img from '../../assets/image/Home-1.svg';
 import home2Img from '../../assets/image/Home-2.svg';
 import home3Img from '../../assets/image/Home-3.svg';
 
+import StyledLanding from './components/StyledLanding';
 import LandingContent from './components/LandingContent';
 import LandingTitle from './components/LandingTitle';
-import GlobalStyle from '../../styles/GrobalStyle';
 import Rectangle from './components/Rectangle';
+
 const MainPage = () => {
     return (
         <>
-            <GlobalStyle />
             <StyledLanding>
                 <LandingTitle />
 
@@ -48,20 +47,3 @@ const MainPage = () => {
 };
 
 export default MainPage;
-
-const StyledLanding = styled.div`
-    width: 1200px;
-    height: 4680px;
-    margin: 0 auto;
-    position: relative;
-
-    @media (max-width: 1200px) {
-        width: 744px;
-        height: 3432px;
-    }
-
-    @media (max-width: 768px) {
-        width: 375px;
-        height: 3248px;
-    }
-`;
