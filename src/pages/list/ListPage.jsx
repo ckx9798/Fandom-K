@@ -1,9 +1,13 @@
 import React from 'react';
+import Header from '../../components/Header';
 
 const ListPage = () => {
     return (
         <div>
-            <p>list</p>
+            <p>
+                list
+                <Header />
+            </p>
         </div>
     );
 };
