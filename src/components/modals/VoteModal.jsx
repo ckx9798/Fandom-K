@@ -96,7 +96,7 @@ export default VoteModal;
 const ContentsBox = styled(ContentsBoxStyle)`
     width: 525px;
 
-    @media (min-width: 480px) and (max-width: 767px) {
+    @media (min-width: 375px) and (max-width: 767px) {
         width: 100vh;
         height: 100vh;
         background: linear-gradient(300deg, rgba(2, 0, 14, 1) 80%, rgba(20, 195, 254, 0.2) 100%);
@@ -107,7 +107,7 @@ const Title = styled(TitleStyle)`
     width: 477px;
     margin: auto;
 
-    @media (min-width: 480px) and (max-width: 767px) {
+    @media (min-width: 375px) and (max-width: 767px) {
         justify-content: center;
         position: relative;
         width: 327px;
@@ -132,7 +132,7 @@ const VoteForm = styled.form`
     width: 477px;
     margin: auto;
 
-    @media (min-width: 480px) and (max-width: 767px) {
+    @media (min-width: 375px) and (max-width: 767px) {
         width: 327px;
     }
 `;
@@ -203,13 +203,13 @@ const EmptyList = styled.p`
     text-align: center;
     margin-bottom: 20px;
 
-    @media (min-width: 480px) and (max-width: 767px) {
+    @media (min-width: 375px) and (max-width: 767px) {
         margin-bottom: 50px;
     }
 `;
 
 const VoteBtn = styled(Button)`
-    @media (min-width: 480px) and (max-width: 767px) {
+    @media (min-width: 375px) and (max-width: 767px) {
         width: 327px;
     }
 `;
