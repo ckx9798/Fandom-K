@@ -13,7 +13,6 @@ const IdolProfile = ({ idol, selected = false, onDelete }) => {
             selected={selected}
             onClick={() => {
                 setChecked(!checked);
-                console.log(checked);
             }}
         >
             <IdolImgContainer selected={selected} checked={checked}>
@@ -58,18 +57,30 @@ const Overlay = styled.div`
     left: 6.52px;
     width: 115px;
     height: 115px;
-    background: linear-gradient(271.36deg, #f96e68 -9.84%, #fe578f 107.18%);
-    opacity: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 2;
     border-radius: 50%;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(271.36deg, #f96e68 -9.84%, #fe578f 107.18%);
+        opacity: 0.5;
+        z-index: -1;
+        border-radius: 50%;
+    }
 `;
 
 const CheckIcon = styled.img`
     width: 52.27px;
     height: 52.27px;
+    z-index: 1;
 `;
 
 const IdolImgContainer = styled.div`
