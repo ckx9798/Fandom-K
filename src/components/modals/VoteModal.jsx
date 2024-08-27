@@ -2,14 +2,20 @@ import axios from 'axios';
 import styled from 'styled-components';
 import ModalContainer from './ModalContainer';
 import Button from '../Button';
+import CreditNotEnough from './CreditNotEnough';
 import { postVotes } from '../../api/votes';
+import { ContentsBoxStyle, TitleStyle } from '../../styles/Modal';
+import { useEffect, useState } from 'react';
+import { getIdols } from '../../api/idols';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import mobileArrow from '../../assets/icon/icj_arrow_left.svg';
-import { ContentsBoxStyle, TitleStyle } from '../../styles/Modal';
+import check from '../../assets/icon/ic_check.svg';
 
 // 투표하기 모달 (width값은 list 페이지가 모바일 규격이 됐을 때 받아서 반응형 스타일을 하기 위해서 필요합니다)
-const VoteModal = ({ idolList = [], title = 'female', idolId, width }) => {
+const VoteModal = ({ idolList = [], title = 'female', width }) => {
     const isMobile = width <= 767;
+    const [voteIdol, setVoteIdol] = useState(0);
+    const [creditAlert, setCreditAlert] = useState(false);
 
     // 모달창 닫는 함수
     const handleModalClose = () => {
@@ -29,10 +35,16 @@ const VoteModal = ({ idolList = [], title = 'female', idolId, width }) => {
 
         try {
             const currentCredit = parseInt(localStorage.getItem('credit'), 10) || 0;
+
+            if (currentCredit < 1000) {
+                setCreditAlert(true);
+                return;
+            }
+
             const adjustCredit = currentCredit - 1000;
             localStorage.setItem('credit', adjustCredit);
 
-            const response = await postVotes(idolId);
+            const response = await postVotes(voteIdol);
 
             if (response) {
                 alert('투표가 완료되었습니다.');
@@ -62,11 +74,22 @@ const VoteModal = ({ idolList = [], title = 'female', idolId, width }) => {
                     )}
                 </Title>
                 <VoteForm onSubmit={handleVote}>
-                    {idolList.length > 0 ? (
+                    {idolList?.length > 0 ? (
                         idolList.map((idol) => (
                             <FormWrapper key={idol.id}>
                                 <IdolVoteInfo>
-                                    <img src={idol.profilePicture} alt="아이돌" />
+                                    <ImgBox>
+                                        <IdolImg
+                                            src={idol.profilePicture}
+                                            alt="아이돌"
+                                            selected={Number(voteIdol) === idol.id}
+                                        />
+                                        <CheckIcon
+                                            src={check}
+                                            alt="체크 표시"
+                                            selected={Number(voteIdol) === idol.id}
+                                        />
+                                    </ImgBox>
                                     <IdolNumber>{idol.id}</IdolNumber>
                                     <CurrentVoteBox>
                                         <h3>
@@ -75,17 +98,20 @@ const VoteModal = ({ idolList = [], title = 'female', idolId, width }) => {
                                         <span>{idol.totalVotes.toLocaleString('ko-KR')}표</span>
                                     </CurrentVoteBox>
                                 </IdolVoteInfo>
-                                <input type="radio" name="idol" value={idol.name} onChange={handleChangeVote} />
+                                <input type="radio" name="idol" value={idol.id} onChange={handleChangeVote} />
                             </FormWrapper>
                         ))
                     ) : (
                         <EmptyList>표시할 아이돌이 없습니다.</EmptyList>
                     )}
-                    <VoteBtn type="submit" width='477'>투표하기</VoteBtn>
+                    <Button type="submit" width="100%">
+                        투표하기
+                    </Button>
                     <CreditAlert>
                         투표하는 데 <span>1000 크레딧</span>이 소모됩니다.
                     </CreditAlert>
                 </VoteForm>
+                {creditAlert && <CreditNotEnough />}
             </ContentsBox>
         </ModalContainer>
     );
@@ -151,15 +177,29 @@ const IdolVoteInfo = styled.div`
     display: flex;
     align-items: center;
     gap: 12px;
+`;
 
-    img {
-        width: 60px;
-        height: 60px;
-        border-radius: 9999px;
-        background: linear-gradient(var(--brand100), var(--brand200));
-        outline: 1px solid var(--brand100);
-        outline-offset: 4px;
-    }
+const ImgBox = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const IdolImg = styled.img`
+    width: 60px;
+    height: 60px;
+    border-radius: 9999px;
+    background: ${({ selected }) => (selected ? 'linear-gradient(var(--brand100), var(--brand200))' : 'none')};
+    outline: 1px solid var(--brand100);
+    outline-offset: 4px;
+    opacity: ${({ selected }) => (selected ? '0.5' : '1')};
+`;
+
+const CheckIcon = styled.img`
+    position: absolute;
+    top: 5;
+    display: ${({ selected }) => (selected ? 'block' : 'none')};
 `;
 
 const IdolNumber = styled.span`
@@ -205,11 +245,5 @@ const EmptyList = styled.p`
 
     @media (min-width: 375px) and (max-width: 767px) {
         margin-bottom: 50px;
-    }
-`;
-
-const VoteBtn = styled(Button)`
-    @media (min-width: 375px) and (max-width: 767px) {
-        width: 327px;
     }
 `;

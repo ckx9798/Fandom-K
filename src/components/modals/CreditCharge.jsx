@@ -55,7 +55,7 @@ const CreditCharge = ({ setModalClose }) => {
                             <input type='radio' name='credit' value={credit.total} onChange={handleChangeRadio} />
                         </Credit>
                     ))}
-                    <ChargeBtn type='submit' width='295'>
+                    <ChargeBtn type='submit' width='100%'>
                         <img src={creditImg} alt='크레딧' />
                         충전하기
                     </ChargeBtn>

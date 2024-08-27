@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import axios from 'axios';
 import ModalContainer from './ModalContainer';
 import Button from '../Button';
+import { ContentsBoxStyle, TitleStyle } from '../../styles/Modal';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
-import { ContentsBoxStyle, TitleStyle } from '../../styles/Modal';
 
 // 후원하기 모달창 (list 페이지에서 donations 자료를 넘겨주어야 합니다.)
 const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) => {
@@ -89,7 +89,7 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
                         </InputBox>
                         {error && <p>갖고 있는 크레딧보다 더 많이 후원할 수 없어요</p>}
                     </InputContainer>
-                    <DonationBtn type='submit' disabled={isDisabled || userDonation === ''} width='295'>
+                    <DonationBtn type='submit' disabled={isDisabled || userDonation === ''} width='100%'>
                         {isLoading ? '잠시만 기다리세요.' : '후원하기'}
                     </DonationBtn>
                 </DonationForm>

@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import ModalContainer from './ModalContainer';
+import { ContentsBoxStyle } from '../../styles/Modal';
+import Button from '../Button';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
-import { ContentsBoxStyle } from '../../styles/Modal';
 
 // 크레딧 부족 시 모달
 const CreditNotEnough = ({ setModalClose }) => {
@@ -23,7 +24,7 @@ const CreditNotEnough = ({ setModalClose }) => {
                         앗! 투표하기 위한 <span>크레딧</span>이 부족해요
                     </p>
                 </Contents>
-                <button onClick={handleModalClose}>확인</button>
+                <Button onClick={handleModalClose} width='100%'>확인</Button>
             </ContentsBox>
         </ModalContainer>
     );
