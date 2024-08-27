@@ -5,30 +5,25 @@ import InterestedIdols from './components/InterestedIdols';
 import AddInterestedIdols from './components/AddInterestedIdols';
 import mockdata from './components/mockdata';
 
+import { createContext, useState } from 'react';
+
+export const MyStateContext = createContext();
 const MyPage = () => {
-    const idoldatas = mockdata.list;
-    const femaleIdols = [];
-    const maleIdols = [];
-    const seletedIdols = [];
-    /* 임시로 만든 관심있는 아이돌 리스트 */
+    const [datas, setDatas] = useState(mockdata.list);
+    const [selectedDatas, setSelectedDatas] = useState([]);
+
     for (let i = 0; i < 4; i++) {
-        seletedIdols.push(idoldatas[i]);
+        selectedDatas.push(datas[i]);
     }
 
-    idoldatas.forEach((idol) => {
-        if (idol.gender === 'female') {
-            femaleIdols.push(idol);
-        } else if (idol.gender === 'male') {
-            maleIdols.push(idol);
-        }
-    });
-
     return (
-        <StyledMyPage>
-            <Header />
-            <InterestedIdols seletedIdols={seletedIdols} />
-            <AddInterestedIdols femaleIdols={femaleIdols} maleIdols={maleIdols} />
-        </StyledMyPage>
+        <MyStateContext.Provider value={{ datas, selectedDatas }}>
+            <StyledMyPage>
+                <Header />
+                <InterestedIdols selectedIdols={selectedDatas} />
+                <AddInterestedIdols />
+            </StyledMyPage>
+        </MyStateContext.Provider>
     );
 };
 

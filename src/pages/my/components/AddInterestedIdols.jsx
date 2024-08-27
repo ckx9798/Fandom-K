@@ -1,32 +1,43 @@
-import React from 'react';
+import { useState, useContext, useMemo } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
 import Button from '../../../components/Button';
 import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
+import { MyStateContext } from '../MyPage';
 
-const AddInterestedIdols = ({ femaleIdols, maleIdols }) => {
+const AddInterestedIdols = () => {
+    const { datas } = useContext(MyStateContext);
+    const [option, setOption] = useState('');
+
+    const handleChange = (e) => {
+        setOption(e.target.value);
+    };
+
+    const sortedDatas = useMemo(() => {
+        if (option === '') return datas;
+        return datas.filter((item) => item.gender === option);
+    }, [datas, option]);
+
     return (
         <ContentWrapper>
             <ContentTitle>
                 <h2>관심 있는 아이돌을 추가해보세요.</h2>
+                <select onChange={handleChange} value={option}>
+                    <option value="">전체</option>
+                    <option value="male">남자</option>
+                    <option value="female">여자</option>
+                </select>
             </ContentTitle>
             <CarouselPage>
                 <CarouselButton>
                     <img src={arrowIcon} />
                 </CarouselButton>
-                <IdolLists>
-                    <IdolList>
-                        {femaleIdols.map((idol) => {
-                            return <IdolProfile key={idol.id} idol={idol} />;
-                        })}
-                    </IdolList>
-                    <IdolList>
-                        {maleIdols.map((idol) => {
-                            return <IdolProfile key={idol.id} idol={idol} />;
-                        })}
-                    </IdolList>
-                </IdolLists>
+                <IdolList>
+                    {sortedDatas.map((idol) => {
+                        return <IdolProfile key={idol.id} idol={idol} checked={false} />;
+                    })}
+                </IdolList>
                 <CarouselButton rotated>
                     <RotatedIcon src={arrowIcon} />
                 </CarouselButton>
@@ -53,6 +64,16 @@ const ContentWrapper = styled.div`
 const ContentTitle = styled.div`
     width: 1200px;
     padding-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    select {
+        font-size: 16px;
+        font-weight: 700;
+        padding: 10px 20px;
+        border-radius: 8px;
+    }
 `;
 
 const CarouselPage = styled.div`
@@ -80,17 +101,16 @@ const RotatedIcon = styled.img`
     transform: scaleX(-1);
 `;
 
-const IdolLists = styled.div`
+export const IdolLists = styled.div`
     display: flex;
     flex-direction: column;
     width: 1200px;
 `;
 
-const IdolList = styled.div`
-    display: flex;
-    flex-direction: row;
+export const IdolList = styled.div`
+    display: grid;
+    grid-template: 1fr 1fr / repeat(8, 1fr);
     gap: 24px;
-    overflow: hidden;
 `;
 
 const ButtonInner = styled.div`
