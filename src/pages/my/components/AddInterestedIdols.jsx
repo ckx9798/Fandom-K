@@ -67,12 +67,19 @@ const AddInterestedIdols = () => {
         <ContentWrapper>
             <ContentTitle>
                 <h2>관심 있는 아이돌을 추가해보세요.</h2>
-                <select onChange={handleChange} value={option}>
-                    <option value="">전체</option>
-                    <option value="male">남자</option>
-                    <option value="female">여자</option>
-                </select>
+                <ContentNav>
+                    <GenderToggleButton onClick={handleChange} value="" isSelected={option === ''}>
+                        전체 아이돌
+                    </GenderToggleButton>
+                    <GenderToggleButton onClick={handleChange} value="female" isSelected={option === 'female'}>
+                        여자 아이돌
+                    </GenderToggleButton>
+                    <GenderToggleButton onClick={handleChange} value="male" isSelected={option === 'male'}>
+                        남자 아이돌
+                    </GenderToggleButton>
+                </ContentNav>
             </ContentTitle>
+
             <CarouselPage>
                 <CarouselButton onClick={handlePrevPage} disabled={currentPage === 0}>
                     <img src={arrowIcon} alt="이전" />
@@ -112,15 +119,28 @@ const ContentTitle = styled.div`
     width: 1200px;
     padding-top: 40px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+`;
 
-    select {
-        font-size: 16px;
-        font-weight: 700;
-        padding: 10px 20px;
-        border-radius: 8px;
-    }
+const ContentNav = styled.div`
+    width: 100%;
+    height: 42px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+`;
+
+const GenderToggleButton = styled.button`
+    flex: 1;
+    text-align: center;
+    background-color: ${(props) => (props.isSelected === false ? '#02000e' : '#ffffff1a')};
+    padding: 12px;
+    border: none;
+    border-bottom: ${(props) => (props.isSelected === false ? 'none' : '1px solid #fff')};
+
+    font-size: 14px;
+    line-height: 18px;
+    color: ${(props) => (props.isSelected === false ? '#828282' : '#fff')};
 `;
 
 const CarouselPage = styled.div`
@@ -152,12 +172,6 @@ const CarouselButton = styled.button`
 const RotatedIcon = styled.img`
     transform: scaleX(-1);
 `;
-
-// export const IdolLists = styled.div`
-//     display: flex;
-//     flex-direction: column;
-//     width: 1200px;
-// `;
 
 const IdolList = styled.div`
     display: grid;
