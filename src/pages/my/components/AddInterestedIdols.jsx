@@ -6,62 +6,18 @@ import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyStateContext } from '../MyPage';
 
-const ITEMS_PER_PAGE = 16; // 페이지당 표시할 아이템 수
-
 const AddInterestedIdols = () => {
-    const { datas, selectedDatas, setSelectedDatas } = useContext(MyStateContext);
+    const { datas } = useContext(MyStateContext);
     const [option, setOption] = useState('');
-    const [checkedIdols, setCheckedIdols] = useState([]);
-    const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태
 
     const handleChange = (e) => {
         setOption(e.target.value);
-        setCurrentPage(0); // 필터 변경 시 첫 페이지로 이동
-    };
-
-    const handleAddClick = () => {
-        setSelectedDatas([...selectedDatas, ...checkedIdols]);
-        setCheckedIdols([]);
-    };
-
-    const handleCheck = (idol, checked) => {
-        if (checked) {
-            setCheckedIdols([...checkedIdols, idol]);
-        } else {
-            setCheckedIdols(checkedIdols.filter((checkedIdol) => checkedIdol.id !== idol.id));
-        }
     };
 
     const sortedDatas = useMemo(() => {
-        let filteredDatas = datas;
-
-        // 선택된 옵션에 따른 필터링
-        if (option !== '') {
-            filteredDatas = filteredDatas.filter((item) => item.gender === option);
-        }
-
-        // selectedDatas에 포함되지 않은 데이터만 필터링
-        return filteredDatas.filter((item) => !selectedDatas.some((selected) => selected.id === item.id));
-    }, [datas, option, selectedDatas]);
-
-    // 페이지네이션된 데이터 계산
-    const paginatedDatas = useMemo(() => {
-        const startIndex = currentPage * ITEMS_PER_PAGE;
-        const endIndex = startIndex + ITEMS_PER_PAGE;
-        return sortedDatas.slice(startIndex, endIndex);
-    }, [sortedDatas, currentPage]);
-
-    const handleNextPage = () => {
-        if ((currentPage + 1) * ITEMS_PER_PAGE < sortedDatas.length) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
-
-    const handlePrevPage = () => {
-        if (currentPage > 0) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
+        if (option === '') return datas;
+        return datas.filter((item) => item.gender === option);
+    }, [datas, option]);
 
     return (
         <ContentWrapper>
@@ -74,24 +30,21 @@ const AddInterestedIdols = () => {
                 </select>
             </ContentTitle>
             <CarouselPage>
-                <CarouselButton onClick={handlePrevPage} disabled={currentPage === 0}>
-                    <img src={arrowIcon} alt="이전" />
+                <CarouselButton>
+                    <img src={arrowIcon} />
                 </CarouselButton>
                 <IdolList>
-                    {paginatedDatas.map((idol) => (
-                        <IdolProfile key={idol.id} idol={idol} onCheck={handleCheck} />
-                    ))}
+                    {sortedDatas.map((idol) => {
+                        return <IdolProfile key={idol.id} idol={idol} checked={false} />;
+                    })}
                 </IdolList>
-                <CarouselButton
-                    onClick={handleNextPage}
-                    disabled={(currentPage + 1) * ITEMS_PER_PAGE >= sortedDatas.length}
-                >
-                    <RotatedIcon src={arrowIcon} alt="다음" />
+                <CarouselButton rotated>
+                    <RotatedIcon src={arrowIcon} />
                 </CarouselButton>
             </CarouselPage>
-            <Button onClick={handleAddClick} width="255" height="48" radius="24">
+            <Button width="255" height="48" radius="24">
                 <ButtonInner>
-                    <img src={plusIcon} alt="추가" />
+                    <img src={plusIcon} />
                     <span>추가하기</span>
                 </ButtonInner>
             </Button>
@@ -142,11 +95,6 @@ const CarouselButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-
-    &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
 `;
 
 const RotatedIcon = styled.img`
