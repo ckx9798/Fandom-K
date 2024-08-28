@@ -1,50 +1,68 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import Button from '../../../components/Button.jsx';
 import chartImg from '../../../assets/image/Chart.svg';
 import IdolCard from './IdolCard.jsx';
 import GenderToggleButton from './GenderToggleButton.jsx';
 import VoteModal from '../../../components/modals/VoteModal.jsx';
+import { getCharts } from '../../../api/charts.js';
 
 const ThisMonthChart = () => {
     // 아이돌 데이터 get해오기
     const [IdolData, setIdolData] = useState([]);
     const [IdolGender, setIdolGender] = useState('female');
     const [IdolDataNum, setIdolDataNum] = useState(10);
-    useEffect(() => {
-        axios
-            .get(
-                `https://fandom-k-api.vercel.app/8-3/charts/${IdolGender}?gender=${IdolGender}&pageSize=${IdolDataNum}`,
-            )
-            .then((res) => {
-                setIdolData([...res.data.idols]);
-            })
-            .catch((err) => {
-                console.error('Idols get 오류', err);
+    const [cursor, setCusor] = useState(null);
+
+    // refresh가 있으면, IdolData 초기화
+    const loadIdolData = async (refresh) => {
+        try {
+            const response = await getCharts({
+                gender: IdolGender,
+                cursor: refresh ? null : cursor,
+                pageSize: IdolDataNum,
             });
-    }, [IdolDataNum, IdolGender]);
+            if (refresh) {
+                setIdolData(response.idols);
+            } else {
+                setIdolData((prevData) => [...prevData, ...response.idols]);
+            }
+            setCusor(response.nextCursor);
+        } catch (error) {
+            console.error('chart data 오류', error);
+        }
+    };
+
+    useEffect(() => {
+        loadIdolData(true);
+    }, [IdolGender]);
+
     // 버튼으로 성별 바꾸기
     const changeGender = (e) => {
         setIdolGender(e.target.value);
-        setIdolDataNum(10);
+        // setCusor(null);
     };
-    // 더보기 누르면 데이터 10 추가
-    const loadMoreIdolData = () => {
-        setIdolDataNum(IdolDataNum + 10);
-    };
+
     // 투표하기 모달창 열기
     const [isOpen, setIsOpen] = useState(false);
     const ViewVoteModalHandler = () => {
         setIsOpen(!isOpen);
     };
 
+    // 더보기 버튼 마지막 데이터에 변경
+    const ShowMoreBtn = () => {
+        if (cursor) {
+            return <ChartMoreBtn onClick={() => loadIdolData()}>더 보기</ChartMoreBtn>;
+        } else {
+            return null;
+        }
+    };
     return (
         <ChartContainer>
             <ChartHeader>
                 <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
                 <Button width="128" height="32" border-radius="3" onClick={() => ViewVoteModalHandler()}>
-                    {isOpen === true ? <VoteModal /> : null}
+                    {isOpen === true ? <VoteModal idolList={IdolData} title={IdolGender} /> : null}
                     <img src={chartImg} alt="차트이미지" />
                     <span> 차트 투표하기 </span>
                 </Button>
@@ -68,7 +86,7 @@ const ThisMonthChart = () => {
                     return <IdolCard key={item.id} item={item} rank={i + 1} />;
                 })}
             </ChartRankContainer>
-            <ChartMoreBtn onClick={loadMoreIdolData}>더 보기</ChartMoreBtn>
+            <ShowMoreBtn />
         </ChartContainer>
     );
 };
