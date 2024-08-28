@@ -3,14 +3,20 @@ import styled from 'styled-components';
 import Button from '../../../components/Button';
 import { dDay } from '../../../utils/dDay';
 
-const DonationItem = ({ item }) => {
-    const ratio = Math.ceil((item.receivedDonations / item.targetDonation) * 100);
+const DonationItem = ({ item, pageSize }) => {
+    const ratio = Math.floor((item.receivedDonations / item.targetDonation) * 100);
+
     return (
         <StyledCard $ratio={ratio}>
             <div className="imgBox">
                 <img src={item.idol.profilePicture} alt="프로필 사진" />
                 <div className="overlay" />
-                <Button>후원하기</Button>
+                {pageSize !== 'mobile' && <Button>후원하기</Button>}
+                {pageSize === 'mobile' && (
+                    <Button width={142} height={31}>
+                        후원하기
+                    </Button>
+                )}
             </div>
             <p className="subtitle">{item.subtitle}</p>
             <p className="title">{item.title}</p>
@@ -41,7 +47,7 @@ const StyledCard = styled.div`
             position: absolute;
             top: 0;
             width: 282px;
-            height: 100%;
+            height: 293px;
             background: linear-gradient(180deg, rgba(0, 0, 0, 0) 58.9%, #000000 100%);
         }
         button {
@@ -79,9 +85,38 @@ const StyledCard = styled.div`
         height: 1px;
         background-color: #ffffff;
         .ratio {
-            width: ${(props) => props.$ratio}%;
+            width: ${(props) => (props.$ratio > 100 ? 100 : props.$ratio)}%;
             height: 1px;
             background-color: var(--brand100);
+        }
+    }
+    @media (max-width: 767px) {
+        .imgBox {
+            img {
+                width: 158px;
+                height: 206px;
+            }
+            .overlay {
+                width: 158px;
+                height: 206px;
+            }
+            button {
+                bottom: 8px;
+                left: 8px;
+            }
+        }
+        .subtitle {
+            margin: 10px 0 0;
+            font-size: 12px;
+        }
+        .title {
+            margin: 6px 0 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .donation {
+            margin: 20px 0 0;
+            font-size: 12px;
         }
     }
 `;
