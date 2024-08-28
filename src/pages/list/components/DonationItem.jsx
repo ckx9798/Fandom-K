@@ -1,19 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../../components/Button';
 import { dDay } from '../../../utils/dDay';
+import SupportModal from '../../../components/modals/SupportModal';
 
 const DonationItem = ({ item, pageSize }) => {
+    const [modalClose, setModalClose] = useState(false);
     const ratio = Math.floor((item.receivedDonations / item.targetDonation) * 100);
+
+    const handleChargeModal = () => {
+        setModalClose((prev) => !prev);
+    };
 
     return (
         <StyledCard $ratio={ratio}>
             <div className="imgBox">
                 <img src={item.idol.profilePicture} alt="프로필 사진" />
                 <div className="overlay" />
-                {pageSize !== 'mobile' && <Button>후원하기</Button>}
+                {pageSize !== 'mobile' && <Button onClick={handleChargeModal}>후원하기</Button>}
                 {pageSize === 'mobile' && (
-                    <Button width={142} height={31}>
+                    <Button width={142} height={31} onClick={handleChargeModal}>
                         후원하기
                     </Button>
                 )}
@@ -29,6 +35,7 @@ const DonationItem = ({ item, pageSize }) => {
             <div className="percentage">
                 <div className="ratio" />
             </div>
+            {modalClose && <SupportModal item={item} setModalClose={setModalClose} />}
         </StyledCard>
     );
 };

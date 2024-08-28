@@ -9,8 +9,8 @@ import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
 
 // 후원하기 모달창 (list 페이지에서 donations 자료를 넘겨주어야 합니다.)
-const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) => {
-    const [userDonation, setUserDonation] = useState('');
+const SupportModal = ({ item, setModalClose }) => {
+    const [userDonation, setUserDonation] = useState(0);
     const [error, setError] = useState(false);
     const [isLoading, setLoading] = useState(false);
 
@@ -44,7 +44,7 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
 
         try {
             setLoading(true);
-            const response = await putContribute(idolId, userDonation);
+            const response = await putContribute(item.id, userDonation);
 
             if (response) {
                 localStorage.setItem('credit', currentCredit - userDonation);
@@ -56,6 +56,7 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
             }
         } finally {
             setLoading(false);
+            handleModalClose();
         }
     };
 
@@ -69,10 +70,10 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
                     </button>
                 </TitleStyle>
                 <IdolBox>
-                    <IdolImg src={idolImgSrc} alt="아이돌 이미지" />
+                    <IdolImg src={item.idol.profilePicture} alt="아이돌 이미지" />
                     <DonationTitleBox>
-                        <h3>{title}</h3>
-                        <p>{subTitle}</p>
+                        <h3>{item.subtitle}</h3>
+                        <p>{item.title}</p>
                     </DonationTitleBox>
                 </IdolBox>
                 <DonationForm onSubmit={handleSubmit}>
@@ -114,6 +115,7 @@ const IdolBox = styled.div`
 const IdolImg = styled.img`
     width: 158px;
     height: 206px;
+    object-fit: cover;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 0 40px 0 rgba(255, 255, 255, 0.1);
