@@ -9,6 +9,7 @@ const ListPage = () => {
     return (
         <Container>
             <Header />
+            <CreditStatus />
             <DonationList />
             <ThisMonthChart />
         </Container>
@@ -18,8 +19,10 @@ const ListPage = () => {
 export default ListPage;
 
 const Container = styled.div`
+    padding: 0 24px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 50px;
 `;
