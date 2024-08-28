@@ -10,7 +10,7 @@ import creditImg from '../../assets/icon/credit.svg';
 
 // 후원하기 모달창 (list 페이지에서 donations 자료를 넘겨주어야 합니다.)
 const SupportModal = ({ item, setModalClose }) => {
-    const [userDonation, setUserDonation] = useState('');
+    const [userDonation, setUserDonation] = useState(0);
     const [error, setError] = useState(false);
     const [isLoading, setLoading] = useState(false);
 
@@ -57,6 +57,7 @@ const SupportModal = ({ item, setModalClose }) => {
             }
         } finally {
             setLoading(false);
+            handleModalClose();
         }
     };
 
@@ -115,6 +116,7 @@ const IdolBox = styled.div`
 const IdolImg = styled.img`
     width: 158px;
     height: 206px;
+    object-fit: cover;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 0 40px 0 rgba(255, 255, 255, 0.1);
