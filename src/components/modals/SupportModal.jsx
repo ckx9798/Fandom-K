@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import ModalContainer from './ModalContainer';
 import Button from '../Button';
-import { ContentsBoxStyle, TitleStyle } from '../../styles/Modal';
+import { ContentsBoxStyle, NumberInput, TitleStyle } from '../../styles/Modal';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
 
@@ -45,7 +45,7 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
         try {
             setLoading(true);
             const response = await putContribute(idolId, userDonation);
-            
+
             if (response) {
                 localStorage.setItem('credit', currentCredit - userDonation);
                 setUserDonation('');
@@ -65,11 +65,11 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
                 <TitleStyle>
                     <h2>후원하기</h2>
                     <button onClick={handleModalClose}>
-                        <img src={closeBtn} alt='닫기' />
+                        <img src={closeBtn} alt="닫기" />
                     </button>
                 </TitleStyle>
                 <IdolBox>
-                    <IdolImg src={idolImgSrc} alt='아이돌 이미지' />
+                    <IdolImg src={idolImgSrc} alt="아이돌 이미지" />
                     <DonationTitleBox>
                         <h3>{title}</h3>
                         <p>{subTitle}</p>
@@ -79,17 +79,17 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
                     <InputContainer>
                         <InputBox>
                             <input
-                                type='number'
-                                name='donation'
+                                type="number"
+                                name="donation"
                                 value={userDonation}
                                 onChange={handleUserDonation}
-                                placeholder='크레딧 입력'
+                                placeholder="크레딧 입력"
                             />
-                            <img src={creditImg} alt='크레딧' />
+                            <Input src={creditImg} alt="크레딧" />
                         </InputBox>
                         {error && <p>갖고 있는 크레딧보다 더 많이 후원할 수 없어요</p>}
                     </InputContainer>
-                    <DonationBtn type='submit' disabled={isDisabled || userDonation === ''} width='100%'>
+                    <DonationBtn type="submit" disabled={isDisabled || userDonation === ''} width="100%">
                         {isLoading ? '잠시만 기다리세요.' : '후원하기'}
                     </DonationBtn>
                 </DonationForm>
@@ -154,26 +154,21 @@ const InputBox = styled.div`
     border: 1px solid white;
     border-radius: 8px;
     background-color: #272f3d;
+`;
 
-    input {
-        background: none;
-        border: none;
-        width: 100%;
-        outline: none;
-        padding: 0;
-        font-size: 20px;
-        font-weight: 700;
-        line-height: 26px;
-        color: white;
-        &::-webkit-inner-spin-button,
-        &::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
+const Input = styled(NumberInput)`
+    background: none;
+    border: none;
+    width: 100%;
+    outline: none;
+    padding: 0;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 26px;
+    color: white;
 
-        &::placeholder {
-            color: var(--gray100);
-        }
+    &::placeholder {
+        color: var(--gray100);
     }
 `;
 
