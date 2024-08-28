@@ -32,15 +32,14 @@ const AddInterestedIdols = () => {
         }
     };
 
+    //성별 옵션을 선택하여 선택된 성별만 렌더링
     const sortedDatas = useMemo(() => {
         let filteredDatas = datas;
 
-        // 선택된 옵션에 따른 필터링
         if (option !== '') {
             filteredDatas = filteredDatas.filter((item) => item.gender === option);
         }
 
-        // selectedDatas에 포함되지 않은 데이터만 필터링
         return filteredDatas.filter((item) => !selectedDatas.some((selected) => selected.id === item.id));
     }, [datas, option, selectedDatas]);
 
