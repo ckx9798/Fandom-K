@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo } from 'react';
+import { useState, useContext, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
 import Button from '../../../components/Button';
@@ -6,13 +6,12 @@ import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyStateContext } from '../MyPage';
 
-const ITEMS_PER_PAGE = 16; // 페이지당 표시할 아이템 수
-
 const AddInterestedIdols = () => {
     const { datas, selectedDatas, setSelectedDatas } = useContext(MyStateContext);
     const [option, setOption] = useState('');
     const [checkedIdols, setCheckedIdols] = useState([]);
-    const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     const handleChange = (e) => {
         setOption(e.target.value);
@@ -43,22 +42,15 @@ const AddInterestedIdols = () => {
         return filteredDatas.filter((item) => !selectedDatas.some((selected) => selected.id === item.id));
     }, [datas, option, selectedDatas]);
 
-    // 페이지네이션된 데이터 계산
-    const paginatedDatas = useMemo(() => {
-        const startIndex = currentPage * ITEMS_PER_PAGE;
-        const endIndex = startIndex + ITEMS_PER_PAGE;
-        return sortedDatas.slice(startIndex, endIndex);
-    }, [sortedDatas, currentPage]);
-
     const handleNextPage = () => {
-        if ((currentPage + 1) * ITEMS_PER_PAGE < sortedDatas.length) {
-            setCurrentPage(currentPage + 1);
+        if (currentPage < totalPages - 1) {
+            setCurrentPage((prevPage) => prevPage + 1);
         }
     };
 
     const handlePrevPage = () => {
         if (currentPage > 0) {
-            setCurrentPage(currentPage - 1);
+            setCurrentPage((prevPage) => prevPage - 1);
         }
     };
 
@@ -77,14 +69,11 @@ const AddInterestedIdols = () => {
                     <img src={arrowIcon} alt="이전" />
                 </CarouselButton>
                 <IdolList>
-                    {paginatedDatas.map((idol) => (
+                    {sortedDatas.map((idol) => (
                         <IdolProfile key={idol.id} idol={idol} onCheck={handleCheck} />
                     ))}
                 </IdolList>
-                <CarouselButton
-                    onClick={handleNextPage}
-                    disabled={(currentPage + 1) * ITEMS_PER_PAGE >= sortedDatas.length}
-                >
+                <CarouselButton onClick={handleNextPage} disabled={currentPage >= totalPages - 1}>
                     <RotatedIcon src={arrowIcon} alt="다음" />
                 </CarouselButton>
             </CarouselPage>
@@ -123,10 +112,10 @@ const ContentTitle = styled.div`
 `;
 
 const CarouselPage = styled.div`
-    width: 100%;
+    width: 1280px;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     gap: 32px;
     margin-bottom: 48px;

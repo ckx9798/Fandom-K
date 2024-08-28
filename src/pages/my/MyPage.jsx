@@ -15,15 +15,19 @@ const MyPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            let result;
             try {
-                const response = await getIdols({ cursor, pageSize: 10 });
-                if (response) {
-                    setDatas((prevData) => [...prevData, ...response.list]);
-                    setCursor(response.nextCursor);
-                }
+                result = await getIdols({ cursor, pageSize: 10 });
             } catch (error) {
                 console.error(error);
+                return;
             }
+            if (!cursor) {
+                setDatas(result.list);
+            } else {
+                setDatas((prevData) => [...prevData, ...response.list]);
+            }
+            setCursor(response.nextCursor);
         };
 
         fetchData();
