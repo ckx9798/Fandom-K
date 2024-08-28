@@ -1,17 +1,17 @@
 import styled from 'styled-components';
-import { useLocation, Link } from 'react-router-dom';
 import logo from '../assets/image/logo.svg';
 import userProfileImg from '../assets/image/userProfile.jpg';
 
 const Header = () => {
-    const location = useLocation();
-    const currentPath = location.pathname;
+    const handleRefresh = () => {
+        window.location.reload();
+    };
 
     return (
         <StyledHeader>
-            <Link to={currentPath}>
+            <RefreshButton onClick={handleRefresh}>
                 <Logo src={logo} alt="FANDOM-K 로고" />
-            </Link>
+            </RefreshButton>
             <UserProfile src={userProfileImg} alt="유저 프로필 이미지" />
         </StyledHeader>
     );
@@ -64,4 +64,11 @@ const UserProfile = styled.img`
     border-radius: 125px;
     position: absolute;
     right: 0px;
+`;
+
+const RefreshButton = styled.button`
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
 `;
