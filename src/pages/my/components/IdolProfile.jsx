@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import deleteIcon from '../../../assets/icon/Icon-delete.svg';
 import checkIcon from '../../../assets/icon/ic_check.svg';
 
-const IdolProfile = ({ idol, selected = false, onDelete }) => {
+const IdolProfile = ({ idol, selected = false, onDelete, onCheck }) => {
     const [checked, setChecked] = useState(false);
+
+    const handleCheckClick = () => {
+        const newChecked = !checked;
+        setChecked(newChecked);
+        onCheck(idol, newChecked);
+    };
 
     const handleDeleteClick = () => onDelete(idol.id);
 
     return (
-        <IdolCard
-            selected={selected}
-            onClick={() => {
-                setChecked(!checked);
-            }}
-        >
-            <IdolImgContainer selected={selected} checked={checked}>
+        <IdolCard selected={selected} onClick={handleCheckClick}>
+            <IdolImgContainer selected={selected} onClick={handleCheckClick} checked={checked}>
                 <IdolImg src={idol.profilePicture} selected={selected} checked={checked} />
                 {checked && !selected && (
                     <Overlay>
