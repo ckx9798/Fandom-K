@@ -5,11 +5,10 @@ import Button from '../Button';
 import AlarmModal from './AlarmModal';
 import { postVotes } from '../../api/votes';
 import { ContentsBoxStyle, DisabledBtn, TitleStyle } from '../../styles/Modal';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import mobileArrow from '../../assets/icon/icj_arrow_left.svg';
 import check from '../../assets/icon/ic_check.svg';
-import { getIdols } from '../../api/idols';
 
 // 투표하기 모달 (setModalClose 파라미터는 부모 컴포넌트로부터 받은 함수로, 투표하기 모달을 닫는 용도입니다.)
 const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
@@ -17,10 +16,9 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
     const [creditAlert, setCreditAlert] = useState(false);
     const [alertModalClose, setAlertModalClose] = useState(true);
     const [isVote, setVote] = useState(false);
-    const [idols, setIdols] = useState([]);
 
     // 투표수가 많은 순으로 정렬, 투표수가 같으면 id순으로 설정해서 순위가 뒤집어지지 않도록 했습니다.
-    const sortIdol = idols?.sort((a, b) => {
+    const sortIdol = idolList?.sort((a, b) => {
         if (b.totalVotes !== a.totalVotes) {
             return b.totalVotes - a.totalVotes;
         } else {
@@ -41,22 +39,6 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
 
         setVoteIdol(value);
     };
-
-    useEffect(() => {
-        const getIdolsList = async () => {
-            try {
-                const response = await getIdols({ cursor: null, pageSize: 10 });
-
-                if (response) {
-                    setIdols(response.list);
-                }
-            } catch (error) {
-                console.error('오류', error);
-            }
-        };
-
-        getIdolsList();
-    }, []);
 
     // 투표하기 버튼 누르면 실행되는 함수
     const handleVote = async (e) => {
