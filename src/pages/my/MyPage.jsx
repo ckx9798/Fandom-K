@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../../components/Header';
 import InterestedIdols from './components/InterestedIdols';
@@ -11,27 +11,19 @@ export const MyStateContext = createContext();
 const MyPage = () => {
     const [datas, setDatas] = useState([]);
     const [selectedDatas, setSelectedDatas] = useState([]);
-    const [cursor, setCursor] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            let result;
             try {
-                result = await getIdols({ cursor, pageSize: 10 });
+                const result = await getIdols({ cursor: null, pageSize: 50 });
+                setDatas(result.list);
             } catch (error) {
                 console.error(error);
-                return;
             }
-            if (!cursor) {
-                setDatas(result.list);
-            } else {
-                setDatas((prevData) => [...prevData, ...response.list]);
-            }
-            setCursor(response.nextCursor);
         };
 
         fetchData();
-    }, [cursor]);
+    }, []);
 
     return (
         <StyledMyPage>
