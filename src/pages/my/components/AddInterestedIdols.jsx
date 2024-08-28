@@ -38,7 +38,7 @@ const AddInterestedIdols = () => {
                         return <IdolProfile key={idol.id} idol={idol} checked={false} />;
                     })}
                 </IdolList>
-                <CarouselButton rotated>
+                <CarouselButton>
                     <RotatedIcon src={arrowIcon} />
                 </CarouselButton>
             </CarouselPage>
@@ -101,16 +101,19 @@ const RotatedIcon = styled.img`
     transform: scaleX(-1);
 `;
 
-export const IdolLists = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 1200px;
-`;
+// export const IdolLists = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     width: 1200px;
+// `;
 
-export const IdolList = styled.div`
+const IdolList = styled.div`
     display: grid;
     grid-template: 1fr 1fr / repeat(8, 1fr);
     gap: 24px;
+    width: 1200px;
+    height: 454px;
+    overflow: hidden;
 `;
 
 const ButtonInner = styled.div`

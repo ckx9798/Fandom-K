@@ -40,7 +40,7 @@ const IdolCard = styled.div`
     align-items: center;
     margin-top: 32px;
     position: relative;
-    cursor: pointer;
+    cursor: ${(props) => (props.selected ? 'default' : 'pointer')};
 `;
 
 const IdolImg = styled.img`
