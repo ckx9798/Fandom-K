@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import ModalContainer from './ModalContainer';
 import styled from 'styled-components';
 import Button from '../Button';
-import { ContentsBoxStyle, NumberInput, TitleStyle } from '../../styles/Modal';
+import { ContentsBoxStyle, DisabledBtn, NumberInput, TitleStyle } from '../../styles/Modal';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
 
@@ -145,13 +145,7 @@ const ChargeBtn = styled(Button)`
     margin-top: 10px;
 
     &:disabled {
-        cursor: default;
-        background: none;
-        background-color: var(--gray200);
-
-        &:hover {
-            opacity: 1;
-        }
+        ${DisabledBtn}
     }
 `;
 

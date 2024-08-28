@@ -2,20 +2,33 @@ import axios from 'axios';
 import styled from 'styled-components';
 import ModalContainer from './ModalContainer';
 import Button from '../Button';
-import CreditNotEnough from './CreditNotEnough';
+import AlarmModal from './AlarmModal';
 import { postVotes } from '../../api/votes';
-import { ContentsBoxStyle, TitleStyle } from '../../styles/Modal';
+import { ContentsBoxStyle, DisabledBtn, TitleStyle } from '../../styles/Modal';
 import { useEffect, useState } from 'react';
-import { getIdols } from '../../api/idols';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import mobileArrow from '../../assets/icon/icj_arrow_left.svg';
 import check from '../../assets/icon/ic_check.svg';
+import { getIdols } from '../../api/idols';
 
-// 투표하기 모달 (width값은 list 페이지가 모바일 규격이 됐을 때 받아서 반응형 스타일을 하기 위해서 필요합니다)
-const VoteModal = ({ idolList = [], title = 'female', width }) => {
-    const isMobile = width <= 767;
+// 투표하기 모달 (setModalClose 파라미터는 부모 컴포넌트로부터 받은 함수로, 투표하기 모달을 닫는 용도입니다.)
+const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
     const [voteIdol, setVoteIdol] = useState(0);
     const [creditAlert, setCreditAlert] = useState(false);
+    const [alertModalClose, setAlertModalClose] = useState(true);
+    const [isVote, setVote] = useState(false);
+    const [idols, setIdols] = useState([]);
+
+    // 투표수가 많은 순으로 정렬, 투표수가 같으면 id순으로 설정해서 순위가 뒤집어지지 않도록 했습니다.
+    const sortIdol = idols?.sort((a, b) => {
+        if (b.totalVotes !== a.totalVotes) {
+            return b.totalVotes - a.totalVotes;
+        } else {
+            return a.id - b.id;
+        }
+    });
+
+    const isDisabled = voteIdol === 0;
 
     // 모달창 닫는 함수
     const handleModalClose = () => {
@@ -29,6 +42,22 @@ const VoteModal = ({ idolList = [], title = 'female', width }) => {
         setVoteIdol(value);
     };
 
+    useEffect(() => {
+        const getIdolsList = async () => {
+            try {
+                const response = await getIdols({ cursor: null, pageSize: 10 });
+
+                if (response) {
+                    setIdols(response.list);
+                }
+            } catch (error) {
+                console.error('오류', error);
+            }
+        };
+
+        getIdolsList();
+    }, []);
+
     // 투표하기 버튼 누르면 실행되는 함수
     const handleVote = async (e) => {
         e.preventDefault();
@@ -38,6 +67,7 @@ const VoteModal = ({ idolList = [], title = 'female', width }) => {
 
             if (currentCredit < 1000) {
                 setCreditAlert(true);
+                setAlertModalClose(false);
                 return;
             }
 
@@ -47,7 +77,8 @@ const VoteModal = ({ idolList = [], title = 'female', width }) => {
             const response = await postVotes(voteIdol);
 
             if (response) {
-                alert('투표가 완료되었습니다.');
+                setVote(true);
+                setAlertModalClose(false);
                 setModalClose((prev) => !prev);
             }
         } catch (error) {
@@ -61,21 +92,17 @@ const VoteModal = ({ idolList = [], title = 'female', width }) => {
         <ModalContainer>
             <ContentsBox>
                 <Title>
-                    {isMobile && (
-                        <button onClick={handleModalClose}>
-                            <img src={mobileArrow} alt="닫기" />
-                        </button>
-                    )}
+                    <MobileCloseBtn onClick={handleModalClose}>
+                        <img src={mobileArrow} alt="닫기" />
+                    </MobileCloseBtn>
                     <h2>이달의 {title === 'female' ? '여자' : '남자'} 아이돌</h2>
-                    {!isMobile && (
-                        <button onClick={handleModalClose}>
-                            <img src={closeBtn} alt="닫기" />
-                        </button>
-                    )}
+                    <CloseBtn onClick={handleModalClose}>
+                        <img src={closeBtn} alt="닫기" />
+                    </CloseBtn>
                 </Title>
                 <VoteForm onSubmit={handleVote}>
-                    {idolList?.length > 0 ? (
-                        idolList.map((idol) => (
+                    {sortIdol?.length > 0 ? (
+                        sortIdol.map((idol) => (
                             <FormWrapper key={idol.id}>
                                 <IdolVoteInfo>
                                     <ImgBox>
@@ -89,6 +116,7 @@ const VoteModal = ({ idolList = [], title = 'female', width }) => {
                                             alt="체크 표시"
                                             selected={Number(voteIdol) === idol.id}
                                         />
+                                        <CheckBackground selected={Number(voteIdol) === idol.id} />
                                     </ImgBox>
                                     <IdolNumber>{idol.id}</IdolNumber>
                                     <CurrentVoteBox>
@@ -104,14 +132,17 @@ const VoteModal = ({ idolList = [], title = 'female', width }) => {
                     ) : (
                         <EmptyList>표시할 아이돌이 없습니다.</EmptyList>
                     )}
-                    <Button type="submit" width="100%">
-                        투표하기
-                    </Button>
-                    <CreditAlert>
-                        투표하는 데 <span>1000 크레딧</span>이 소모됩니다.
-                    </CreditAlert>
+                    <VoteBtnBox>
+                        <VoteBtn type="submit" width="327" disabled={isDisabled}>
+                            투표하기
+                        </VoteBtn>
+                        <CreditAlert>
+                            투표하는 데 <span>1000 크레딧</span>이 소모됩니다.
+                        </CreditAlert>
+                    </VoteBtnBox>
                 </VoteForm>
-                {creditAlert && <CreditNotEnough />}
+                {creditAlert && !alertModalClose && <AlarmModal setAlertModalClose={setAlertModalClose} />}
+                {isVote && !alertModalClose && <AlarmModal setAlertModalClose={setAlertModalClose} title="vote" />}
             </ContentsBox>
         </ModalContainer>
     );
@@ -125,13 +156,14 @@ const ContentsBox = styled(ContentsBoxStyle)`
     @media (min-width: 375px) and (max-width: 767px) {
         width: 100vh;
         height: 100vh;
-        background: linear-gradient(300deg, rgba(2, 0, 14, 1) 80%, rgba(20, 195, 254, 0.2) 100%);
+        background: linear-gradient(300deg, rgba(2, 0, 14, 1) 70%, rgba(20, 195, 254, 0.2) 90%);
     }
 `;
 
 const Title = styled(TitleStyle)`
     width: 477px;
     margin: auto;
+    margin-bottom: 10px;
 
     @media (min-width: 375px) and (max-width: 767px) {
         justify-content: center;
@@ -143,11 +175,22 @@ const Title = styled(TitleStyle)`
             font-weight: 500;
             line-height: 16.71px;
         }
+    }
+`;
 
-        button {
-            position: absolute;
-            left: 24px;
-        }
+const MobileCloseBtn = styled.button`
+    display: none;
+
+    @media (min-width: 375px) and (max-width: 767px) {
+        display: block;
+        position: absolute;
+        left: 0;
+    }
+`;
+
+const CloseBtn = styled.button`
+    @media (min-width: 375px) and (max-width: 767px) {
+        display: none;
     }
 `;
 
@@ -157,7 +200,7 @@ const VoteForm = styled.form`
     gap: 8px;
     width: 477px;
     margin: auto;
-
+    margin-top: 0;
     @media (min-width: 375px) and (max-width: 767px) {
         width: 327px;
     }
@@ -190,16 +233,25 @@ const IdolImg = styled.img`
     width: 60px;
     height: 60px;
     border-radius: 9999px;
-    background: ${({ selected }) => (selected ? 'linear-gradient(var(--brand100), var(--brand200))' : 'none')};
     outline: 1px solid var(--brand100);
     outline-offset: 4px;
-    opacity: ${({ selected }) => (selected ? '0.5' : '1')};
+    object-fit: cover;
 `;
 
 const CheckIcon = styled.img`
     position: absolute;
     top: 5;
     display: ${({ selected }) => (selected ? 'block' : 'none')};
+`;
+
+const CheckBackground = styled.div`
+    position: absolute;
+    top: 5;
+    background: ${({ selected }) => (selected ? 'linear-gradient(#F96D69, #FE5493)' : 'none')};
+    width: 60px;
+    height: 60px;
+    border-radius: 9999px;
+    opacity: ${({ selected }) => (selected ? '0.5' : '1')};
 `;
 
 const IdolNumber = styled.span`
@@ -235,6 +287,24 @@ const CreditAlert = styled.p`
 
     span {
         color: var(--brand100);
+    }
+`;
+
+const VoteBtnBox = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    @media (min-width: 375px) and (max-width: 767px) {
+        background-color: rgba(2, 0, 14, 0.8);
+    }
+`;
+
+const VoteBtn = styled(Button)`
+    &:disabled {
+        ${DisabledBtn}
     }
 `;
 

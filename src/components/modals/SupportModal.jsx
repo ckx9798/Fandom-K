@@ -4,12 +4,12 @@ import styled from 'styled-components';
 import axios from 'axios';
 import ModalContainer from './ModalContainer';
 import Button from '../Button';
-import { ContentsBoxStyle, NumberInput, TitleStyle } from '../../styles/Modal';
+import { ContentsBoxStyle, DisabledBtn, NumberInput, TitleStyle } from '../../styles/Modal';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
 
 // 후원하기 모달창 (list 페이지에서 donations 자료를 넘겨주어야 합니다.)
-const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) => {
+const SupportModal = ({ item, setModalClose }) => {
     const [userDonation, setUserDonation] = useState('');
     const [error, setError] = useState(false);
     const [isLoading, setLoading] = useState(false);
@@ -44,11 +44,12 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
 
         try {
             setLoading(true);
-            const response = await putContribute(idolId, userDonation);
+            const response = await putContribute(item.id, userDonation);
 
             if (response) {
                 localStorage.setItem('credit', currentCredit - userDonation);
                 setUserDonation('');
+                setModalClose((prev) => !prev);
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -69,23 +70,23 @@ const SupportModal = ({ idolId, idolImgSrc, title, subTitle, setModalClose }) =>
                     </button>
                 </TitleStyle>
                 <IdolBox>
-                    <IdolImg src={idolImgSrc} alt="아이돌 이미지" />
+                    <IdolImg src={item.idol.profilePicture} alt="아이돌 이미지" />
                     <DonationTitleBox>
-                        <h3>{title}</h3>
-                        <p>{subTitle}</p>
+                        <h3>{item.subtitle}</h3>
+                        <p>{item.title}</p>
                     </DonationTitleBox>
                 </IdolBox>
                 <DonationForm onSubmit={handleSubmit}>
                     <InputContainer>
                         <InputBox>
-                            <input
+                            <Input
                                 type="number"
                                 name="donation"
                                 value={userDonation}
                                 onChange={handleUserDonation}
                                 placeholder="크레딧 입력"
                             />
-                            <Input src={creditImg} alt="크레딧" />
+                            <img src={creditImg} alt="크레딧" />
                         </InputBox>
                         {error && <p>갖고 있는 크레딧보다 더 많이 후원할 수 없어요</p>}
                     </InputContainer>
@@ -174,13 +175,7 @@ const Input = styled(NumberInput)`
 
 const DonationBtn = styled(Button)`
     &:disabled {
-        cursor: default;
-        background: none;
-        background-color: var(--gray200);
-
-        &:hover {
-            opacity: 1;
-        }
+        ${DisabledBtn}
     }
 `;
 
