@@ -1,5 +1,22 @@
 import styled from 'styled-components';
 
+function IdolCard({ item, rank }) {
+    return (
+        <IdolCardBox>
+            <IdolCardProfile>
+                <IdolCardProfileImg>
+                    <img src={item.profilePicture} alt="프로필이미지" />
+                </IdolCardProfileImg>
+                <IdolCardRank> {rank} </IdolCardRank>
+                <IdolCardName> {item.name} </IdolCardName>
+            </IdolCardProfile>
+            <IdolCardVotes>{item.totalVotes.toLocaleString()} 표</IdolCardVotes>
+        </IdolCardBox>
+    );
+}
+
+export default IdolCard;
+
 const IdolCardBox = styled.div`
     display: flex;
     justify-content: space-between;
@@ -45,20 +62,3 @@ const IdolCardVotes = styled.div`
     font-weight: 500;
     color: rgba(255, 255, 255, 0.6);
 `;
-
-function IdolCard({ item, rank }) {
-    return (
-        <IdolCardBox>
-            <IdolCardProfile>
-                <IdolCardProfileImg>
-                    <img src={item.profilePicture} alt="프로필이미지" />
-                </IdolCardProfileImg>
-                <IdolCardRank> {rank} </IdolCardRank>
-                <IdolCardName> {item.name} </IdolCardName>
-            </IdolCardProfile>
-            <IdolCardVotes>{item.totalVotes.toLocaleString()} 표</IdolCardVotes>
-        </IdolCardBox>
-    );
-}
-
-export default IdolCard;
