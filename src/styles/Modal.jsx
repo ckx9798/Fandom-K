@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 // 모달 공용 (width를 지정해서 사용해주세요.)
 export const ContentsBoxStyle = styled.div`
@@ -26,5 +26,13 @@ export const TitleStyle = styled.div`
         background: none;
         border: none;
         padding: 0;
+    }
+`;
+
+export const NumberInput = styled.input`
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 `;
