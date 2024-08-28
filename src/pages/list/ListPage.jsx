@@ -1,4 +1,6 @@
+
 import CreditStatus from '../../components/list/CreditStatus';
+import ThisMonthChart from './components/ThisMonthChart';
 import Header from '../../components/Header';
 import DonationList from './components/DonationList';
 import styled from 'styled-components';
@@ -8,6 +10,7 @@ const ListPage = () => {
         <Container>
             <Header />
             <DonationList />
+            <ThisMonthChart />
         </Container>
     );
 };
