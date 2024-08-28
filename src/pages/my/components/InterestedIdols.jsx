@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import { useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
+import { MyStateContext } from '../MyPage';
 
-const InterestedIdols = ({ selectedIdols }) => {
-    const [idols, setIdols] = useState([...selectedIdols]);
-
+const InterestedIdols = () => {
+    const { selectedDatas, setSelectedDatas } = useContext(MyStateContext);
     const onDelete = (id) => {
-        const nextIdols = idols.filter((idol) => idol.id !== id);
-        setIdols(nextIdols);
+        const nextIdols = selectedDatas.filter((idol) => idol.id !== id);
+        setSelectedDatas(nextIdols);
     };
 
     return (
@@ -15,7 +15,7 @@ const InterestedIdols = ({ selectedIdols }) => {
             <h2>내가 관심있는 아이돌</h2>
 
             <InterestedIdolList>
-                {idols.map((idol) => {
+                {selectedDatas.map((idol) => {
                     return <IdolProfile key={idol.id} idol={idol} selected={true} onDelete={onDelete} />;
                 })}
             </InterestedIdolList>
