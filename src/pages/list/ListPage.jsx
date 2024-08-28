@@ -4,7 +4,6 @@ import ThisMonthChart from './components/ThisMonthChart';
 import Header from '../../components/Header';
 import DonationList from './components/DonationList';
 import styled from 'styled-components';
-import styled from 'styled-components';
 
 const ListPage = () => {
     return (
