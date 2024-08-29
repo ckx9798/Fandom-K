@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { getDonations } from '../../../api/donations';
 import DonationItem from './DonationItem';
@@ -22,11 +22,21 @@ const getPageSize = () => {
 const DonationList = () => {
     const [idols, setIdols] = useState([]);
     const [cursor, setCursor] = useState(0);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [hasNext, setHasNext] = useState(true);
     const [pageSize, setPageSize] = useState(getPageSize());
+    const cardListRef = useRef(null);
 
+    // 페이지 넘기기 버튼
+    const NextSlide = () => {
+        setPage((prev) => prev + 1);
+    };
+    const PrevSlide = () => {
+        setPage((prev) => prev - 1);
+    };
+
+    // 후원 목록 불러 오는 함수
     const loadMore = async () => {
         if (isLoading || !hasNext) return;
 
@@ -43,15 +53,11 @@ const DonationList = () => {
         setIsLoading(false);
     };
 
-    const nextPage = async () => {
-        setPage(page + 1);
-        loadMore();
-    };
-
     useEffect(() => {
         loadMore();
-    }, []);
+    }, [page]);
 
+    // 화면 크기 변경 시 pageSize변경
     useEffect(() => {
         const handleResize = () => {
             setPageSize(getPageSize());
@@ -62,32 +68,30 @@ const DonationList = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    // Carousel 작동
+    useEffect(() => {
+        const { current } = cardListRef;
+        const scrollAmount = current.offsetWidth + 24;
+        cardListRef.current.style.transform = `translateX(-${scrollAmount * page}px)`;
+    }, [page]);
+
     return (
         <Container>
             <h2>후원을 기다리는 조공</h2>
-            <button
-                className="button left"
-                disabled={page === 1 || pageSize !== 'pc'}
-                onClick={() => {
-                    setPage(page - 1);
-                }}
-            >
+            <button className="button left" disabled={page === 0 || pageSize !== 'pc'} onClick={PrevSlide}>
                 <img src={lefgBtnIcon} />
             </button>
-            <div className="cardList">
-                {pageSize === 'pc' &&
-                    idols.slice((page - 1) * PC_SIZE, page * PC_SIZE).map((item) => {
-                        return <DonationItem key={item.id} item={item} />;
-                    })}
-                {pageSize !== 'pc' &&
-                    idols.map((item) => {
+            <Carousel>
+                <div className="cardList" ref={cardListRef}>
+                    {idols.map((item) => {
                         return <DonationItem key={item.id} item={item} pageSize={pageSize} />;
                     })}
-            </div>
+                </div>
+            </Carousel>
             <button
                 className="button right"
-                disabled={page * PC_SIZE >= idols.length || pageSize !== 'pc'}
-                onClick={nextPage}
+                disabled={page + 1 >= idols.length / PC_SIZE || pageSize !== 'pc'}
+                onClick={NextSlide}
             >
                 <img src={rightBtnIcon} />
             </button>
@@ -127,11 +131,6 @@ const Container = styled.div`
             }
         }
     }
-    .cardList {
-        margin: 24px 0 0;
-        display: flex;
-        gap: 24px;
-    }
     p {
         color: var(--white200);
     }
@@ -144,6 +143,20 @@ const Container = styled.div`
                 right: 0px;
             }
         }
+    }
+    @media (max-width: 1280px) {
+        width: 100%;
+    }
+`;
+
+const Carousel = styled.div`
+    overflow: hidden;
+    .cardList {
+        margin: 24px 0 0;
+        display: flex;
+        gap: 24px;
+        transition: all 0.5s ease-in-out;
+        scroll-behavior: smooth;
     }
     @media (max-width: 1280px) {
         width: 100%;
