@@ -40,17 +40,21 @@ const DonationList = () => {
     const loadMore = async () => {
         if (isLoading || !hasNext) return;
 
-        setIsLoading(true);
-
-        const apiData = await getDonations({ cursor, pageSize: 8 });
-
-        if (apiData.list.length < 8) {
-            setHasNext(false);
+        try {
+            setIsLoading(true);
+            const apiData = await getDonations({ cursor, pageSize: 8 });
+            if (apiData.list.length < 8) {
+                setHasNext(false);
+            }
+            setIdols((prev) => [...prev, ...apiData.list]);
+            setCursor(apiData.nextCursor);
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.error('데이터 불러오기 에러', error);
+            }
+        } finally {
+            setIsLoading(false);
         }
-        setIdols((prev) => [...prev, ...apiData.list]);
-        setCursor(apiData.nextCursor);
-
-        setIsLoading(false);
     };
 
     useEffect(() => {
