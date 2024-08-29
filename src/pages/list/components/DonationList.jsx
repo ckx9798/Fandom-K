@@ -22,11 +22,14 @@ const getPageSize = () => {
 const DonationList = () => {
     const [idols, setIdols] = useState([]);
     const [cursor, setCursor] = useState(0);
-    const [page, setPage] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [hasNext, setHasNext] = useState(true);
     const [pageSize, setPageSize] = useState(getPageSize());
+    const [page, setPage] = useState(0);
     const cardListRef = useRef(null);
+
+    const [isDragging, setIsDragging] = useState(false); //
+    const [scrollLeft, setScrollLeft] = useState(0);
 
     // 페이지 넘기기 버튼
     const NextSlide = () => {
@@ -34,6 +37,22 @@ const DonationList = () => {
     };
     const PrevSlide = () => {
         setPage((prev) => prev - 1);
+    };
+
+    // 마우스 스크롤 이벤트
+    const handleMouseDown = (e) => {
+        setIsDragging(true);
+        setScrollLeft(cardListRef.current.scrollLeft);
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    const handleMouseMove = (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        cardListRef.current.scrollLeft = scrollLeft;
     };
 
     // 후원 목록 불러 오는 함수
@@ -85,7 +104,7 @@ const DonationList = () => {
             <button className="button left" disabled={page === 0 || pageSize !== 'pc'} onClick={PrevSlide}>
                 <img src={lefgBtnIcon} />
             </button>
-            <Carousel>
+            <Carousel onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}>
                 <div className="cardList" ref={cardListRef}>
                     {idols.map((item) => {
                         return <DonationItem key={item.id} item={item} pageSize={pageSize} />;
