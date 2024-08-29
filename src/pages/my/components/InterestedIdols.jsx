@@ -1,10 +1,24 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
 import { MyStateContext } from '../MyPage';
 
 const InterestedIdols = () => {
     const { selectedDatas, setSelectedDatas } = useContext(MyStateContext);
+
+    // 로컬스토리지에서 데이터를 불러오기
+    useEffect(() => {
+        const savedIdols = localStorage.getItem('selectedIdols');
+        if (savedIdols) {
+            setSelectedDatas(JSON.parse(savedIdols));
+        }
+    }, [setSelectedDatas]);
+
+    // 데이터가 변경될 때마다 로컬스토리지에 저장하기
+    useEffect(() => {
+        localStorage.setItem('selectedIdols', JSON.stringify(selectedDatas));
+    }, [selectedDatas]);
+
     const onDelete = (id) => {
         const nextIdols = selectedDatas.filter((idol) => idol.id !== id);
         setSelectedDatas(nextIdols);
