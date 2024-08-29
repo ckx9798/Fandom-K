@@ -63,20 +63,27 @@ const AddInterestedIdols = () => {
         }
     };
 
+    const genderBtnArr = [
+        { value: '', option: '', title: '전체 아이돌' },
+        { value: 'female', option: 'female', title: '여자 아이돌' },
+        { value: 'male', option: 'male', title: '남자 아이돌' },
+    ];
+
     return (
         <ContentWrapper>
             <ContentTitle>
                 <h2>관심 있는 아이돌을 추가해보세요.</h2>
                 <ContentNav>
-                    <GenderToggleButton onClick={handleChange} value="" isSelected={option === ''}>
-                        전체 아이돌
-                    </GenderToggleButton>
-                    <GenderToggleButton onClick={handleChange} value="female" isSelected={option === 'female'}>
-                        여자 아이돌
-                    </GenderToggleButton>
-                    <GenderToggleButton onClick={handleChange} value="male" isSelected={option === 'male'}>
-                        남자 아이돌
-                    </GenderToggleButton>
+                    {genderBtnArr.map((gender) => (
+                        <GenderToggleButton
+                            key={gender.value}
+                            onClick={handleChange}
+                            value={gender.value}
+                            isSelected={option === gender.option}
+                        >
+                            {gender.title}
+                        </GenderToggleButton>
+                    ))}
                 </ContentNav>
             </ContentTitle>
 
