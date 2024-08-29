@@ -1,42 +1,69 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import Button from '../../../components/Button.jsx';
 import chartImg from '../../../assets/image/Chart.svg';
 import IdolCard from './IdolCard.jsx';
 import GenderToggleButton from './GenderToggleButton.jsx';
 import VoteModal from '../../../components/modals/VoteModal.jsx';
+import { getCharts } from '../../../api/charts.js';
 
 const ThisMonthChart = () => {
-    // 아이돌 데이터 get해오기
     const [IdolData, setIdolData] = useState([]);
     const [IdolGender, setIdolGender] = useState('female');
     const [IdolDataNum, setIdolDataNum] = useState(10);
+    const [cursor, setCusor] = useState(null);
+
+    // 반응형 디자인
     useEffect(() => {
-        axios
-            .get(
-                `https://fandom-k-api.vercel.app/8-3/charts/${IdolGender}?gender=${IdolGender}&pageSize=${IdolDataNum}`,
-            )
-            .then((res) => {
-                setIdolData([...res.data.idols]);
-            })
-            .catch((err) => {
-                console.error('Idols get 오류', err);
+        const handleResize = () => {
+            if (window.innerWidth <= 1280) {
+                setIdolDataNum(5);
+            } else {
+                setIdolDataNum(10);
+            }
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+    });
+    // refresh가 있으면, IdolData 초기화
+    const loadIdolData = async (refresh) => {
+        try {
+            const response = await getCharts({
+                gender: IdolGender,
+                cursor: refresh ? null : cursor,
+                pageSize: IdolDataNum,
             });
-    }, [IdolDataNum, IdolGender]);
+            if (refresh) {
+                setIdolData(response.idols);
+            } else {
+                setIdolData((prevData) => [...prevData, ...response.idols]);
+            }
+            setCusor(response.nextCursor);
+        } catch (error) {
+            console.error('chart data 오류', error);
+        }
+    };
+    // IdolData 적용
+    useEffect(() => {
+        loadIdolData(true);
+    }, [IdolGender, IdolDataNum]);
+
     // 버튼으로 성별 바꾸기
     const changeGender = (e) => {
         setIdolGender(e.target.value);
-        setIdolDataNum(10);
-    };
-    // 더보기 누르면 데이터 10 추가
-    const loadMoreIdolData = () => {
-        setIdolDataNum(IdolDataNum + 10);
     };
     // 투표하기 모달창 열기
     const [isOpen, setIsOpen] = useState(false);
     const ViewVoteModalHandler = () => {
         setIsOpen(!isOpen);
+    };
+    // 더보기 버튼 제거
+    const ShowMoreBtn = () => {
+        if (cursor) {
+            return <ChartMoreBtn onClick={() => loadIdolData()}>더 보기</ChartMoreBtn>;
+        } else {
+            return <ChartMoreBtn className="inactive"> 보기</ChartMoreBtn>;
+        }
     };
 
     return (
@@ -44,7 +71,7 @@ const ThisMonthChart = () => {
             <ChartHeader>
                 <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
                 <Button width="128" height="32" border-radius="3" onClick={() => ViewVoteModalHandler()}>
-                    {isOpen === true ? <VoteModal /> : null}
+                    {isOpen === true ? <VoteModal idolList={IdolData} title={IdolGender} /> : null}
                     <img src={chartImg} alt="차트이미지" />
                     <span> 차트 투표하기 </span>
                 </Button>
@@ -64,11 +91,11 @@ const ThisMonthChart = () => {
                 />
             </ChartThisMonth>
             <ChartRankContainer>
-                {IdolData.map((item, i) => {
-                    return <IdolCard key={item.id} item={item} rank={i + 1} />;
-                })}
+                {IdolData.map((item, i) => (
+                    <IdolCard key={item.id} item={item} rank={i + 1} />
+                ))}
             </ChartRankContainer>
-            <ChartMoreBtn onClick={loadMoreIdolData}>더 보기</ChartMoreBtn>
+            <ShowMoreBtn />
         </ChartContainer>
     );
 };
@@ -78,11 +105,16 @@ export default ThisMonthChart;
 const ChartContainer = styled.div`
     width: 1200px;
     margin: 0 auto;
-    background-color: #02000e;
+    /* background-color: #02000e; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: 150px;
+
+    @media (max-width: 1280px) {
+        width: 95%;
+    }
 `;
 const ChartHeader = styled.div`
     width: 100%;
@@ -91,7 +123,7 @@ const ChartHeader = styled.div`
     Button {
         display: flex;
         align-items: center;
-        gap: 2px;
+        gap: 3px;
         font-size: 13px;
         padding: 2px 10px;
     }
@@ -119,12 +151,8 @@ const ChartThisMonth = styled.div`
     }
 
     .inactive {
-        width: 50%;
-        height: 42px;
-        padding: 12px;
-        color: #828282;
         background-color: inherit;
-        border: none;
+        color: var(--gray200);
     }
 `;
 const ChartRankContainer = styled.div`
@@ -134,6 +162,10 @@ const ChartRankContainer = styled.div`
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
     column-gap: 25px;
+
+    @media (max-width: 1280px) {
+        grid-template-columns: repeat(1, 1fr);
+    }
 `;
 
 const ChartMoreBtn = styled.div`
@@ -151,4 +183,8 @@ const ChartMoreBtn = styled.div`
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
+
+    &.inactive {
+        display: none;
+    }
 `;
