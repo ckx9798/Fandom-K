@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo } from 'react';
+import { useState, useContext, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
 import Button from '../../../components/Button';
@@ -6,17 +6,36 @@ import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyStateContext } from '../MyPage';
 
-const ITEMS_PER_PAGE = 16; // 페이지당 표시할 아이템 수
-
 const AddInterestedIdols = () => {
     const { datas, selectedDatas, setSelectedDatas } = useContext(MyStateContext);
     const [option, setOption] = useState('');
     const [checkedIdols, setCheckedIdols] = useState([]);
-    const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태
+    const [currentPage, setCurrentPage] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(16);
+
+    useEffect(() => {
+        const updateItemsPerPage = () => {
+            const width = window.innerWidth;
+            if (width <= 768) {
+                setItemsPerPage(6);
+            } else if (width <= 1280) {
+                setItemsPerPage(8);
+            } else {
+                setItemsPerPage(16);
+            }
+        };
+
+        updateItemsPerPage();
+        window.addEventListener('resize', updateItemsPerPage);
+
+        return () => {
+            window.removeEventListener('resize', updateItemsPerPage);
+        };
+    }, []);
 
     const handleChange = (e) => {
         setOption(e.target.value);
-        setCurrentPage(0); // 필터 변경 시 첫 페이지로 이동
+        setCurrentPage(0);
     };
 
     const handleAddClick = () => {
@@ -46,13 +65,13 @@ const AddInterestedIdols = () => {
 
     // 페이지네이션된 데이터 계산
     const paginatedDatas = useMemo(() => {
-        const startIndex = currentPage * ITEMS_PER_PAGE;
-        const endIndex = startIndex + ITEMS_PER_PAGE;
+        const startIndex = currentPage * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
         return sortedDatas.slice(startIndex, endIndex);
-    }, [sortedDatas, currentPage]);
+    }, [sortedDatas, currentPage, itemsPerPage]);
 
     const handleNextPage = () => {
-        if ((currentPage + 1) * ITEMS_PER_PAGE < sortedDatas.length) {
+        if ((currentPage + 1) * itemsPerPage < sortedDatas.length) {
             setCurrentPage(currentPage + 1);
         }
     };
@@ -68,6 +87,14 @@ const AddInterestedIdols = () => {
         { value: 'female', option: 'female', title: '여자 아이돌' },
         { value: 'male', option: 'male', title: '남자 아이돌' },
     ];
+
+    //모바일에서는 전체 데이터를 불러와야하기에 만듦.
+    const getIdolList = () => {
+        if (window.innerWidth <= 768) {
+            return sortedDatas;
+        }
+        return paginatedDatas;
+    };
 
     return (
         <ContentWrapper>
@@ -92,13 +119,14 @@ const AddInterestedIdols = () => {
                     <img src={arrowIcon} alt="이전" />
                 </CarouselButton>
                 <IdolList>
-                    {paginatedDatas.map((idol) => (
+                    {getIdolList().map((idol) => (
                         <IdolProfile key={idol.id} idol={idol} onCheck={handleCheck} />
                     ))}
                 </IdolList>
+
                 <CarouselButton
                     onClick={handleNextPage}
-                    disabled={(currentPage + 1) * ITEMS_PER_PAGE >= sortedDatas.length}
+                    disabled={(currentPage + 1) * itemsPerPage >= sortedDatas.length}
                 >
                     <RotatedIcon src={arrowIcon} alt="다음" />
                 </CarouselButton>
@@ -120,10 +148,15 @@ const ContentWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     padding-bottom: 81px;
+
+    @media (max-width: 1220px) {
+        padding: 0 24px;
+    }
 `;
 
 const ContentTitle = styled.div`
-    width: 1200px;
+    width: 100%;
+    max-width: 1200px;
     padding-top: 40px;
     display: flex;
     flex-direction: column;
@@ -152,12 +185,13 @@ const GenderToggleButton = styled.button`
 
 const CarouselPage = styled.div`
     width: 100%;
+    max-width: 1280px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 32px;
-    margin-bottom: 48px;
+    gap: 22px;
+    margin: 32px 0 48px;
 `;
 
 const CarouselButton = styled.button`
@@ -174,6 +208,10 @@ const CarouselButton = styled.button`
         opacity: 0.5;
         cursor: not-allowed;
     }
+
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
 
 const RotatedIcon = styled.img`
@@ -184,15 +222,24 @@ const IdolList = styled.div`
     display: grid;
     grid-template: 1fr 1fr / repeat(8, 1fr);
     gap: 24px;
-    width: 1200px;
-    height: 454px;
+    width: 100%;
+    max-width: 1200px;
+    justify-content: center;
+    align-content: center;
+    margin: 0 auto;
 
-    @media (max-width: 1200px) {
-        grid-template-columns: repeat(4, 1fr);
+    @media (max-width: 1280px) {
+        grid-template-columns: repeat(4, 128px);
     }
 
     @media (max-width: 768px) {
-        grid-template-columns: repeat(3, 1fr);
+        display: grid;
+        grid-template-columns: repeat(3, 98px);
+        grid-column-gap: 17px;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        height: 326px;
+        grid-auto-flow: column; // 열 방향으로 아이템 배치
     }
 `;
 
