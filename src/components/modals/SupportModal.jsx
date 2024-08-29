@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import ModalContainer from './ModalContainer';
 import Button from '../Button';
-import { ContentsBoxStyle, NumberInput, TitleStyle } from '../../styles/Modal';
+import { ContentsBoxStyle, DisabledBtn, NumberInput, TitleStyle } from '../../styles/Modal';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
 
@@ -49,6 +49,7 @@ const SupportModal = ({ item, setModalClose }) => {
             if (response) {
                 localStorage.setItem('credit', currentCredit - userDonation);
                 setUserDonation('');
+                setModalClose((prev) => !prev);
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -79,14 +80,14 @@ const SupportModal = ({ item, setModalClose }) => {
                 <DonationForm onSubmit={handleSubmit}>
                     <InputContainer>
                         <InputBox>
-                            <input
+                            <Input
                                 type="number"
                                 name="donation"
                                 value={userDonation}
                                 onChange={handleUserDonation}
                                 placeholder="크레딧 입력"
                             />
-                            <Input src={creditImg} alt="크레딧" />
+                            <img src={creditImg} alt="크레딧" />
                         </InputBox>
                         {error && <p>갖고 있는 크레딧보다 더 많이 후원할 수 없어요</p>}
                     </InputContainer>
@@ -176,13 +177,7 @@ const Input = styled(NumberInput)`
 
 const DonationBtn = styled(Button)`
     &:disabled {
-        cursor: default;
-        background: none;
-        background-color: var(--gray200);
-
-        &:hover {
-            opacity: 1;
-        }
+        ${DisabledBtn}
     }
 `;
 
