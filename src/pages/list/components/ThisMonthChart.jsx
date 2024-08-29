@@ -44,7 +44,7 @@ const ThisMonthChart = () => {
             <ChartHeader>
                 <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
                 <Button width="128" height="32" border-radius="3" onClick={() => ViewVoteModalHandler()}>
-                    {isOpen === true ? <VoteModal /> : null}
+                    {isOpen === true ? <VoteModal idolList={IdolData} title={IdolGender} setModalClose={setIsOpen} /> : null}
                     <img src={chartImg} alt="차트이미지" />
                     <span> 차트 투표하기 </span>
                 </Button>

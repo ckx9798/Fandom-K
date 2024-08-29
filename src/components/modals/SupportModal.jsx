@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import ModalContainer from './ModalContainer';
 import Button from '../Button';
-import { ContentsBoxStyle, DisabledBtn, NumberInput, TitleStyle } from '../../styles/Modal';
+import { ContentsBoxStyle, DisabledBtn, NumberInput, TitleStyle } from './ModalGlobalStyle';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
 
@@ -62,7 +62,7 @@ const SupportModal = ({ item, setModalClose }) => {
     };
 
     return (
-        <ModalContainer>
+        <ModalContainer handleModalClose={handleModalClose}>
             <ContentsBox>
                 <TitleStyle>
                     <h2>후원하기</h2>

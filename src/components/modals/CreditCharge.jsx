@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import ModalContainer from './ModalContainer';
 import styled from 'styled-components';
 import Button from '../Button';
-import { ContentsBoxStyle, DisabledBtn, NumberInput, TitleStyle } from '../../styles/Modal';
+import { ContentsBoxStyle, DisabledBtn, NumberInput, TitleStyle } from './ModalGlobalStyle';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
 
@@ -65,7 +65,7 @@ const CreditCharge = ({ setModalClose }) => {
     }, [chargeAmount, customCharge]);
 
     return (
-        <ModalContainer>
+        <ModalContainer handleModalClose={handleModalClose}>
             <ContentsBox>
                 <TitleStyle>
                     <h2>크레딧 충전하기</h2>

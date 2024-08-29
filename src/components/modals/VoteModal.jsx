@@ -4,7 +4,7 @@ import ModalContainer from './ModalContainer';
 import Button from '../Button';
 import AlarmModal from './AlarmModal';
 import { postVotes } from '../../api/votes';
-import { ContentsBoxStyle, DisabledBtn, TitleStyle } from '../../styles/Modal';
+import { ContentsBoxStyle, DisabledBtn, TitleStyle } from './ModalGlobalStyle';
 import { useState } from 'react';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import mobileArrow from '../../assets/icon/icj_arrow_left.svg';
@@ -71,7 +71,7 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
     };
 
     return (
-        <ModalContainer>
+        <ModalContainer handleModalClose={handleModalClose}>
             <ContentsBox>
                 <Title>
                     <MobileCloseBtn onClick={handleModalClose}>
