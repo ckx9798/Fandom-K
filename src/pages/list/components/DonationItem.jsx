@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Button from '../../../components/Button';
 import { dDay } from '../../../utils/dDay';
 import SupportModal from '../../../components/modals/SupportModal';
+import creditImg from '../../../assets/icon/credit.svg';
 
 const DonationItem = ({ item, pageSize }) => {
     const [modalClose, setModalClose] = useState(false);
@@ -28,6 +29,7 @@ const DonationItem = ({ item, pageSize }) => {
             <p className="title">{item.title}</p>
             <div className="donation">
                 <p className="received">
+                    <img src={creditImg} alt="크레딧" />
                     {item.receivedDonations?.toLocaleString('ko-KR')} / {item.targetDonation?.toLocaleString('ko-KR')}
                 </p>
                 <p className="dDay">{dDay(item.deadline)}</p>
@@ -49,6 +51,7 @@ const StyledCard = styled.div`
             width: 282px;
             height: 293px;
             object-fit: cover;
+            border-radius: 8px;
         }
         .overlay {
             position: absolute;
@@ -81,6 +84,10 @@ const StyledCard = styled.div`
         font-size: 12px;
         .received {
             color: var(--brand100);
+            img {
+                height: 16px;
+                float: left;
+            }
         }
         .dDay {
             color: var(--white200);
