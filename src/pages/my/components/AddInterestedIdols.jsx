@@ -106,7 +106,7 @@ const AddInterestedIdols = () => {
                             key={gender.value}
                             onClick={handleChange}
                             value={gender.value}
-                            isSelected={option === gender.option}
+                            selected={option === gender.option}
                         >
                             {gender.title}
                         </GenderToggleButton>
@@ -173,14 +173,14 @@ const ContentNav = styled.div`
 const GenderToggleButton = styled.button`
     flex: 1;
     text-align: center;
-    background-color: ${(props) => (props.isSelected === false ? '#02000e' : '#ffffff1a')};
+    background-color: ${(props) => (props.selected === false ? '#02000e' : '#ffffff1a')};
     padding: 12px;
     border: none;
-    border-bottom: ${(props) => (props.isSelected === false ? 'none' : '1px solid #fff')};
+    border-bottom: ${(props) => (props.selected === false ? 'none' : '1px solid #fff')};
 
     font-size: 14px;
     line-height: 18px;
-    color: ${(props) => (props.isSelected === false ? '#828282' : '#fff')};
+    color: ${(props) => (props.selected === false ? '#828282' : '#fff')};
 `;
 
 const CarouselPage = styled.div`
