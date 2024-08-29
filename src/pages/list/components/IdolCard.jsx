@@ -17,6 +17,13 @@ function IdolCard({ item, rank }) {
 
 export default IdolCard;
 
+const Text = styled.div`
+    font-family: 'Pretendard-Regular', sans-serif;
+    font-size: 16px;
+    font-weight: ${(props) => props.fontWeight || 500};
+    color: ${(props) => props.color};
+`;
+
 const IdolCardBox = styled.div`
     display: flex;
     justify-content: space-between;
@@ -42,23 +49,19 @@ const IdolCardProfileImg = styled.div`
         width: 60px;
         height: 60px;
         border-radius: 50%;
+        object-fit: cover;
     }
 `;
-const IdolCardRank = styled.div`
-    font-size: 16px;
+const IdolCardRank = styled(Text)`
     font-weight: 400;
     color: #f96d69;
 `;
-const IdolCardName = styled.div`
-    font-size: 16px;
-    font-weight: 500;
+const IdolCardName = styled(Text)`
     color: rgba(255, 255, 255, 0.87);
 `;
-const IdolCardVotes = styled.div`
+const IdolCardVotes = styled(Text)`
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 16px;
-    font-weight: 500;
     color: rgba(255, 255, 255, 0.6);
 `;

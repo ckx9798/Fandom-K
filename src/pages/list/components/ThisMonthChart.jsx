@@ -91,9 +91,9 @@ const ThisMonthChart = () => {
                 />
             </ChartThisMonth>
             <ChartRankContainer>
-                {IdolData.map((item, i) => {
-                    return <IdolCard key={item.id} item={item} rank={i + 1} />;
-                })}
+                {IdolData.map((item, i) => (
+                    <IdolCard key={item.id} item={item} rank={i + 1} />
+                ))}
             </ChartRankContainer>
             <ShowMoreBtn />
         </ChartContainer>
@@ -105,7 +105,7 @@ export default ThisMonthChart;
 const ChartContainer = styled.div`
     width: 1200px;
     margin: 0 auto;
-    background-color: #02000e;
+    /* background-color: #02000e; */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -123,7 +123,7 @@ const ChartHeader = styled.div`
     Button {
         display: flex;
         align-items: center;
-        gap: 2px;
+        gap: 3px;
         font-size: 13px;
         padding: 2px 10px;
     }
@@ -151,12 +151,8 @@ const ChartThisMonth = styled.div`
     }
 
     .inactive {
-        width: 50%;
-        height: 42px;
-        padding: 12px;
-        color: #828282;
         background-color: inherit;
-        border: none;
+        color: var(--gray200);
     }
 `;
 const ChartRankContainer = styled.div`
