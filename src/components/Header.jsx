@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 import logo from '../assets/image/logo.svg';
 import userProfileImg from '../assets/image/userProfile.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+    const nav = useNavigate();
+
     const handleRefresh = () => {
         window.location.reload();
     };
@@ -12,7 +15,7 @@ const Header = () => {
             <RefreshButton onClick={handleRefresh}>
                 <Logo src={logo} alt="FANDOM-K 로고" />
             </RefreshButton>
-            <UserProfile src={userProfileImg} alt="유저 프로필 이미지" />
+            <UserProfile src={userProfileImg} alt="유저 프로필 이미지" onClick={() => nav('/my')} />
         </StyledHeader>
     );
 };
@@ -64,6 +67,7 @@ const UserProfile = styled.img`
     border-radius: 125px;
     position: absolute;
     right: 0px;
+    cursor: pointer;
 `;
 
 const RefreshButton = styled.button`

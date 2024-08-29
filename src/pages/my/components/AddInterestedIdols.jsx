@@ -186,7 +186,14 @@ const IdolList = styled.div`
     gap: 24px;
     width: 1200px;
     height: 454px;
-    overflow: hidden;
+
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
 `;
 
 const ButtonInner = styled.div`
