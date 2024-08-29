@@ -8,12 +8,23 @@ import VoteModal from '../../../components/modals/VoteModal.jsx';
 import { getCharts } from '../../../api/charts.js';
 
 const ThisMonthChart = () => {
-    // 아이돌 데이터 get해오기
     const [IdolData, setIdolData] = useState([]);
     const [IdolGender, setIdolGender] = useState('female');
     const [IdolDataNum, setIdolDataNum] = useState(10);
     const [cursor, setCusor] = useState(null);
 
+    // 반응형 디자인
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 1280) {
+                setIdolDataNum(5);
+            } else {
+                setIdolDataNum(10);
+            }
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+    });
     // refresh가 있으면, IdolData 초기화
     const loadIdolData = async (refresh) => {
         try {
@@ -32,31 +43,29 @@ const ThisMonthChart = () => {
             console.error('chart data 오류', error);
         }
     };
-
+    // IdolData 적용
     useEffect(() => {
         loadIdolData(true);
-    }, [IdolGender]);
+    }, [IdolGender, IdolDataNum]);
 
     // 버튼으로 성별 바꾸기
     const changeGender = (e) => {
         setIdolGender(e.target.value);
-        // setCusor(null);
     };
-
     // 투표하기 모달창 열기
     const [isOpen, setIsOpen] = useState(false);
     const ViewVoteModalHandler = () => {
         setIsOpen(!isOpen);
     };
-
-    // 더보기 버튼 마지막 데이터에 변경
+    // 더보기 버튼 제거
     const ShowMoreBtn = () => {
         if (cursor) {
             return <ChartMoreBtn onClick={() => loadIdolData()}>더 보기</ChartMoreBtn>;
         } else {
-            return null;
+            return <ChartMoreBtn className="inactive"> 보기</ChartMoreBtn>;
         }
     };
+
     return (
         <ChartContainer>
             <ChartHeader>
@@ -101,6 +110,11 @@ const ChartContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: 150px;
+
+    @media (max-width: 1280px) {
+        width: 95%;
+    }
 `;
 const ChartHeader = styled.div`
     width: 100%;
@@ -152,6 +166,10 @@ const ChartRankContainer = styled.div`
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
     column-gap: 25px;
+
+    @media (max-width: 1280px) {
+        grid-template-columns: repeat(1, 1fr);
+    }
 `;
 
 const ChartMoreBtn = styled.div`
@@ -169,4 +187,8 @@ const ChartMoreBtn = styled.div`
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
+
+    &.inactive {
+        display: none;
+    }
 `;
