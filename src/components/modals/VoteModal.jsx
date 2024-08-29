@@ -84,7 +84,7 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
                 </Title>
                 <VoteForm onSubmit={handleVote}>
                     {sortIdol?.length > 0 ? (
-                        sortIdol.map((idol) => (
+                        sortIdol.map((idol, i) => (
                             <FormWrapper key={idol.id}>
                                 <IdolVoteInfo>
                                     <ImgBox>
@@ -100,7 +100,7 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
                                         />
                                         <CheckBackground selected={Number(voteIdol) === idol.id} />
                                     </ImgBox>
-                                    <IdolNumber>{idol.id}</IdolNumber>
+                                    <IdolNumber>{i + 1}</IdolNumber>
                                     <CurrentVoteBox>
                                         <h3>
                                             {idol.group} {idol.name}
@@ -134,6 +134,7 @@ export default VoteModal;
 
 const ContentsBox = styled(ContentsBoxStyle)`
     width: 525px;
+    max-height: 693px;
 
     @media (min-width: 375px) and (max-width: 767px) {
         width: 100vh;
@@ -181,10 +182,13 @@ const VoteForm = styled.form`
     flex-direction: column;
     gap: 8px;
     width: 477px;
+    overflow: auto;
+    padding: 8px 5px;
     margin: auto;
     margin-top: 0;
     @media (min-width: 375px) and (max-width: 767px) {
         width: 327px;
+        padding-bottom: 60px;
     }
 `;
 
@@ -280,6 +284,9 @@ const VoteBtnBox = styled.div`
     gap: 10px;
 
     @media (min-width: 375px) and (max-width: 767px) {
+        position: fixed;
+        bottom: 20px;
+        left: 0;
         background-color: rgba(2, 0, 14, 0.8);
     }
 `;

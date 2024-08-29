@@ -13,7 +13,7 @@ const CreditCharge = ({ setModalClose }) => {
     const [chargeAmount, setChargeAmount] = useState(0);
     const [customCharge, setCustomCharge] = useState('');
     const [error, setError] = useState(false);
-    
+
     // 모달창 닫는 함수
     const handleModalClose = () => {
         setModalClose((prev) => !prev);

@@ -4,8 +4,8 @@ import creditImg from '../../assets/icon/credit.svg';
 import CreditCharge from '../modals/CreditCharge';
 
 const CreditStatus = () => {
-    const [modalClose, setModalClose] = useState(false);
-
+    const [modalClose, setModalClose] = useState(true);
+    
     const handleChargeModal = () => {
         setModalClose((prev) => !prev);
     };
@@ -22,7 +22,7 @@ const CreditStatus = () => {
                 </MyCreditAmount>
             </MyCreditBox>
             <ChargeBtn onClick={handleChargeModal}>충전하기</ChargeBtn>
-            {modalClose && <CreditCharge setModalClose={setModalClose} />}
+            {!modalClose && <CreditCharge setModalClose={setModalClose} />}
         </Container>
     );
 };
