@@ -47,6 +47,7 @@ const IdolCard = styled.div`
 const IdolImg = styled.img`
     width: ${(props) => (props.selected === false ? '128px' : '100px')};
     height: ${(props) => (props.selected === false ? '128px' : '100px')};
+    object-fit: cover;
     padding: 7.15px;
     border-radius: 50%;
     z-index: -1;

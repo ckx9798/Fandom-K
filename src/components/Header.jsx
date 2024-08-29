@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import logo from '../assets/image/logo.svg';
 import userProfileImg from '../assets/image/userProfile.jpg';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
     const handleRefresh = () => {
@@ -12,7 +13,9 @@ const Header = () => {
             <RefreshButton onClick={handleRefresh}>
                 <Logo src={logo} alt="FANDOM-K 로고" />
             </RefreshButton>
-            <UserProfile src={userProfileImg} alt="유저 프로필 이미지" />
+            <Link to="/my">
+                <UserProfile src={userProfileImg} alt="유저 프로필 이미지" />
+            </Link>
         </StyledHeader>
     );
 };

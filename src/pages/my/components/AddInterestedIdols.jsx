@@ -6,12 +6,13 @@ import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyStateContext } from '../MyPage';
 
-const AddInterestedIdols = () => {
+const ITEMS_PER_PAGE = 16; // 페이지당 표시할 아이템 수
+
+const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
     const { datas, selectedDatas, setSelectedDatas } = useContext(MyStateContext);
     const [option, setOption] = useState('');
     const [checkedIdols, setCheckedIdols] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
 
     const handleChange = (e) => {
         setOption(e.target.value);
@@ -20,6 +21,7 @@ const AddInterestedIdols = () => {
 
     const handleAddClick = () => {
         setSelectedDatas([...selectedDatas, ...checkedIdols]);
+        loadMore(checkedIdols.length);
         setCheckedIdols([]);
     };
 
@@ -31,10 +33,10 @@ const AddInterestedIdols = () => {
         }
     };
 
-    //성별 옵션을 선택하여 선택된 성별만 렌더링
     const sortedDatas = useMemo(() => {
         let filteredDatas = datas;
 
+        // 선택된 옵션에 따른 필터링
         if (option !== '') {
             filteredDatas = filteredDatas.filter((item) => item.gender === option);
         }
@@ -42,45 +44,61 @@ const AddInterestedIdols = () => {
         return filteredDatas.filter((item) => !selectedDatas.some((selected) => selected.id === item.id));
     }, [datas, option, selectedDatas]);
 
+    const paginatedDatas = useMemo(() => {
+        const startIndex = currentPage * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        return sortedDatas.slice(startIndex, endIndex);
+    }, [sortedDatas, currentPage]);
+
     const handleNextPage = () => {
-        if (currentPage < totalPages - 1) {
-            setCurrentPage((prevPage) => prevPage + 1);
+        if ((currentPage + 1) * ITEMS_PER_PAGE < sortedDatas.length) {
+            setCurrentPage(currentPage + 1);
         }
     };
 
     const handlePrevPage = () => {
         if (currentPage > 0) {
-            setCurrentPage((prevPage) => prevPage - 1);
+            setCurrentPage(currentPage - 1);
         }
     };
+
+    const genderBtnArr = [
+        { value: '', option: '', title: '전체 아이돌' },
+        { value: 'female', option: 'female', title: '여자 아이돌' },
+        { value: 'male', option: 'male', title: '남자 아이돌' },
+    ];
 
     return (
         <ContentWrapper>
             <ContentTitle>
                 <h2>관심 있는 아이돌을 추가해보세요.</h2>
                 <ContentNav>
-                    <GenderToggleButton onClick={handleChange} value="" isSelected={option === ''}>
-                        전체 아이돌
-                    </GenderToggleButton>
-                    <GenderToggleButton onClick={handleChange} value="female" isSelected={option === 'female'}>
-                        여자 아이돌
-                    </GenderToggleButton>
-                    <GenderToggleButton onClick={handleChange} value="male" isSelected={option === 'male'}>
-                        남자 아이돌
-                    </GenderToggleButton>
+                    {genderBtnArr.map((gender) => (
+                        <GenderToggleButton
+                            key={gender.value}
+                            onClick={handleChange}
+                            value={gender.value}
+                            $isSelected={option === gender.option}
+                        >
+                            {gender.title}
+                        </GenderToggleButton>
+                    ))}
                 </ContentNav>
             </ContentTitle>
 
             <CarouselPage>
-                <CarouselButton onClick={handlePrevPage} disabled={currentPage === 0}>
+                <CarouselButton onClick={handlePrevPage} disabled={isLoading || currentPage === 0}>
                     <img src={arrowIcon} alt="이전" />
                 </CarouselButton>
                 <IdolList>
-                    {sortedDatas.map((idol) => (
+                    {paginatedDatas.map((idol) => (
                         <IdolProfile key={idol.id} idol={idol} onCheck={handleCheck} />
                     ))}
                 </IdolList>
-                <CarouselButton onClick={handleNextPage} disabled={currentPage >= totalPages - 1}>
+                <CarouselButton
+                    onClick={handleNextPage}
+                    disabled={isLoading || (currentPage + 1) * ITEMS_PER_PAGE >= sortedDatas.length}
+                >
                     <RotatedIcon src={arrowIcon} alt="다음" />
                 </CarouselButton>
             </CarouselPage>
@@ -121,21 +139,21 @@ const ContentNav = styled.div`
 const GenderToggleButton = styled.button`
     flex: 1;
     text-align: center;
-    background-color: ${(props) => (props.isSelected === false ? '#02000e' : '#ffffff1a')};
+    background-color: ${(props) => (props.$isSelected === false ? '#02000e' : '#ffffff1a')};
     padding: 12px;
     border: none;
-    border-bottom: ${(props) => (props.isSelected === false ? 'none' : '1px solid #fff')};
+    border-bottom: ${(props) => (props.$isSelected === false ? 'none' : '1px solid #fff')};
 
     font-size: 14px;
     line-height: 18px;
-    color: ${(props) => (props.isSelected === false ? '#828282' : '#fff')};
+    color: ${(props) => (props.$isSelected === false ? '#828282' : '#fff')};
 `;
 
 const CarouselPage = styled.div`
-    width: 1280px;
+    width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: 32px;
     margin-bottom: 48px;
@@ -167,7 +185,6 @@ const IdolList = styled.div`
     gap: 24px;
     width: 1200px;
     height: 454px;
-    overflow: hidden;
 `;
 
 const ButtonInner = styled.div`

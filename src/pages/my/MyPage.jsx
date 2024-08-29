@@ -12,36 +12,52 @@ const MyPage = () => {
     const [datas, setDatas] = useState([]);
     const [selectedDatas, setSelectedDatas] = useState([]);
     const [cursor, setCursor] = useState(null);
+    const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
 
+    // 초기 데이터 로딩 (2페이지-32개)
     useEffect(() => {
         const fetchData = async () => {
-            let result;
             try {
-                result = await getIdols({ cursor, pageSize: 10 });
+                setIsLoading(true);
+                let result = await getIdols({ cursor, pageSize: 32 });
+                if (!cursor) {
+                    setDatas(result.list);
+                }
+                setCursor(result.nextCursor);
             } catch (error) {
-                console.error(error);
+                console.error('데이터 로딩 오류:', error);
                 return;
+            } finally {
+                setIsLoading(false);
             }
-            if (!cursor) {
-                setDatas(result.list);
-            } else {
-                setDatas((prevData) => [...prevData, ...response.list]);
-            }
-            setCursor(response.nextCursor);
         };
 
         fetchData();
-    }, [cursor]);
+    }, []);
+
+    const handleLoadMoreClick = async (itemsToLoad) => {
+        if (!cursor) return; // cursor가 없으면 더 이상 요청하지 않음
+
+        try {
+            setIsLoading(true);
+            const result = await getIdols({ cursor, pageSize: itemsToLoad });
+            setDatas((prevDatas) => [...prevDatas, ...result.list]);
+            setCursor(result.nextCursor); // 다음 cursor로 업데이트
+        } catch (error) {
+            console.error('추가 데이터 로딩 오류:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
-        <MyStateContext.Provider value={{ datas, selectedDatas }}>
-            <StyledMyPage>
-                <Header />
-
-                <InterestedIdols selectedIdols={selectedDatas} />
-                <AddInterestedIdols />
-            </StyledMyPage>
-        </MyStateContext.Provider>
+        <StyledMyPage>
+            <Header />
+            <MyStateContext.Provider value={{ datas, selectedDatas, setSelectedDatas }}>
+                <InterestedIdols />
+                <AddInterestedIdols cursor={cursor} isLoading={isLoading} loadMore={handleLoadMoreClick} />
+            </MyStateContext.Provider>
+        </StyledMyPage>
     );
 };
 
