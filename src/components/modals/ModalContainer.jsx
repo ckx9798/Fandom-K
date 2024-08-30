@@ -2,12 +2,8 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 
-const ModalContainer = ({ children }) => {
+const ModalContainer = ({ children, handleModalClose }) => {
     const [modalClose, setModalClose] = useState(false);
-    
-    const handleModalClose = () => {
-        setModalClose(true);
-    };
     
     const handleModalClick = (e) => {
         if (e.target === e.currentTarget) {
