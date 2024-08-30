@@ -35,4 +35,5 @@ const IdolWrapper = styled.div`
 const InterestedIdolList = styled.div`
     display: flex;
     gap: 24px;
+    overflow: hidden;
 `;

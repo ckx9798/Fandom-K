@@ -14,12 +14,12 @@ const MyPage = () => {
     const [cursor, setCursor] = useState(null);
     const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
 
-    // 초기 데이터 로딩 (2페이지-32개)
+    // 초기 데이터 로딩
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setIsLoading(true);
-                let result = await getIdols({ cursor, pageSize: 32 });
+                let result = await getIdols({ cursor, pageSize: 16 });
                 if (!cursor) {
                     setDatas(result.list);
                 }
