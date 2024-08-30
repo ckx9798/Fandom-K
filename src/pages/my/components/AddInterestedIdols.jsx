@@ -241,11 +241,13 @@ const IdolList = styled.div`
 
     @media (max-width: 768px) {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, 98px);
         grid-column-gap: 17px;
         overflow-x: scroll;
         overflow-y: hidden;
+        width: 328px;
         height: 326px;
+        justify-content: start;
         grid-auto-flow: column; // 열 방향으로 아이템 배치
     }
 
