@@ -28,11 +28,15 @@ const InterestedIdols = () => {
         <IdolWrapper>
             <h2>내가 관심있는 아이돌</h2>
 
-            <InterestedIdolList>
-                {selectedDatas.map((idol) => {
-                    return <IdolProfile key={idol.id} idol={idol} selected={true} onDelete={onDelete} />;
-                })}
-            </InterestedIdolList>
+            {selectedDatas.length > 0 ? (
+                <InterestedIdolList>
+                    {selectedDatas.map((idol) => {
+                        return <IdolProfile key={idol.id} idol={idol} selected={true} onDelete={onDelete} />;
+                    })}
+                </InterestedIdolList>
+            ) : (
+                <EmptyMessage>관심있는 아이돌을 추가해주세요!</EmptyMessage>
+            )}
         </IdolWrapper>
     );
 };
@@ -75,4 +79,11 @@ const InterestedIdolList = styled.div`
         gap: 0;
         flex-wrap: nowrap;
     }
+`;
+
+const EmptyMessage = styled.p`
+    margin: 32px 0;
+    font-size: 18px;
+    color: #ffffff;
+    text-align: center;
 `;
