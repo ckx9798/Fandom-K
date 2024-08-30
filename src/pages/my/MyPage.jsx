@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Header from '../../components/Header';
 import InterestedIdols from './components/InterestedIdols';
@@ -10,6 +10,7 @@ export const MyStateContext = createContext();
 
 const MyPage = () => {
     const [datas, setDatas] = useState([]);
+    const [checkedIdols, setCheckedIdols] = useState([]);
     const [selectedDatas, setSelectedDatas] = useState([]);
     const [cursor, setCursor] = useState(null);
     const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
@@ -19,7 +20,7 @@ const MyPage = () => {
         const fetchData = async () => {
             try {
                 setIsLoading(true);
-                let result = await getIdols({ cursor, pageSize: 16 });
+                let result = await getIdols({ cursor, pageSize: 32 });
                 if (!cursor) {
                     setDatas(result.list);
                 }
@@ -53,7 +54,7 @@ const MyPage = () => {
     return (
         <StyledMyPage>
             <Header />
-            <MyStateContext.Provider value={{ datas, selectedDatas, setSelectedDatas }}>
+            <MyStateContext.Provider value={{ datas, selectedDatas, setSelectedDatas, checkedIdols, setCheckedIdols }}>
                 <InterestedIdols />
                 <AddInterestedIdols cursor={cursor} isLoading={isLoading} loadMore={handleLoadMoreClick} />
             </MyStateContext.Provider>
@@ -69,20 +70,5 @@ const StyledMyPage = styled.div`
         font-weight: 700;
         font-size: 24px;
         line-height: 26px;
-    }
-`;
-
-const LoadMoreButton = styled.button`
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #ffffff;
-    background-color: #1b1b1b;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-
-    &:hover {
-        background-color: #333;
     }
 `;

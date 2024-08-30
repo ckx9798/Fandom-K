@@ -6,13 +6,11 @@ import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyStateContext } from '../MyPage';
 
-const ITEMS_PER_PAGE = 16; // 페이지당 표시할 아이템 수
-
 const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
-    const { datas, selectedDatas, setSelectedDatas } = useContext(MyStateContext);
+    const { datas, selectedDatas, setSelectedDatas, checkedIdols, setCheckedIdols } = useContext(MyStateContext);
     const [option, setOption] = useState('');
-    const [checkedIdols, setCheckedIdols] = useState([]);
-    const [currentPage, setCurrentPage] = useState(0);
+
+    const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(16);
 
     useEffect(() => {
@@ -37,7 +35,7 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
 
     const handleChange = (e) => {
         setOption(e.target.value);
-        setCurrentPage(0);
+        setCurrentPage(1);
     };
 
     const handleAddClick = () => {
@@ -68,19 +66,23 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
 
     // 페이지네이션된 데이터 계산
     const paginatedDatas = useMemo(() => {
-        const startIndex = currentPage * itemsPerPage;
+        const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         return sortedDatas.slice(startIndex, endIndex);
     }, [sortedDatas, currentPage, itemsPerPage]);
 
     const handleNextPage = () => {
-        if ((currentPage + 1) * itemsPerPage < sortedDatas.length) {
-            setCurrentPage(currentPage + 1);
+        // loadMore(16);
+
+        let itemsLeft = sortedDatas.length - currentPage * itemsPerPage;
+        if (itemsLeft <= 16 && itemsLeft > 0) {
+            loadMore(itemsLeft);
         }
+        setCurrentPage(currentPage + 1);
     };
 
     const handlePrevPage = () => {
-        if (currentPage > 0) {
+        if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
         }
     };
@@ -98,6 +100,8 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
         }
         return paginatedDatas;
     };
+
+    const isDisabled = currentPage * itemsPerPage >= sortedDatas.length;
 
     return (
         <ContentWrapper>
@@ -118,19 +122,21 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
             </ContentTitle>
 
             <CarouselPage>
-                <CarouselButton onClick={handlePrevPage} disabled={isLoading || currentPage === 0}>
+                <CarouselButton onClick={handlePrevPage} disabled={currentPage === 1}>
                     <img src={arrowIcon} alt="이전" />
                 </CarouselButton>
                 <IdolList>
-                    {paginatedDatas.map((idol) => (
-                        <IdolProfile key={idol.id} idol={idol} onCheck={handleCheck} />
+                    {getIdolList().map((idol) => (
+                        <IdolProfile
+                            key={idol.id}
+                            idol={idol}
+                            onCheck={handleCheck}
+                            checked={checkedIdols.some((checkedIdol) => checkedIdol.id === idol.id)}
+                        />
                     ))}
                 </IdolList>
 
-                <CarouselButton
-                    onClick={handleNextPage}
-                    disabled={isLoading || (currentPage + 1) * itemsPerPage >= sortedDatas.length}
-                >
+                <CarouselButton onClick={handleNextPage} disabled={isDisabled}>
                     <RotatedIcon src={arrowIcon} alt="다음" />
                 </CarouselButton>
             </CarouselPage>
@@ -227,8 +233,9 @@ const IdolList = styled.div`
     gap: 24px;
     width: 100%;
     max-width: 1200px;
+    place-items: center; /* 그리드 아이템을 셀의 중앙에 배치 */
     justify-content: center;
-    align-content: center;
+
     margin: 0 auto;
 
     @media (max-width: 1280px) {
@@ -237,7 +244,7 @@ const IdolList = styled.div`
 
     @media (max-width: 768px) {
         display: grid;
-        grid-template-columns: repeat(3, 98px);
+        grid-template-columns: repeat(3, 1fr);
         grid-column-gap: 17px;
         overflow-x: scroll;
         overflow-y: hidden;
