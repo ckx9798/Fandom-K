@@ -97,6 +97,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
         return paginatedDatas;
     };
 
+    // 마지막 페이지에서 버튼 비활성화
     const isDisabled = !cursor && currentPage * itemsPerPage >= sortedDatas.length;
 
     return (

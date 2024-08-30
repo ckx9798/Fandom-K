@@ -32,13 +32,7 @@ const MyPage = () => {
                     result = await getCharts({ gender: option, cursor, pageSize: 16 + selectedCount });
                     setDatas(result.idols);
                 }
-
-                if (result && (result.list || result.idols)) {
-                    setCursor(result.nextCursor);
-                } else {
-                    console.error('API 결과가 예상과 다릅니다:', result);
-                    setDatas([]); // 기본값 설정
-                }
+                setCursor(result.nextCursor);
             } catch (error) {
                 console.error('데이터 로딩 오류:', error);
                 setDatas([]);
@@ -64,7 +58,6 @@ const MyPage = () => {
                 result = await getCharts({ gender: option, cursor, pageSize: itemsToLoad });
                 setDatas((prevDatas) => [...prevDatas, ...result.idols]);
             }
-
             setCursor(result.nextCursor); // 다음 cursor로 업데이트
         } catch (error) {
             console.error('추가 데이터 로딩 오류:', error);
