@@ -241,6 +241,15 @@ const IdolList = styled.div`
         height: 326px;
         grid-auto-flow: column; // 열 방향으로 아이템 배치
     }
+
+    /* 스크롤 바 숨기기 */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+
+    /* Chrome, Safari, Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
 `;
 
 const ButtonInner = styled.div`
