@@ -6,10 +6,10 @@ import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyStateContext } from '../MyPage';
 
-const AddInterestedIdols = () => {
-    const { datas, selectedDatas, setSelectedDatas } = useContext(MyStateContext);
+const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
+    const { datas, selectedDatas, setSelectedDatas, checkedIdols, setCheckedIdols } = useContext(MyStateContext);
     const [option, setOption] = useState('');
-    const [checkedIdols, setCheckedIdols] = useState([]);
+
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(16);
 
@@ -40,6 +40,7 @@ const AddInterestedIdols = () => {
 
     const handleAddClick = () => {
         setSelectedDatas([...selectedDatas, ...checkedIdols]);
+        loadMore(checkedIdols.length);
         setCheckedIdols([]);
     };
 
@@ -115,18 +116,23 @@ const AddInterestedIdols = () => {
             </ContentTitle>
 
             <CarouselPage>
-                <CarouselButton onClick={handlePrevPage} disabled={currentPage === 0}>
+                <CarouselButton onClick={handlePrevPage} disabled={isLoading || currentPage === 0}>
                     <img src={arrowIcon} alt="이전" />
                 </CarouselButton>
                 <IdolList>
                     {getIdolList().map((idol) => (
-                        <IdolProfile key={idol.id} idol={idol} onCheck={handleCheck} />
+                        <IdolProfile
+                            key={idol.id}
+                            idol={idol}
+                            onCheck={handleCheck}
+                            checked={checkedIdols.some((checkedIdol) => checkedIdol.id === idol.id)}
+                        />
                     ))}
                 </IdolList>
 
                 <CarouselButton
                     onClick={handleNextPage}
-                    disabled={(currentPage + 1) * itemsPerPage >= sortedDatas.length}
+                    disabled={isLoading || (currentPage + 1) * itemsPerPage >= sortedDatas.length}
                 >
                     <RotatedIcon src={arrowIcon} alt="다음" />
                 </CarouselButton>
@@ -224,8 +230,9 @@ const IdolList = styled.div`
     gap: 24px;
     width: 100%;
     max-width: 1200px;
+    place-items: center; /* 그리드 아이템을 셀의 중앙에 배치 */
     justify-content: center;
-    align-content: center;
+
     margin: 0 auto;
 
     @media (max-width: 1280px) {
@@ -234,7 +241,7 @@ const IdolList = styled.div`
 
     @media (max-width: 768px) {
         display: grid;
-        grid-template-columns: repeat(3, 98px);
+        grid-template-columns: repeat(3, 1fr);
         grid-column-gap: 17px;
         overflow-x: scroll;
         overflow-y: hidden;
