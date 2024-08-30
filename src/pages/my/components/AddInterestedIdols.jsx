@@ -155,7 +155,7 @@ const ContentWrapper = styled.div`
     align-items: center;
     padding-bottom: 81px;
 
-    @media (max-width: 1220px) {
+    @media (max-width: 1280px) {
         padding: 0 24px;
     }
 `;
@@ -166,6 +166,13 @@ const ContentTitle = styled.div`
     padding-top: 40px;
     display: flex;
     flex-direction: column;
+
+    @media (max-width: 1280px) {
+        max-width: 584px;
+    }
+    @media (max-width: 768px) {
+        max-width: 328px;
+    }
 `;
 
 const ContentNav = styled.div`
@@ -198,6 +205,13 @@ const CarouselPage = styled.div`
     align-items: center;
     gap: 22px;
     margin: 32px 0 48px;
+
+    @media (max-width: 1280px) {
+        max-width: 584px;
+    }
+    @media (max-width: 768px) {
+        max-width: 328px;
+    }
 `;
 
 const CarouselButton = styled.button`
