@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import styled from 'styled-components';
+
 import deleteIcon from '../../../assets/icon/Icon-delete.svg';
 import checkIcon from '../../../assets/icon/ic_check.svg';
-
+import styled, { css } from 'styled-components';
 const IdolProfile = ({ idol, selected = false, onDelete, onCheck }) => {
     const [checked, setChecked] = useState(false);
 
@@ -39,18 +39,44 @@ const IdolCard = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 32px;
     position: relative;
+    padding: 1px; //선이 가려지는 현상 방지
     cursor: ${(props) => (props.selected ? 'default' : 'pointer')};
+
+    @media (max-width: 768px) {
+        width: 98px;
+        min-width: 98px;
+        height: ${(props) => (props.selected === false ? '151px' : '121px')};
+    }
+`;
+
+const IdolCardStyles = css`
+    width: ${(props) => (props.selected === false ? '128px' : '100px')};
+    height: ${(props) => (props.selected === false ? '128px' : '100px')};
+    border-radius: 50%;
+
+    @media (max-width: 768px) {
+        width: ${(props) => (props.selected === false ? '98px' : '70px')};
+        height: ${(props) => (props.selected === false ? '98px' : '70px')};
+    }
 `;
 
 const IdolImg = styled.img`
-    width: ${(props) => (props.selected === false ? '128px' : '100px')};
-    height: ${(props) => (props.selected === false ? '128px' : '100px')};
-    object-fit: cover;
+    ${IdolCardStyles}
     padding: 7.15px;
-    border-radius: 50%;
     z-index: -1;
+    object-fit: cover;
+
+    @media (max-width: 768px) {
+        padding: 5px;
+    }
+`;
+
+const IdolImgContainer = styled.div`
+    ${IdolCardStyles}
+    display: inline-block;
+    outline: 1.43px solid #f96868;
+    position: relative;
 `;
 
 const Overlay = styled.div`
@@ -77,21 +103,19 @@ const Overlay = styled.div`
         z-index: -1;
         border-radius: 50%;
     }
+
+    @media (max-width: 768px) {
+        top: 5px;
+        left: 5px;
+        width: 88px;
+        height: 88px;
+    }
 `;
 
 const CheckIcon = styled.img`
     width: 52.27px;
     height: 52.27px;
     z-index: 1;
-`;
-
-const IdolImgContainer = styled.div`
-    width: ${(props) => (props.selected === false ? '128px' : '100px')};
-    height: ${(props) => (props.selected === false ? '128px' : '100px')};
-    display: inline-block;
-    outline: 1.43px solid #f96868;
-    border-radius: 50%;
-    position: relative;
 `;
 
 const IdolName = styled.p`
@@ -116,4 +140,11 @@ const DeleteButton = styled.img`
     top: 1.43px;
     left: 70px;
     cursor: pointer;
+
+    @media (max-width: 768px) {
+        width: 22px;
+        height: 22px;
+        top: 1px;
+        left: 64px;
+    }
 `;

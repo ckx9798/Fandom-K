@@ -13,10 +13,31 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
     const [option, setOption] = useState('');
     const [checkedIdols, setCheckedIdols] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(16);
+
+    useEffect(() => {
+        const updateItemsPerPage = () => {
+            const width = window.innerWidth;
+            if (width <= 768) {
+                setItemsPerPage(6);
+            } else if (width <= 1280) {
+                setItemsPerPage(8);
+            } else {
+                setItemsPerPage(16);
+            }
+        };
+
+        updateItemsPerPage();
+        window.addEventListener('resize', updateItemsPerPage);
+
+        return () => {
+            window.removeEventListener('resize', updateItemsPerPage);
+        };
+    }, []);
 
     const handleChange = (e) => {
         setOption(e.target.value);
-        setCurrentPage(0); // 필터 변경 시 첫 페이지로 이동
+        setCurrentPage(0);
     };
 
     const handleAddClick = () => {
@@ -41,17 +62,19 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
             filteredDatas = filteredDatas.filter((item) => item.gender === option);
         }
 
+        // selectedDatas에 포함되지 않은 데이터만 필터링
         return filteredDatas.filter((item) => !selectedDatas.some((selected) => selected.id === item.id));
     }, [datas, option, selectedDatas]);
 
+    // 페이지네이션된 데이터 계산
     const paginatedDatas = useMemo(() => {
-        const startIndex = currentPage * ITEMS_PER_PAGE;
-        const endIndex = startIndex + ITEMS_PER_PAGE;
+        const startIndex = currentPage * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
         return sortedDatas.slice(startIndex, endIndex);
-    }, [sortedDatas, currentPage]);
+    }, [sortedDatas, currentPage, itemsPerPage]);
 
     const handleNextPage = () => {
-        if ((currentPage + 1) * ITEMS_PER_PAGE < sortedDatas.length) {
+        if ((currentPage + 1) * itemsPerPage < sortedDatas.length) {
             setCurrentPage(currentPage + 1);
         }
     };
@@ -68,6 +91,14 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
         { value: 'male', option: 'male', title: '남자 아이돌' },
     ];
 
+    //모바일에서는 전체 데이터를 불러와야하기에 만듦.
+    const getIdolList = () => {
+        if (window.innerWidth <= 768) {
+            return sortedDatas;
+        }
+        return paginatedDatas;
+    };
+
     return (
         <ContentWrapper>
             <ContentTitle>
@@ -78,7 +109,7 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
                             key={gender.value}
                             onClick={handleChange}
                             value={gender.value}
-                            $isSelected={option === gender.option}
+                            selected={option === gender.option}
                         >
                             {gender.title}
                         </GenderToggleButton>
@@ -95,9 +126,10 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
                         <IdolProfile key={idol.id} idol={idol} onCheck={handleCheck} />
                     ))}
                 </IdolList>
+
                 <CarouselButton
                     onClick={handleNextPage}
-                    disabled={isLoading || (currentPage + 1) * ITEMS_PER_PAGE >= sortedDatas.length}
+                    disabled={isLoading || (currentPage + 1) * itemsPerPage >= sortedDatas.length}
                 >
                     <RotatedIcon src={arrowIcon} alt="다음" />
                 </CarouselButton>
@@ -119,10 +151,15 @@ const ContentWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     padding-bottom: 81px;
+
+    @media (max-width: 1220px) {
+        padding: 0 24px;
+    }
 `;
 
 const ContentTitle = styled.div`
-    width: 1200px;
+    width: 100%;
+    max-width: 1200px;
     padding-top: 40px;
     display: flex;
     flex-direction: column;
@@ -139,24 +176,25 @@ const ContentNav = styled.div`
 const GenderToggleButton = styled.button`
     flex: 1;
     text-align: center;
-    background-color: ${(props) => (props.$isSelected === false ? '#02000e' : '#ffffff1a')};
+    background-color: ${(props) => (props.selected === false ? '#02000e' : '#ffffff1a')};
     padding: 12px;
     border: none;
-    border-bottom: ${(props) => (props.$isSelected === false ? 'none' : '1px solid #fff')};
+    border-bottom: ${(props) => (props.selected === false ? 'none' : '1px solid #fff')};
 
     font-size: 14px;
     line-height: 18px;
-    color: ${(props) => (props.$isSelected === false ? '#828282' : '#fff')};
+    color: ${(props) => (props.selected === false ? '#828282' : '#fff')};
 `;
 
 const CarouselPage = styled.div`
     width: 100%;
+    max-width: 1280px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 32px;
-    margin-bottom: 48px;
+    gap: 22px;
+    margin: 32px 0 48px;
 `;
 
 const CarouselButton = styled.button`
@@ -173,6 +211,10 @@ const CarouselButton = styled.button`
         opacity: 0.5;
         cursor: not-allowed;
     }
+
+    @media (max-width: 768px) {
+        display: none;
+    }
 `;
 
 const RotatedIcon = styled.img`
@@ -183,8 +225,34 @@ const IdolList = styled.div`
     display: grid;
     grid-template: 1fr 1fr / repeat(8, 1fr);
     gap: 24px;
-    width: 1200px;
-    height: 454px;
+    width: 100%;
+    max-width: 1200px;
+    justify-content: center;
+    align-content: center;
+    margin: 0 auto;
+
+    @media (max-width: 1280px) {
+        grid-template-columns: repeat(4, 128px);
+    }
+
+    @media (max-width: 768px) {
+        display: grid;
+        grid-template-columns: repeat(3, 98px);
+        grid-column-gap: 17px;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        height: 326px;
+        grid-auto-flow: column; // 열 방향으로 아이템 배치
+    }
+
+    /* 스크롤 바 숨기기 */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+
+    /* Chrome, Safari, Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
 `;
 
 const ButtonInner = styled.div`
