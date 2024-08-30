@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import ModalContainer from './ModalContainer';
@@ -5,7 +6,7 @@ import Button from '../Button';
 import AlarmModal from './AlarmModal';
 import { postVotes } from '../../api/votes';
 import { ContentsBoxStyle, DisabledBtn, TitleStyle } from './ModalGlobalStyle';
-import { useState } from 'react';
+import CustomRadio from './CustomRadio';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import mobileArrow from '../../assets/icon/icj_arrow_left.svg';
 import check from '../../assets/icon/ic_check.svg';
@@ -61,7 +62,6 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
             if (response) {
                 setVote(true);
                 setAlertModalClose(false);
-                setModalClose((prev) => !prev);
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -108,7 +108,12 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
                                         <span>{idol.totalVotes.toLocaleString('ko-KR')}표</span>
                                     </CurrentVoteBox>
                                 </IdolVoteInfo>
-                                <input type="radio" name="idol" value={idol.id} onChange={handleChangeVote} />
+                                <CustomRadio
+                                    name="idol"
+                                    value={idol.id}
+                                    checked={Number(voteIdol) === idol.id}
+                                    onChange={handleChangeVote}
+                                />
                             </FormWrapper>
                         ))
                     ) : (
@@ -139,6 +144,7 @@ const ContentsBox = styled(ContentsBoxStyle)`
     @media (min-width: 375px) and (max-width: 767px) {
         width: 100vh;
         height: 100vh;
+        min-height: 100vh;
         background: linear-gradient(300deg, rgba(2, 0, 14, 1) 70%, rgba(20, 195, 254, 0.2) 90%);
     }
 `;
@@ -183,7 +189,7 @@ const VoteForm = styled.form`
     gap: 8px;
     width: 477px;
     overflow: auto;
-    padding: 8px 5px;
+    padding: 8px 10px;
     margin: auto;
     margin-top: 0;
     @media (min-width: 375px) and (max-width: 767px) {
