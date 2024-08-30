@@ -40,6 +40,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
     };
 
     const handleAddClick = () => {
+        if (!checkedIdols.length) return;
         setSelectedDatas([...selectedDatas, ...checkedIdols]);
         loadMore(checkedIdols.length, option);
         setCheckedIdols([]);
