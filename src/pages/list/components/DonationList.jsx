@@ -26,22 +26,42 @@ const DonationList = () => {
     const [hasNext, setHasNext] = useState(true);
     const [pageSize, setPageSize] = useState(getPageSize());
     const [page, setPage] = useState(0);
-    const cardListRef = useRef(null);
 
-    const [isDragging, setIsDragging] = useState(false); //
+    // 터치 스크롤을 위한 state
+    const [isDragging, setIsDragging] = useState(false);
+    const [startX, setStartX] = useState(0);
     const [scrollLeft, setScrollLeft] = useState(0);
+
+    const cardListRef = useRef(null);
 
     // 페이지 넘기기 버튼
     const NextSlide = () => {
-        setPage((prev) => prev + 1);
+        if (cardListRef.current) {
+            setPage((prev) => prev + 1);
+            const scrollAmount = cardListRef.current.offsetWidth + 24;
+            cardListRef.current.scrollTo({
+                left: scrollAmount * (page + 1),
+                behavior: 'smooth',
+            });
+        }
     };
     const PrevSlide = () => {
-        setPage((prev) => prev - 1);
+        if (cardListRef.current) {
+            setPage((prev) => prev - 1);
+            const scrollAmount = cardListRef.current.offsetWidth + 24;
+            cardListRef.current.scrollTo({
+                left: scrollAmount * (page - 1),
+                behavior: 'smooth',
+            });
+        }
     };
 
     // 마우스 스크롤 이벤트
     const handleMouseDown = (e) => {
+        // pc 화면일 경우 마우스 스크롤 방지
+        if (pageSize === 'pc') return;
         setIsDragging(true);
+        setStartX(e.pageX - cardListRef.current.offsetLeft);
         setScrollLeft(cardListRef.current.scrollLeft);
     };
 
@@ -52,17 +72,19 @@ const DonationList = () => {
     const handleMouseMove = (e) => {
         if (!isDragging) return;
         e.preventDefault();
-        cardListRef.current.scrollLeft = scrollLeft;
+        const x = e.pageX - cardListRef.current.offsetLeft;
+        const walk = x - startX;
+        cardListRef.current.scrollLeft = scrollLeft - walk;
     };
 
     // 후원 목록 불러 오는 함수
     const loadMore = async () => {
         if (isLoading || !hasNext) return;
-
+        if ((page + 1) * PC_SIZE < idols.length) return;
         try {
             setIsLoading(true);
-            const apiData = await getDonations({ cursor, pageSize: 8 });
-            if (apiData.list.length < 8) {
+            const apiData = await getDonations({ cursor, pageSize: 4 });
+            if (apiData.list.length < 4) {
                 setHasNext(false);
             }
             setIdols((prev) => [...prev, ...apiData.list]);
@@ -91,20 +113,18 @@ const DonationList = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Carousel 작동
-    useEffect(() => {
-        const { current } = cardListRef;
-        const scrollAmount = current.offsetWidth + 24;
-        cardListRef.current.style.transform = `translateX(-${scrollAmount * page}px)`;
-    }, [page]);
-
     return (
         <Container>
             <h2>후원을 기다리는 조공</h2>
-            <button className="button left" disabled={page === 0 || pageSize !== 'pc'} onClick={PrevSlide}>
+            <button className="button left" disabled={page === 0} onClick={PrevSlide}>
                 <img src={lefgBtnIcon} />
             </button>
-            <Carousel onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}>
+            <Carousel
+                onMouseDown={handleMouseDown}
+                onMouseLeave={handleMouseUp}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+            >
                 <div className="cardList" ref={cardListRef}>
                     {idols.map((item) => {
                         return <DonationItem key={item.id} item={item} pageSize={pageSize} />;
@@ -113,7 +133,7 @@ const DonationList = () => {
             </Carousel>
             <button
                 className="button right"
-                disabled={page + 1 >= idols.length / PC_SIZE || pageSize !== 'pc'}
+                disabled={(page + 1) * PC_SIZE >= idols.length && !hasNext}
                 onClick={NextSlide}
             >
                 <img src={rightBtnIcon} />
@@ -169,26 +189,29 @@ const Container = styled.div`
     }
     @media (max-width: 1280px) {
         width: 100%;
+        .button {
+            display: none;
+        }
     }
 `;
 
 const Carousel = styled.div`
     overflow: hidden;
     .cardList {
+        overflow: scroll;
         margin: 24px 0 0;
         display: flex;
         gap: 24px;
-        transition: all 0.5s ease-in-out;
         scroll-behavior: smooth;
+        user-select: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
     @media (max-width: 1280px) {
         width: 100%;
         .cardList {
             width: 100%;
-            overflow: scroll;
-            &::-webkit-scrollbar {
-                display: none;
-            }
         }
     }
 `;
