@@ -6,6 +6,7 @@ import AddInterestedIdols from './components/AddInterestedIdols';
 import { getIdols } from '../../api/idols';
 import { createContext } from 'react';
 import { getCharts } from '../../api/charts';
+import useItemsPerPage from '../../hooks/my/useItemsPerPage';
 
 export const MyStateContext = createContext();
 
@@ -16,6 +17,7 @@ const MyPage = () => {
     const [cursor, setCursor] = useState(null);
     const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
     const [option, setOption] = useState('total');
+    const itemsPerPage = useItemsPerPage();
 
     // 초기 데이터 로딩
     useEffect(() => {
@@ -26,10 +28,10 @@ const MyPage = () => {
                 let selectedCount = selectedDatas.length;
 
                 if (option === 'total') {
-                    result = await getIdols({ cursor, pageSize: 16 + selectedCount });
+                    result = await getIdols({ cursor, pageSize: itemsPerPage + selectedCount });
                     setDatas(result.list);
                 } else if (option === 'female' || option === 'male') {
-                    result = await getCharts({ gender: option, cursor, pageSize: 16 + selectedCount });
+                    result = await getCharts({ gender: option, cursor, pageSize: itemsPerPage + selectedCount });
                     setDatas(result.idols);
                 }
                 setCursor(result.nextCursor);

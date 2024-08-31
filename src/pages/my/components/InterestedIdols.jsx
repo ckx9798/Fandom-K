@@ -35,7 +35,7 @@ const InterestedIdols = () => {
                     })}
                 </InterestedIdolList>
             ) : (
-                <EmptyMessage>관심있는 아이돌을 추가해주세요!</EmptyMessage>
+                <EmptyMessage>관심있는 아이돌을 추가해주세요!😎</EmptyMessage>
             )}
         </IdolWrapper>
     );
@@ -82,7 +82,7 @@ const InterestedIdolList = styled.div`
 `;
 
 const EmptyMessage = styled.p`
-    margin: 32px 0;
+    margin: 52px 0 34px;
     font-size: 18px;
     color: #ffffff;
     text-align: center;

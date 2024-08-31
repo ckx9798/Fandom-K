@@ -5,32 +5,14 @@ import Button from '../../../components/Button';
 import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyStateContext } from '../MyPage';
+import useItemsPerPage from '../../../hooks/my/useItemsPerPage';
 
 const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption }) => {
     const { datas, selectedDatas, setSelectedDatas, checkedIdols, setCheckedIdols } = useContext(MyStateContext);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(16);
 
-    useEffect(() => {
-        const updateItemsPerPage = () => {
-            const width = window.innerWidth;
-            if (width <= 768) {
-                setItemsPerPage(6);
-            } else if (width <= 1280) {
-                setItemsPerPage(8);
-            } else {
-                setItemsPerPage(16);
-            }
-        };
-
-        updateItemsPerPage();
-        window.addEventListener('resize', updateItemsPerPage);
-
-        return () => {
-            window.removeEventListener('resize', updateItemsPerPage);
-        };
-    }, []);
+    const itemsPerPage = useItemsPerPage();
 
     const handleChange = (e) => {
         setOption(e.target.value);
@@ -90,14 +72,6 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
         { value: 'male', option: 'male', title: '남자 아이돌' },
     ];
 
-    //모바일에서는 전체 데이터를 불러와야하기에 만듦.
-    const getIdolList = () => {
-        if (window.innerWidth <= 768) {
-            return sortedDatas;
-        }
-        return paginatedDatas;
-    };
-
     // 마지막 페이지에서 버튼 비활성화
     const isDisabled = !cursor && currentPage * itemsPerPage >= sortedDatas.length;
 
@@ -124,7 +98,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
                     <img src={arrowIcon} alt="이전" />
                 </CarouselButton>
                 <IdolList>
-                    {getIdolList().map((idol) => (
+                    {paginatedDatas.map((idol) => (
                         <IdolProfile
                             key={idol.id}
                             idol={idol}
