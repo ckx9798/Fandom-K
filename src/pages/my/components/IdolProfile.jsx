@@ -62,6 +62,7 @@ const IdolImg = styled.img`
     ${IdolCardStyles}
     padding: 7.15px;
     z-index: -1;
+    object-fit: cover;
 
     @media (max-width: 768px) {
         padding: 5px;

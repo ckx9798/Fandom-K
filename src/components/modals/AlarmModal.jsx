@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import ModalContainer from './ModalContainer';
-import { ContentsBoxStyle } from '../../styles/Modal';
+import { ContentsBoxStyle } from './ModalGlobalStyle';
 import Button from '../Button';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
@@ -13,7 +13,7 @@ const AlarmModal = ({ setAlertModalClose, title = 'credit' }) => {
     };
 
     return (
-        <ModalContainer>
+        <ModalContainer handleModalClose={handleModalClose}>
             <ContentsBox>
                 <CloseBtn onClick={handleModalClose}>
                     <img src={closeBtn} alt="닫기" />

@@ -6,11 +6,10 @@ import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyStateContext } from '../MyPage';
 
-const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
+const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption }) => {
     const { datas, selectedDatas, setSelectedDatas, checkedIdols, setCheckedIdols } = useContext(MyStateContext);
-    const [option, setOption] = useState('');
 
-    const [currentPage, setCurrentPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(16);
 
     useEffect(() => {
@@ -35,12 +34,15 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
 
     const handleChange = (e) => {
         setOption(e.target.value);
-        setCurrentPage(0);
+        setCurrentPage(1);
+        setCursor(null);
+        setCheckedIdols([]);
     };
 
     const handleAddClick = () => {
+        if (!checkedIdols.length) return;
         setSelectedDatas([...selectedDatas, ...checkedIdols]);
-        loadMore(checkedIdols.length);
+        loadMore(checkedIdols.length, option);
         setCheckedIdols([]);
     };
 
@@ -48,43 +50,42 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
         if (checked) {
             setCheckedIdols([...checkedIdols, idol]);
         } else {
+            //체크 리스트에서 제외
             setCheckedIdols(checkedIdols.filter((checkedIdol) => checkedIdol.id !== idol.id));
         }
     };
 
     const sortedDatas = useMemo(() => {
+        if (!datas || datas.length === 0) return [];
+
         let filteredDatas = datas;
-
-        // 선택된 옵션에 따른 필터링
-        if (option !== '') {
-            filteredDatas = filteredDatas.filter((item) => item.gender === option);
-        }
-
         // selectedDatas에 포함되지 않은 데이터만 필터링
         return filteredDatas.filter((item) => !selectedDatas.some((selected) => selected.id === item.id));
     }, [datas, option, selectedDatas]);
 
     // 페이지네이션된 데이터 계산
     const paginatedDatas = useMemo(() => {
-        const startIndex = currentPage * itemsPerPage;
+        const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         return sortedDatas.slice(startIndex, endIndex);
     }, [sortedDatas, currentPage, itemsPerPage]);
 
     const handleNextPage = () => {
-        if ((currentPage + 1) * itemsPerPage < sortedDatas.length) {
-            setCurrentPage(currentPage + 1);
+        let itemsLeft = sortedDatas.length - currentPage * itemsPerPage;
+        if (itemsLeft < itemsPerPage && itemsLeft >= 0) {
+            loadMore(itemsPerPage - itemsLeft, option);
         }
+        setCurrentPage(currentPage + 1);
     };
 
     const handlePrevPage = () => {
-        if (currentPage > 0) {
+        if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
         }
     };
 
     const genderBtnArr = [
-        { value: '', option: '', title: '전체 아이돌' },
+        { value: 'total', option: 'total', title: '전체 아이돌' },
         { value: 'female', option: 'female', title: '여자 아이돌' },
         { value: 'male', option: 'male', title: '남자 아이돌' },
     ];
@@ -96,6 +97,9 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
         }
         return paginatedDatas;
     };
+
+    // 마지막 페이지에서 버튼 비활성화
+    const isDisabled = !cursor && currentPage * itemsPerPage >= sortedDatas.length;
 
     return (
         <ContentWrapper>
@@ -116,7 +120,7 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
             </ContentTitle>
 
             <CarouselPage>
-                <CarouselButton onClick={handlePrevPage} disabled={isLoading || currentPage === 0}>
+                <CarouselButton onClick={handlePrevPage} disabled={isLoading || currentPage === 1}>
                     <img src={arrowIcon} alt="이전" />
                 </CarouselButton>
                 <IdolList>
@@ -130,10 +134,7 @@ const AddInterestedIdols = ({ cursor, isLoading, loadMore }) => {
                     ))}
                 </IdolList>
 
-                <CarouselButton
-                    onClick={handleNextPage}
-                    disabled={isLoading || (currentPage + 1) * itemsPerPage >= sortedDatas.length}
-                >
+                <CarouselButton onClick={handleNextPage} disabled={isLoading || isDisabled}>
                     <RotatedIcon src={arrowIcon} alt="다음" />
                 </CarouselButton>
             </CarouselPage>
