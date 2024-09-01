@@ -4,10 +4,10 @@ import styled from 'styled-components';
 
 const ModalContainer = ({ children, handleModalClose }) => {
     const [modalClose, setModalClose] = useState(false);
-    
+
     const handleModalClick = (e) => {
         if (e.target === e.currentTarget) {
-          handleModalClose();
+            handleModalClose();
         }
     };
 
@@ -44,7 +44,7 @@ const Modal = styled.div`
     align-items: center;
     justify-content: center;
     margin: auto;
-    background-color: #181d26;
+    background-color: var(--black200);
     border-radius: 8px;
     overflow: hidden;
 `;

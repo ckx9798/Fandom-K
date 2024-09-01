@@ -5,12 +5,27 @@ import Button from '../Button';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
 
-// 크레딧 부족 시, 투표 완료했을 때 띄울 공용 모달
-const AlarmModal = ({ setAlertModalClose, title = 'credit' }) => {
+// 공용 알림 모달
+const AlarmModal = ({ setAlertModalClose, setModalClose, title = 'credit' }) => {
     // 모달창 닫는 함수
     const handleModalClose = () => {
         setAlertModalClose((prev) => !prev);
+        setModalClose((prev) => !prev);
     };
+
+    let description;
+
+    if (title === 'credit') {
+        description = (
+            <p>
+                앗! 투표하기 위한 <span>크레딧</span>이 부족해요
+            </p>
+        );
+    } else if (title === 'vote' || title === 'donation') {
+        description = <p>{title === 'vote' ? '투표가' : '후원이'} 완료되었습니다.</p>;
+    } else {
+        description = <p>오류가 발생했어요. 잠시 후 다시 시도해주세요.</p>;
+    }
 
     return (
         <ModalContainer handleModalClose={handleModalClose}>
@@ -20,13 +35,7 @@ const AlarmModal = ({ setAlertModalClose, title = 'credit' }) => {
                 </CloseBtn>
                 <Contents>
                     <img src={creditImg} alt="크레딧" />
-                    {title === 'credit' ? (
-                        <p>
-                            앗! 투표하기 위한 <span>크레딧</span>이 부족해요
-                        </p>
-                    ) : (
-                        <p>투표가 완료되었습니다.</p>
-                    )}
+                    {description}
                 </Contents>
                 <Button onClick={handleModalClose} width="100%">
                     확인
@@ -40,6 +49,7 @@ export default AlarmModal;
 
 const ContentsBox = styled(ContentsBoxStyle)`
     width: 343px;
+    padding: 32px 16px;
 `;
 
 const CloseBtn = styled.button`

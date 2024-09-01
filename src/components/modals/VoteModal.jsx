@@ -14,9 +14,8 @@ import check from '../../assets/icon/ic_check.svg';
 // 투표하기 모달 (setModalClose 파라미터는 부모 컴포넌트로부터 받은 함수로, 투표하기 모달을 닫는 용도입니다.)
 const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
     const [voteIdol, setVoteIdol] = useState(0);
-    const [creditAlert, setCreditAlert] = useState(false);
     const [alertModalClose, setAlertModalClose] = useState(true);
-    const [isVote, setVote] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
 
     // 투표수가 많은 순으로 정렬, 투표수가 같으면 id순으로 설정해서 순위가 뒤집어지지 않도록 했습니다.
     const sortIdol = idolList?.sort((a, b) => {
@@ -49,7 +48,7 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
             const currentCredit = parseInt(localStorage.getItem('credit'), 10) || 0;
 
             if (currentCredit < 1000) {
-                setCreditAlert(true);
+                setModalTitle('credit');
                 setAlertModalClose(false);
                 return;
             }
@@ -60,12 +59,17 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
             const response = await postVotes(voteIdol);
 
             if (response) {
-                setVote(true);
+                const adjustCredit = currentCredit - 1000;
+                localStorage.setItem('credit', adjustCredit);
+
+                setModalTitle('vote');
                 setAlertModalClose(false);
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.error('투표하기 모달 handleVote POST 요청에서 오류 발생', error);
+                setModalTitle('alert');
+                setAlertModalClose(false);
             }
         }
     };
@@ -128,8 +132,13 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
                         </CreditAlert>
                     </VoteBtnBox>
                 </VoteForm>
-                {creditAlert && !alertModalClose && <AlarmModal setAlertModalClose={setAlertModalClose} />}
-                {isVote && !alertModalClose && <AlarmModal setAlertModalClose={setAlertModalClose} title="vote" />}
+                {!alertModalClose && (
+                    <AlarmModal
+                        setAlertModalClose={setAlertModalClose}
+                        setModalClose={setModalClose}
+                        title={modalTitle}
+                    />
+                )}
             </ContentsBox>
         </ModalContainer>
     );
@@ -189,9 +198,17 @@ const VoteForm = styled.form`
     gap: 8px;
     width: 477px;
     overflow: auto;
-    padding: 8px 10px;
+    padding: 15px 5px;
     margin: auto;
     margin-top: 0;
+    
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
     @media (min-width: 375px) and (max-width: 767px) {
         width: 327px;
         padding-bottom: 60px;
@@ -205,7 +222,7 @@ const FormWrapper = styled.div`
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     height: 70px;
     margin-bottom: 8px;
-    padding-bottom: 15px;
+    padding-bottom: 20px;
 `;
 
 const IdolVoteInfo = styled.div`
@@ -288,12 +305,17 @@ const VoteBtnBox = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(180deg, rgba(24, 29, 38, 1) 0%, rgba(2, 0, 14, 1) 100%);
 
     @media (min-width: 375px) and (max-width: 767px) {
-        position: fixed;
+        padding-top: 0;
         bottom: 20px;
-        left: 0;
-        background-color: rgba(2, 0, 14, 0.8);
+        background: rgba(2, 0, 14, 0.5);
     }
 `;
 
