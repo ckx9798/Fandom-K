@@ -209,6 +209,10 @@ const VoteForm = styled.form`
         display: none;
     }
 
+    @media (min-width: 1200px) {
+      margin-bottom: 40px;
+    }
+
     @media (min-width: 375px) and (max-width: 767px) {
         width: 327px;
         padding-bottom: 60px;
