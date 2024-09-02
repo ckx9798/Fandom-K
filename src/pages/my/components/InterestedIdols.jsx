@@ -1,12 +1,13 @@
 import { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './idolProfile';
-import { MyStateContext } from '../MyPage';
+import { MyDispatchContext, MyStateContext } from '../MyPage';
 
 const InterestedIdols = () => {
-    const { selectedDatas, setSelectedDatas } = useContext(MyStateContext);
+    const { selectedDatas } = useContext(MyStateContext);
+    const { setSelectedDatas } = useContext(MyDispatchContext);
 
-    // 로컬스토리지에서 데이터를 불러오기
+    // 로컬스토리지에서 데이터를 불러옴
     useEffect(() => {
         const savedIdols = localStorage.getItem('selectedIdols');
         if (savedIdols) {
@@ -14,11 +15,12 @@ const InterestedIdols = () => {
         }
     }, [setSelectedDatas]);
 
-    // 데이터가 변경될 때마다 로컬스토리지에 저장하기
+    // 데이터가 변경될 때마다 로컬스토리지에 저장함
     useEffect(() => {
         localStorage.setItem('selectedIdols', JSON.stringify(selectedDatas));
     }, [selectedDatas]);
 
+    // 특정 아이돌을 관심 목록에서 삭제하는 함수
     const onDelete = (id) => {
         const nextIdols = selectedDatas.filter((idol) => idol.id !== id);
         setSelectedDatas(nextIdols);
@@ -43,6 +45,7 @@ const InterestedIdols = () => {
 
 export default InterestedIdols;
 
+// IdolWrapper는 관심 아이돌 섹션의 컨테이너를 스타일링
 const IdolWrapper = styled.div`
     width: 100%;
     max-width: 1200px;
@@ -58,6 +61,7 @@ const IdolWrapper = styled.div`
     }
 `;
 
+// InterestedIdolList는 선택된 아이돌 리스트를 스타일링
 const InterestedIdolList = styled.div`
     display: flex;
     width: 100%;
@@ -81,6 +85,7 @@ const InterestedIdolList = styled.div`
     }
 `;
 
+//EmptyMessage는 관심 아이돌이 없을 때 표시되는 메시지를 스타일링
 const EmptyMessage = styled.p`
     margin: 52px 0 34px;
     font-size: 18px;
