@@ -6,6 +6,7 @@ import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyDispatchContext, MyStateContext } from '../MyPage';
 import useItemsPerPage from '../../../hooks/my/useItemsPerPage';
+import { SIZES } from '../../../utils/Constants';
 
 const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption }) => {
     const { datas, selectedDatas, checkedIdols } = useContext(MyStateContext);
@@ -78,7 +79,6 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
             ([entry]) => {
                 if (entry.isIntersecting && !hasLoadedMore.current) {
                     hasLoadedMore.current = true;
-                    console.log('요소 발견!');
                     loadMore(itemsPerPage, option);
 
                     // loadMore 호출 후 관찰 중지
@@ -101,7 +101,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
 
     // mobile 반응형 경우에만 loadMoreDatas를 실행함.
     useEffect(() => {
-        if (window.innerWidth > 768) return;
+        if (window.innerWidth > SIZES.mobile) return;
 
         loadMoreDatas();
         return () => {
@@ -111,7 +111,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
 
     // 반응형에 따라 아이돌 리스트 데이터를 반환.
     const IdolListDatas = () => {
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= SIZES.mobile) {
             return sortedDatas;
         }
         return paginatedDatas;
@@ -274,7 +274,6 @@ const IdolList = styled.div`
     max-width: 1200px;
     place-items: center;
     justify-content: center;
-
     margin: 0 auto;
 
     @media (max-width: 1280px) {
