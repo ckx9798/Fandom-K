@@ -33,28 +33,27 @@ const DonationList = () => {
     const [scrollLeft, setScrollLeft] = useState(0);
 
     const cardListRef = useRef(null);
+    const lastItemRef = useRef(null);
 
     // 페이지 넘기기 버튼
     const NextSlide = () => {
         if (cardListRef.current) {
             setPage((prev) => prev + 1);
-            const scrollAmount = cardListRef.current.offsetWidth + 24;
-            cardListRef.current.scrollTo({
-                left: scrollAmount * (page + 1),
-                behavior: 'smooth',
-            });
         }
     };
     const PrevSlide = () => {
         if (cardListRef.current) {
             setPage((prev) => prev - 1);
-            const scrollAmount = cardListRef.current.offsetWidth + 24;
-            cardListRef.current.scrollTo({
-                left: scrollAmount * (page - 1),
-                behavior: 'smooth',
-            });
         }
     };
+
+    useEffect(() => {
+        const scrollAmount = cardListRef.current.offsetWidth + 24;
+        cardListRef.current.scrollTo({
+            left: scrollAmount * page,
+            behavior: 'smooth',
+        });
+    }, [page]);
 
     // 마우스 스크롤 이벤트
     const handleMouseDown = (e) => {
@@ -78,12 +77,11 @@ const DonationList = () => {
     };
 
     // 후원 목록 불러 오는 함수
-    const loadMore = async () => {
+    const loadMore = async ({ pageSize }) => {
         if (isLoading || !hasNext) return;
-        if ((page + 1) * PC_SIZE < idols.length) return;
         try {
             setIsLoading(true);
-            const apiData = await getDonations({ cursor, pageSize: 4 });
+            const apiData = await getDonations({ cursor, pageSize });
             if (apiData.list.length < 4) {
                 setHasNext(false);
             }
@@ -99,8 +97,8 @@ const DonationList = () => {
     };
 
     useEffect(() => {
-        loadMore();
-    }, [page]);
+        loadMore({ pageSize: 8 });
+    }, []);
 
     // 화면 크기 변경 시 pageSize변경
     useEffect(() => {
@@ -112,6 +110,29 @@ const DonationList = () => {
 
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    // 무한 스크롤
+    useEffect(() => {
+        if (!lastItemRef.current) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    loadMore({ pageSize: 4 });
+                }
+            },
+            {
+                threshold: 0.25,
+            },
+        );
+
+        const lastItemElement = lastItemRef.current;
+        if (lastItemElement) observer.observe(lastItemElement);
+
+        return () => {
+            if (lastItemElement) observer.unobserve(lastItemElement);
+        };
+    }, [idols.length, lastItemRef, loadMore]);
 
     return (
         <Container>
@@ -126,8 +147,15 @@ const DonationList = () => {
                 onMouseMove={handleMouseMove}
             >
                 <div className="cardList" ref={cardListRef}>
-                    {idols.map((item) => {
-                        return <DonationItem key={item.id} item={item} pageSize={pageSize} />;
+                    {idols.map((item, index) => {
+                        return (
+                            <DonationItem
+                                key={item.id}
+                                item={item}
+                                pageSize={pageSize}
+                                ref={index === idols.length - 1 ? lastItemRef : null}
+                            />
+                        );
                     })}
                 </div>
             </Carousel>
@@ -198,7 +226,8 @@ const Container = styled.div`
 const Carousel = styled.div`
     overflow: hidden;
     .cardList {
-        overflow: scroll;
+        position: relative;
+        overflow: hidden;
         margin: 24px 0 0;
         display: flex;
         gap: 24px;
@@ -211,6 +240,7 @@ const Carousel = styled.div`
     @media (max-width: 1280px) {
         width: 100%;
         .cardList {
+            overflow: scroll;
             width: 100%;
         }
     }
