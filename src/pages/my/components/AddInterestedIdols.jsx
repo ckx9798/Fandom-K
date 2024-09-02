@@ -1,78 +1,130 @@
-import { useState, useContext, useMemo, useEffect } from 'react';
+import { useState, useContext, useMemo, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
 import Button from '../../../components/Button';
 import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
-import { MyStateContext } from '../MyPage';
+import { MyDispatchContext, MyStateContext } from '../MyPage';
 import useItemsPerPage from '../../../hooks/my/useItemsPerPage';
+import { SIZES } from '../../../utils/Constants';
 
 const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption }) => {
-    const { datas, selectedDatas, setSelectedDatas, checkedIdols, setCheckedIdols } = useContext(MyStateContext);
+    const { datas, selectedDatas, checkedIdols } = useContext(MyStateContext);
+    const { setSelectedDatas, setCheckedIdols } = useContext(MyDispatchContext);
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지를 관리함.
+    const itemsPerPage = useItemsPerPage(); // 페이지당 렌더링되어야 할 아이템 수를 가져옴.
+    const lastItemRef = useRef(null); // 마지막 아이템을 참조하는 ref.
+    const hasLoadedMore = useRef(false); // 추가 로딩 여부를 추적하는 ref.
 
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const itemsPerPage = useItemsPerPage();
-
+    // 옵션 변경 시 호출되는 함수
     const handleChange = (e) => {
-        setOption(e.target.value);
-        setCurrentPage(1);
-        setCursor(null);
-        setCheckedIdols([]);
+        setOption(e.target.value); // 옵션을 업데이트함.
+        setCurrentPage(1); // 페이지를 1로 초기화.
+        setCursor(null); // 커서를 초기화.
+        setCheckedIdols([]); // 체크된 아이돌을 초기화.
     };
 
+    // '추가하기' 버튼 클릭 시 호출되는 함수
     const handleAddClick = () => {
         if (!checkedIdols.length) return;
-        setSelectedDatas([...selectedDatas, ...checkedIdols]);
-        loadMore(checkedIdols.length, option);
-        setCheckedIdols([]);
+        setSelectedDatas([...selectedDatas, ...checkedIdols]); // 선택된 아이돌을 추가함.
+        setCheckedIdols([]); // 체크된 아이돌을 초기화.
     };
 
+    // 아이돌 체크 상태 변경 시 호출되는 함수
     const handleCheck = (idol, checked) => {
         if (checked) {
-            setCheckedIdols([...checkedIdols, idol]);
+            setCheckedIdols([...checkedIdols, idol]); // 체크된 아이돌을 추가.
         } else {
-            //체크 리스트에서 제외
-            setCheckedIdols(checkedIdols.filter((checkedIdol) => checkedIdol.id !== idol.id));
+            setCheckedIdols(checkedIdols.filter((checkedIdol) => checkedIdol.id !== idol.id)); // 체크 해제된 아이돌을 제거.
         }
     };
 
+    // 관심 목록에 있는 데이터를 제외하고 정렬된 데이터를 생성함.
     const sortedDatas = useMemo(() => {
         if (!datas || datas.length === 0) return [];
 
-        let filteredDatas = datas;
-        // selectedDatas에 포함되지 않은 데이터만 필터링
-        return filteredDatas.filter((item) => !selectedDatas.some((selected) => selected.id === item.id));
+        console.log(datas.length);
+        return datas.filter((item) => !selectedDatas.some((selected) => selected.id === item.id));
     }, [datas, option, selectedDatas]);
 
-    // 페이지네이션된 데이터 계산
+    // 페이지네이션된 데이터를 생성.
     const paginatedDatas = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         return sortedDatas.slice(startIndex, endIndex);
     }, [sortedDatas, currentPage, itemsPerPage]);
 
+    // 다음 페이지로 이동하는 함수
     const handleNextPage = () => {
         let itemsLeft = sortedDatas.length - currentPage * itemsPerPage;
         if (itemsLeft < itemsPerPage && itemsLeft >= 0) {
-            loadMore(itemsPerPage - itemsLeft, option);
+            loadMore(itemsPerPage - itemsLeft, option); // 추가 데이터를 로드.
         }
-        setCurrentPage(currentPage + 1);
+        setCurrentPage(currentPage + 1); // 현재 페이지를 증가.
     };
 
+    // 이전 페이지로 이동하는 함수
     const handlePrevPage = () => {
         if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
+            setCurrentPage(currentPage - 1); // 현재 페이지를 감소.
         }
     };
 
+    // mobile 반응형에서 데이터를 더 로드하는 함수
+    const loadMoreDatas = useCallback(() => {
+        if (isLoading || !cursor || !lastItemRef.current) return;
+
+        const observerInstance = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting && !hasLoadedMore.current) {
+                    hasLoadedMore.current = true;
+                    loadMore(itemsPerPage, option);
+
+                    // loadMore 호출 후 관찰 중지
+                    if (lastItemRef.current) {
+                        observerInstance.unobserve(lastItemRef.current);
+                    }
+                }
+            },
+            { threshold: 0.5 },
+        );
+
+        if (lastItemRef.current) {
+            observerInstance.observe(lastItemRef.current);
+        }
+
+        return () => {
+            observerInstance.disconnect(); // 옵저버를 해제.
+        };
+    }, [isLoading, cursor, itemsPerPage, option, loadMore]);
+
+    // mobile 반응형 경우에만 loadMoreDatas를 실행함.
+    useEffect(() => {
+        if (window.innerWidth > SIZES.mobile) return;
+
+        loadMoreDatas();
+        return () => {
+            hasLoadedMore.current = false; // 로드된 상태를 초기화.
+        };
+    }, [loadMoreDatas]);
+
+    // 반응형에 따라 아이돌 리스트 데이터를 반환.
+    const IdolListDatas = () => {
+        if (window.innerWidth <= SIZES.mobile) {
+            return sortedDatas;
+        }
+        return paginatedDatas;
+    };
+
+    // 성별 필터 버튼 배열
     const genderBtnArr = [
         { value: 'total', option: 'total', title: '전체 아이돌' },
         { value: 'female', option: 'female', title: '여자 아이돌' },
         { value: 'male', option: 'male', title: '남자 아이돌' },
     ];
 
-    // 마지막 페이지에서 버튼 비활성화
+    // 더 이상 로드할 데이터가 없는지 판단하는 변수.
     const isDisabled = !cursor && currentPage * itemsPerPage >= sortedDatas.length;
 
     return (
@@ -98,12 +150,13 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
                     <img src={arrowIcon} alt="이전" />
                 </CarouselButton>
                 <IdolList>
-                    {paginatedDatas.map((idol) => (
+                    {IdolListDatas().map((idol, index) => (
                         <IdolProfile
                             key={idol.id}
                             idol={idol}
                             onCheck={handleCheck}
                             checked={checkedIdols.some((checkedIdol) => checkedIdol.id === idol.id)}
+                            ref={index === IdolListDatas().length - 1 ? lastItemRef : null}
                         />
                     ))}
                 </IdolList>
@@ -219,9 +272,8 @@ const IdolList = styled.div`
     gap: 24px;
     width: 100%;
     max-width: 1200px;
-    place-items: center; /* 그리드 아이템을 셀의 중앙에 배치 */
+    place-items: center;
     justify-content: center;
-
     margin: 0 auto;
 
     @media (max-width: 1280px) {
@@ -237,14 +289,12 @@ const IdolList = styled.div`
         width: 328px;
         height: 326px;
         justify-content: start;
-        grid-auto-flow: column; // 열 방향으로 아이템 배치
+        grid-auto-flow: column;
     }
 
-    /* 스크롤 바 숨기기 */
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 
-    /* Chrome, Safari, Opera */
     &::-webkit-scrollbar {
         display: none;
     }

@@ -9,6 +9,7 @@ import { getCharts } from '../../api/charts';
 import useItemsPerPage from '../../hooks/my/useItemsPerPage';
 
 export const MyStateContext = createContext();
+export const MyDispatchContext = createContext();
 
 const MyPage = () => {
     const [datas, setDatas] = useState([]);
@@ -71,16 +72,18 @@ const MyPage = () => {
     return (
         <StyledMyPage>
             <Header />
-            <MyStateContext.Provider value={{ datas, selectedDatas, setSelectedDatas, checkedIdols, setCheckedIdols }}>
-                <InterestedIdols />
-                <AddInterestedIdols
-                    cursor={cursor}
-                    setCursor={setCursor}
-                    isLoading={isLoading}
-                    loadMore={handleLoadMoreClick}
-                    option={option}
-                    setOption={setOption}
-                />
+            <MyStateContext.Provider value={{ datas, selectedDatas, checkedIdols }}>
+                <MyDispatchContext.Provider value={{ setSelectedDatas, setCheckedIdols }}>
+                    <InterestedIdols />
+                    <AddInterestedIdols
+                        cursor={cursor}
+                        setCursor={setCursor}
+                        isLoading={isLoading}
+                        loadMore={handleLoadMoreClick}
+                        option={option}
+                        setOption={setOption}
+                    />
+                </MyDispatchContext.Provider>
             </MyStateContext.Provider>
         </StyledMyPage>
     );
