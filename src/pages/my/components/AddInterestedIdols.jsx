@@ -49,11 +49,11 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
     }, [datas, option, selectedDatas]);
 
     // 페이지네이션된 데이터를 생성.
-    const paginatedDatas = useMemo(() => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        return sortedDatas.slice(startIndex, endIndex);
-    }, [sortedDatas, currentPage, itemsPerPage]);
+    // const paginatedDatas = useMemo(() => {
+    //     const startIndex = (currentPage - 1) * itemsPerPage;
+    //     const endIndex = startIndex + itemsPerPage;
+    //     return sortedDatas.slice(startIndex, endIndex);
+    // }, [sortedDatas, currentPage, itemsPerPage]);
 
     // 다음 페이지로 이동하는 함수
     const handleNextPage = () => {
@@ -99,23 +99,12 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
         };
     }, [isLoading, cursor, itemsPerPage, option, loadMore]);
 
-    // mobile 반응형 경우에만 loadMoreDatas를 실행함.
     useEffect(() => {
-        if (window.innerWidth > SIZES.mobile) return;
-
         loadMoreDatas();
         return () => {
             hasLoadedMore.current = false; // 로드된 상태를 초기화.
         };
     }, [loadMoreDatas]);
-
-    // 반응형에 따라 아이돌 리스트 데이터를 반환.
-    const IdolListDatas = () => {
-        if (window.innerWidth <= SIZES.mobile) {
-            return sortedDatas;
-        }
-        return paginatedDatas;
-    };
 
     // 성별 필터 버튼 배열
     const genderBtnArr = [
@@ -150,13 +139,13 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
                     <img src={arrowIcon} alt="이전" />
                 </CarouselButton>
                 <IdolList>
-                    {IdolListDatas().map((idol, index) => (
+                    {sortedDatas.map((idol, index) => (
                         <IdolProfile
                             key={idol.id}
                             idol={idol}
                             onCheck={handleCheck}
                             checked={checkedIdols.some((checkedIdol) => checkedIdol.id === idol.id)}
-                            ref={index === IdolListDatas().length - 1 ? lastItemRef : null}
+                            ref={index === sortedDatas.length - 1 ? lastItemRef : null}
                         />
                     ))}
                 </IdolList>
@@ -269,27 +258,28 @@ const RotatedIcon = styled.img`
 const IdolList = styled.div`
     display: grid;
     grid-template: 1fr 1fr / repeat(8, 1fr);
-    gap: 24px;
-    width: 100%;
-    max-width: 1200px;
+    gap: 20px;
     place-items: center;
-    justify-content: center;
+    justify-content: start;
     margin: 0 auto;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    grid-auto-flow: column;
+    width: 1280px;
+    height: 398px;
 
     @media (max-width: 1280px) {
         grid-template-columns: repeat(4, 128px);
+        width: 584px;
+        height: 390px;
     }
 
     @media (max-width: 768px) {
-        display: grid;
         grid-template-columns: repeat(3, 98px);
         grid-column-gap: 17px;
-        overflow-x: scroll;
-        overflow-y: hidden;
+
         width: 328px;
         height: 326px;
-        justify-content: start;
-        grid-auto-flow: column;
     }
 
     -ms-overflow-style: none;
