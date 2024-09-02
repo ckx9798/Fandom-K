@@ -8,7 +8,7 @@ export const getDonations = async ({ cursor = null, pageSize = 10 }) => {
             return res.data;
         })
         .catch((error) => {
-            return error;
+            throw error;
         });
     return response;
 };
@@ -23,7 +23,7 @@ export const putContribute = async (id, amount) => {
             return response.data;
         })
         .catch((error) => {
-            return error;
+            throw error;
         });
     return response;
 };

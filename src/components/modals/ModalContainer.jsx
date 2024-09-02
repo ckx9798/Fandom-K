@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 
@@ -9,7 +9,21 @@ const ModalContainer = ({ children, handleModalClose }) => {
         if (e.target === e.currentTarget) {
             handleModalClose();
         }
-    };
+  };
+  
+  useEffect(() => {
+    if (!modalClose) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    }
+  }, [modalClose]);
+
+  if (modalClose) return null;
 
     return createPortal(
         <>
