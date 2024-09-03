@@ -7,10 +7,10 @@ import AlarmModal from './AlarmModal';
 import { postVotes } from '../../api/votes';
 import { ContentsBoxStyle, DisabledBtn, TitleStyle } from './ModalGlobalStyle';
 import CustomRadio from './CustomRadio';
+import { getCharts } from '../../api/charts';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import mobileArrow from '../../assets/icon/icj_arrow_left.svg';
 import check from '../../assets/icon/ic_check.svg';
-import { getCharts } from '../../api/charts';
 
 // 투표하기 모달 (setModalClose 파라미터는 부모 컴포넌트로부터 받은 함수로, 투표하기 모달을 닫는 용도입니다.)
 const VoteModal = ({ title = 'female', setModalClose }) => {
@@ -80,9 +80,6 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
                 return;
             }
 
-            const adjustCredit = currentCredit - 1000;
-            localStorage.setItem('credit', adjustCredit);
-
             const response = await postVotes(voteIdol);
 
             if (response) {
@@ -95,6 +92,7 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.error('투표하기 모달 handleVote POST 요청에서 오류 발생', error);
+
                 setModalTitle('alert');
                 setAlertModalClose(false);
             }

@@ -15,10 +15,10 @@ const SupportModal = ({ item, setModalClose }) => {
     const [isLoading, setLoading] = useState(false);
     const [alertModalClose, setAlertModalClose] = useState(true);
     const [modalTitle, setModalTitle] = useState('');
-    
+
     const currentCredit = parseInt(localStorage.getItem('credit'), 10) || 0;
     const isDisabled = userDonation > currentCredit;
-    
+
     // 모달창 닫는 함수
     const handleModalClose = () => {
         setModalClose((prev) => !prev);
@@ -36,26 +36,25 @@ const SupportModal = ({ item, setModalClose }) => {
         e.preventDefault();
 
         try {
-          setLoading(true);
-          localStorage.setItem('credit', currentCredit - userDonation);
+            setLoading(true);
 
-          const response = await putContribute(item.id, userDonation);
+            const response = await putContribute(item.id, userDonation);
 
-          if (response) {
-            setUserDonation('');
-            setModalTitle('donation');
-            setAlertModalClose(false);
-          }
+            if (response) {
+                localStorage.setItem('credit', currentCredit - userDonation);
+                setUserDonation('');
+                setModalTitle('donation');
+                setAlertModalClose(false);
+            }
         } catch (error) {
-          if (axios.isAxiosError(error)) {
-            console.error('후원하기 모달 handleSubmit PUT 요청에서 오류 발생', response);
-    
-            setResponseError(true);
-            setModalTitle('alert');
-            setAlertModalClose(false);
-          }
+            if (axios.isAxiosError(error)) {
+                console.error('후원하기 모달 handleSubmit PUT 요청에서 오류 발생', error);
+
+                setModalTitle('alert');
+                setAlertModalClose(false);
+            }
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
     };
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import ErrorImg from '../assets/image/error.png';
 import { Link } from 'react-router-dom';
+import ErrorImg from '../assets/image/error.png';
 
 const ErrorPage = () => {
     return (
@@ -69,11 +69,6 @@ const ContentsBox = styled.div`
     @media (min-width: 375px) and (max-width: 768px) {
         align-items: center;
     }
-`;
-
-const ContentsList = styled.ul`
-    color: var(--white200);
-    line-height: 1.5rem;
 `;
 
 const HomeLink = styled(Link)`

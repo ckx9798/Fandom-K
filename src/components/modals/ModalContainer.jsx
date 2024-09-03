@@ -9,21 +9,22 @@ const ModalContainer = ({ children, handleModalClose }) => {
         if (e.target === e.currentTarget) {
             handleModalClose();
         }
-  };
-  
-  useEffect(() => {
-    if (!modalClose) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    };
 
-    return () => {
-      document.body.style.overflow = 'unset';
-    }
-  }, [modalClose]);
+    // 모달이 열렸을 때 바깥쪽 페이지 스크롤 없애는 함수
+    useEffect(() => {
+        if (!modalClose) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
 
-  if (modalClose) return null;
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [modalClose]);
+
+    if (modalClose) return null;
 
     return createPortal(
         <>

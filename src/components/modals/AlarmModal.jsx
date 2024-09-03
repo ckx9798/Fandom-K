@@ -15,16 +15,20 @@ const AlarmModal = ({ setAlertModalClose, setModalClose, title = 'credit' }) => 
 
     let description;
 
-    if (title === 'credit') {
-        description = (
-            <p>
-                앗! 투표하기 위한 <span>크레딧</span>이 부족해요
-            </p>
-        );
-    } else if (title === 'vote' || title === 'donation') {
-        description = <p>{title === 'vote' ? '투표가' : '후원이'} 완료되었습니다.</p>;
-    } else {
-        description = <p>오류가 발생했어요. 잠시 후 다시 시도해주세요.</p>;
+    switch (title) {
+        case 'credit':
+            description = (
+                <p>
+                    앗! 투표하기 위한 <span>크레딧</span>이 부족해요
+                </p>
+            );
+            break;
+        case 'vote':
+        case 'donation':
+            description = <p>{title === 'vote' ? '투표가' : '후원이'} 완료되었습니다.</p>;
+            break;
+        default:
+            description = <p>오류가 발생했어요. 잠시 후 다시 시도해주세요.</p>;
     }
 
     return (
