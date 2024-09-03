@@ -6,7 +6,6 @@ import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyDispatchContext, MyStateContext } from '../MyPage';
 import useItemsPerPage from '../../../hooks/my/useItemsPerPage';
-import { SIZES } from '../../../utils/Constants';
 
 const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption }) => {
     const { datas, selectedDatas, checkedIdols } = useContext(MyStateContext);
@@ -14,7 +13,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지를 관리함.
     const itemsPerPage = useItemsPerPage(); // 페이지당 렌더링되어야 할 아이템 수를 가져옴.
     const lastItemRef = useRef(null); // 마지막 아이템을 참조하는 ref.
-    const hasLoadedMore = useRef(false); // 추가 로딩 여부를 추적하는 ref.
+    const idolListRef = useRef(null); // IdolList의 ref.
 
     // 옵션 변경 시 호출되는 함수
     const handleChange = (e) => {
@@ -48,37 +47,23 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
         return datas.filter((item) => !selectedDatas.some((selected) => selected.id === item.id));
     }, [datas, option, selectedDatas]);
 
-    // 페이지네이션된 데이터를 생성.
-    const paginatedDatas = useMemo(() => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        return sortedDatas.slice(startIndex, endIndex);
-    }, [sortedDatas, currentPage, itemsPerPage]);
+    const scrollTo = (direction) => {
+        if (!idolListRef.current) return;
 
-    // 다음 페이지로 이동하는 함수
-    const handleNextPage = () => {
-        let itemsLeft = sortedDatas.length - currentPage * itemsPerPage;
-        if (itemsLeft < itemsPerPage && itemsLeft >= 0) {
-            loadMore(itemsPerPage - itemsLeft, option); // 추가 데이터를 로드.
-        }
-        setCurrentPage(currentPage + 1); // 현재 페이지를 증가.
+        const scrollAmount = idolListRef.current.offsetWidth + 24;
+        idolListRef.current.scrollBy({
+            left: direction === 'next' ? scrollAmount : -scrollAmount,
+            behavior: 'smooth',
+        });
     };
 
-    // 이전 페이지로 이동하는 함수
-    const handlePrevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1); // 현재 페이지를 감소.
-        }
-    };
-
-    // mobile 반응형에서 데이터를 더 로드하는 함수
+    // 데이터를 더 로드하는 함수
     const loadMoreDatas = useCallback(() => {
         if (isLoading || !cursor || !lastItemRef.current) return;
 
         const observerInstance = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting && !hasLoadedMore.current) {
-                    hasLoadedMore.current = true;
+                if (entry.isIntersecting) {
                     loadMore(itemsPerPage, option);
 
                     // loadMore 호출 후 관찰 중지
@@ -99,22 +84,22 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
         };
     }, [isLoading, cursor, itemsPerPage, option, loadMore]);
 
-    // mobile 반응형 경우에만 loadMoreDatas를 실행함.
     useEffect(() => {
-        if (window.innerWidth > SIZES.mobile) return;
-
         loadMoreDatas();
-        return () => {
-            hasLoadedMore.current = false; // 로드된 상태를 초기화.
-        };
     }, [loadMoreDatas]);
 
-    // 반응형에 따라 아이돌 리스트 데이터를 반환.
-    const IdolListDatas = () => {
-        if (window.innerWidth <= SIZES.mobile) {
-            return sortedDatas;
+    // 다음 페이지로 이동하는 함수
+    const handleNextPage = () => {
+        scrollTo('next');
+        setCurrentPage(currentPage + 1); // 현재 페이지를 증가.
+    };
+
+    // 이전 페이지로 이동하는 함수
+    const handlePrevPage = () => {
+        scrollTo('prev');
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1); // 현재 페이지를 감소.
         }
-        return paginatedDatas;
     };
 
     // 성별 필터 버튼 배열
@@ -149,14 +134,14 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
                 <CarouselButton onClick={handlePrevPage} disabled={isLoading || currentPage === 1}>
                     <img src={arrowIcon} alt="이전" />
                 </CarouselButton>
-                <IdolList>
-                    {IdolListDatas().map((idol, index) => (
+                <IdolList ref={idolListRef}>
+                    {sortedDatas.map((idol, index) => (
                         <IdolProfile
                             key={idol.id}
                             idol={idol}
                             onCheck={handleCheck}
                             checked={checkedIdols.some((checkedIdol) => checkedIdol.id === idol.id)}
-                            ref={index === IdolListDatas().length - 1 ? lastItemRef : null}
+                            ref={index === sortedDatas.length - 1 ? lastItemRef : null}
                         />
                     ))}
                 </IdolList>
@@ -190,13 +175,13 @@ const ContentWrapper = styled.div`
 
 const ContentTitle = styled.div`
     width: 100%;
-    max-width: 1200px;
+    max-width: 1194px;
     padding-top: 40px;
     display: flex;
     flex-direction: column;
 
     @media (max-width: 1280px) {
-        max-width: 584px;
+        max-width: 696px;
     }
     @media (max-width: 768px) {
         max-width: 328px;
@@ -205,10 +190,18 @@ const ContentTitle = styled.div`
 
 const ContentNav = styled.div`
     width: 100%;
+    max-width: 1194px;
     height: 42px;
     margin-top: 30px;
     display: flex;
     flex-direction: row;
+
+    @media (max-width: 1280px) {
+        max-width: 680px;
+    }
+    @media (max-width: 768px) {
+        max-width: 328px;
+    }
 `;
 
 const GenderToggleButton = styled.button`
@@ -226,16 +219,17 @@ const GenderToggleButton = styled.button`
 
 const CarouselPage = styled.div`
     width: 100%;
-    max-width: 1280px;
+    max-width: 1316px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 22px;
+    gap: 32px;
     margin: 32px 0 48px;
 
     @media (max-width: 1280px) {
-        max-width: 584px;
+        max-width: 696px;
+        gap: 27px;
     }
     @media (max-width: 768px) {
         max-width: 328px;
@@ -268,36 +262,42 @@ const RotatedIcon = styled.img`
 
 const IdolList = styled.div`
     display: grid;
-    grid-template: 1fr 1fr / repeat(8, 1fr);
+    grid-template: 1fr 1fr / repeat(8, 128px);
     gap: 24px;
-    width: 100%;
-    max-width: 1200px;
     place-items: center;
-    justify-content: center;
+    justify-content: start;
     margin: 0 auto;
+
+    overflow-y: hidden;
+    overflow-x: hidden;
+    grid-auto-flow: column;
+    width: 1194px;
+    padding: 0px 1px;
+    height: 398px;
+    margin: 0;
 
     @media (max-width: 1280px) {
         grid-template-columns: repeat(4, 128px);
+
+        width: 584px;
+        height: 390px;
     }
 
     @media (max-width: 768px) {
-        display: grid;
         grid-template-columns: repeat(3, 98px);
         grid-column-gap: 17px;
-        overflow-x: scroll;
-        overflow-y: hidden;
+
         width: 328px;
         height: 326px;
-        justify-content: start;
-        grid-auto-flow: column;
+        overflow-x: scroll;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
     }
 
     -ms-overflow-style: none;
     scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
 `;
 
 const ButtonInner = styled.div`
