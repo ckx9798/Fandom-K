@@ -8,7 +8,7 @@ export const getCharts = async ({ gender = 'female', cursor = null, pageSize = 1
             return res.data;
         })
         .catch((error) => {
-            return error;
+            throw error;
         });
     return response;
 };

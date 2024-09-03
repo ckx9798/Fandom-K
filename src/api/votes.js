@@ -8,7 +8,7 @@ export const postVotes = (idolId) => {
             return res.data;
         })
         .catch((error) => {
-            return error;
+            throw error;
         });
     return response;
 };

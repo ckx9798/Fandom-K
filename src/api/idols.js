@@ -8,7 +8,7 @@ export const getIdols = async ({ cursor = null, pageSize = 10 }) => {
             return res.data;
         })
         .catch((error) => {
-            return error;
+            throw error;
         });
     return response;
 };
