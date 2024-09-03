@@ -40,7 +40,7 @@ const IdolCard = styled.div`
     flex-direction: column;
     align-items: center;
     position: relative;
-    padding: 1px;
+    /* padding: 1px; */
     cursor: ${(props) => (props.selected ? 'default' : 'pointer')};
 
     @media (max-width: 768px) {
@@ -68,6 +68,7 @@ const IdolImg = styled.img`
     padding: 7.15px;
     z-index: -1;
     object-fit: cover;
+    display: block;
 
     @media (max-width: 768px) {
         padding: 5px;

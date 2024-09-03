@@ -50,7 +50,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
 
     const scrollTo = (direction) => {
         if (!idolListRef.current) return;
-        const scrollAmount = idolListRef.current.offsetWidth;
+        const scrollAmount = idolListRef.current.offsetWidth + 24;
         idolListRef.current.scrollBy({
             left: direction === 'next' ? scrollAmount : -scrollAmount,
             behavior: 'smooth',
@@ -150,11 +150,11 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
                         />
                     ))}
                 </IdolList>
-
                 <CarouselButton onClick={handleNextPage} disabled={isLoading || isDisabled}>
                     <RotatedIcon src={arrowIcon} alt="다음" />
                 </CarouselButton>
             </CarouselPage>
+
             <Button onClick={handleAddClick} width="255" height="48" radius="24">
                 <ButtonInner>
                     <img src={plusIcon} alt="추가" />
@@ -180,7 +180,7 @@ const ContentWrapper = styled.div`
 
 const ContentTitle = styled.div`
     width: 100%;
-    max-width: 1192px;
+    max-width: 1200px;
     padding-top: 40px;
     display: flex;
     flex-direction: column;
@@ -195,7 +195,7 @@ const ContentTitle = styled.div`
 
 const ContentNav = styled.div`
     width: 100%;
-    max-width: 1192px;
+    max-width: 1200px;
     height: 42px;
     margin-top: 30px;
     display: flex;
@@ -224,7 +224,7 @@ const GenderToggleButton = styled.button`
 
 const CarouselPage = styled.div`
     width: 100%;
-    max-width: 1318px;
+    max-width: 1316px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -275,9 +275,9 @@ const IdolList = styled.div`
     overflow-x: scroll;
     overflow-y: hidden;
     grid-auto-flow: column;
-    width: 1192px;
+    width: 1194px;
     height: 398px;
-    margin: 0;
+    padding: 0px 1px;
 
     @media (max-width: 1280px) {
         grid-template-columns: repeat(4, 128px);
