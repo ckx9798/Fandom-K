@@ -35,18 +35,6 @@ const DonationList = () => {
     const cardListRef = useRef(null);
     const lastItemRef = useRef(null);
 
-    // 페이지 넘기기 버튼
-    const NextSlide = () => {
-        if (cardListRef.current) {
-            setPage((prev) => prev + 1);
-        }
-    };
-    const PrevSlide = () => {
-        if (cardListRef.current) {
-            setPage((prev) => prev - 1);
-        }
-    };
-
     useEffect(() => {
         const scrollAmount = cardListRef.current.offsetWidth + 24;
         cardListRef.current.scrollTo({
@@ -64,7 +52,7 @@ const DonationList = () => {
         setScrollLeft(cardListRef.current.scrollLeft);
     };
 
-    const handleMouseUp = () => {
+    const handleMouseUpOrLeave = () => {
         setIsDragging(false);
     };
 
@@ -137,16 +125,16 @@ const DonationList = () => {
     return (
         <Container>
             <h2>후원을 기다리는 조공</h2>
-            <button className="button left" disabled={page === 0} onClick={PrevSlide}>
+            <PageButton className="left" disabled={page === 0} onClick={() => setPage(page - 1)}>
                 <img src={lefgBtnIcon} />
-            </button>
+            </PageButton>
             <Carousel
                 onMouseDown={handleMouseDown}
-                onMouseLeave={handleMouseUp}
-                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUpOrLeave}
+                onMouseUp={handleMouseUpOrLeave}
                 onMouseMove={handleMouseMove}
             >
-                <div className="cardList" ref={cardListRef}>
+                <CardList ref={cardListRef}>
                     {idols.map((item, index) => {
                         return (
                             <DonationItem
@@ -157,15 +145,15 @@ const DonationList = () => {
                             />
                         );
                     })}
-                </div>
+                </CardList>
             </Carousel>
-            <button
+            <PageButton
                 className="button right"
                 disabled={(page + 1) * PC_SIZE >= idols.length && !hasNext}
-                onClick={NextSlide}
+                onClick={() => setPage(page + 1)}
             >
                 <img src={rightBtnIcon} />
-            </button>
+            </PageButton>
         </Container>
     );
 };
@@ -180,30 +168,32 @@ const Container = styled.div`
         font-weight: 700;
         color: var(--white200);
     }
-    .button {
-        width: 40px;
-        height: 78px;
-        border: 0;
-        background-color: unset;
-        position: absolute;
-        z-index: 10;
-        &.left {
-            left: -80px;
-            top: 220px;
-            &:disabled {
-                display: none;
-            }
-        }
-        &.right {
-            right: -80px;
-            top: 220px;
-            &:disabled {
-                display: none;
-            }
+
+    @media (max-width: 1280px) {
+        width: 100%;
+    }
+`;
+
+const PageButton = styled.button`
+    width: 40px;
+    height: 78px;
+    border: 0;
+    background-color: unset;
+    position: absolute;
+    z-index: 10;
+    &.left {
+        left: -80px;
+        top: 220px;
+        &:disabled {
+            display: none;
         }
     }
-    p {
-        color: var(--white200);
+    &.right {
+        right: -80px;
+        top: 220px;
+        &:disabled {
+            display: none;
+        }
     }
     @media (max-width: 1380px) {
         .button {
@@ -225,23 +215,24 @@ const Container = styled.div`
 
 const Carousel = styled.div`
     overflow: hidden;
-    .cardList {
-        position: relative;
-        overflow: hidden;
-        margin: 24px 0 0;
-        display: flex;
-        gap: 24px;
-        scroll-behavior: smooth;
-        user-select: none;
-        &::-webkit-scrollbar {
-            display: none;
-        }
-    }
     @media (max-width: 1280px) {
         width: 100%;
-        .cardList {
-            overflow: scroll;
-            width: 100%;
-        }
+    }
+`;
+
+const CardList = styled.div`
+    position: relative;
+    overflow: hidden;
+    margin: 24px 0 0;
+    display: flex;
+    gap: 24px;
+    scroll-behavior: smooth;
+    user-select: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    @media (max-width: 1280px) {
+        overflow: scroll;
+        width: 100%;
     }
 `;
