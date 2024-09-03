@@ -56,12 +56,23 @@ const MyPage = () => {
 
             if (option === 'total') {
                 result = await getIdols({ cursor, pageSize: itemsToLoad });
-                setDatas((prevDatas) => [...prevDatas, ...result.list]);
+                if (result && Array.isArray(result.list)) {
+                    // result.list가 배열인지 확인
+                    setDatas((prevDatas) => [...prevDatas, ...result.list]);
+                } else {
+                    console.error('오류: result.list가 배열이 아님');
+                    handleLoadMoreClick();
+                }
             } else if (option === 'female' || option === 'male') {
                 result = await getCharts({ gender: option, cursor, pageSize: itemsToLoad });
-                setDatas((prevDatas) => [...prevDatas, ...result.idols]);
+                if (result && Array.isArray(result.idols)) {
+                    // result.idols가 배열인지 확인
+                    setDatas((prevDatas) => [...prevDatas, ...result.idols]);
+                } else {
+                    console.error('오류: result.idols가 배열이 아님');
+                }
             }
-            setCursor(result.nextCursor); // 다음 cursor로 업데이트
+            setCursor(result?.nextCursor); // result가 정의되어 있으면 cursor 업데이트
         } catch (error) {
             console.error('추가 데이터 로딩 오류:', error);
         } finally {
