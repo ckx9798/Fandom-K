@@ -1,15 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 
 const ModalContainer = ({ children, handleModalClose }) => {
     const [modalClose, setModalClose] = useState(false);
-    
+
     const handleModalClick = (e) => {
         if (e.target === e.currentTarget) {
-          handleModalClose();
+            handleModalClose();
         }
     };
+
+    // 모달이 열렸을 때 바깥쪽 페이지 스크롤 없애는 함수
+    useEffect(() => {
+        if (!modalClose) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [modalClose]);
+
+    if (modalClose) return null;
 
     return createPortal(
         <>
@@ -44,7 +59,7 @@ const Modal = styled.div`
     align-items: center;
     justify-content: center;
     margin: auto;
-    background-color: #181d26;
+    background-color: var(--black200);
     border-radius: 8px;
     overflow: hidden;
 `;

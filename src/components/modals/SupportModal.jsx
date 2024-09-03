@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { putContribute } from '../../api/donations';
-import styled from 'styled-components';
 import axios from 'axios';
+import styled from 'styled-components';
 import ModalContainer from './ModalContainer';
+import AlarmModal from './AlarmModal';
 import Button from '../Button';
 import { ContentsBoxStyle, DisabledBtn, NumberInput, TitleStyle } from './ModalGlobalStyle';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
@@ -10,10 +11,12 @@ import creditImg from '../../assets/icon/credit.svg';
 
 // 후원하기 모달창 (list 페이지에서 donations 자료를 넘겨주어야 합니다.)
 const SupportModal = ({ item, setModalClose }) => {
-    const [userDonation, setUserDonation] = useState(0);
+    const [userDonation, setUserDonation] = useState('');
     const [isLoading, setLoading] = useState(false);
+    const [alertModalClose, setAlertModalClose] = useState(true);
+    const [modalTitle, setModalTitle] = useState('');
 
-    const currentCredit = parseInt(localStorage.getItem('credit'), 10);
+    const currentCredit = parseInt(localStorage.getItem('credit'), 10) || 0;
     const isDisabled = userDonation > currentCredit;
 
     // 모달창 닫는 함수
@@ -34,20 +37,24 @@ const SupportModal = ({ item, setModalClose }) => {
 
         try {
             setLoading(true);
+
             const response = await putContribute(item.id, userDonation);
 
             if (response) {
                 localStorage.setItem('credit', currentCredit - userDonation);
                 setUserDonation('');
-                setModalClose((prev) => !prev);
+                setModalTitle('donation');
+                setAlertModalClose(false);
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.error('후원하기 모달 handleSubmit PUT 요청에서 오류 발생', error);
+
+                setModalTitle('alert');
+                setAlertModalClose(false);
             }
         } finally {
             setLoading(false);
-            handleModalClose();
         }
     };
 
@@ -85,6 +92,13 @@ const SupportModal = ({ item, setModalClose }) => {
                         {isLoading ? '잠시만 기다리세요.' : '후원하기'}
                     </DonationBtn>
                 </DonationForm>
+                {!alertModalClose && (
+                    <AlarmModal
+                        setAlertModalClose={setAlertModalClose}
+                        setModalClose={setModalClose}
+                        title={modalTitle}
+                    />
+                )}
             </ContentsBox>
         </ModalContainer>
     );

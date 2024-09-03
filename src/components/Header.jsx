@@ -1,6 +1,7 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import logo from '../assets/image/logo.svg';
 import userProfileImg from '../assets/image/userProfile.jpg';
+import HomeImg from '../assets/icon/Home.svg';
 import { Link, useLocation } from 'react-router-dom';
 
 const Header = () => {
@@ -16,12 +17,15 @@ const Header = () => {
 
     return (
         <StyledHeader>
-            <LogoLink to="/list" onClick={handleLogoClick}>
+            <Link to="/">
+                <Home src={HomeImg} alt="홈" />
+            </Link>
+            <Link to="/list" onClick={handleLogoClick}>
                 <Logo src={logo} alt="FANDOM-K 로고" />
-            </LogoLink>
-            <ProfileLink to="/my">
+            </Link>
+            <Link to="/my">
                 <UserProfile src={userProfileImg} alt="유저 프로필 이미지" />
-            </ProfileLink>
+            </Link>
         </StyledHeader>
     );
 };
@@ -33,12 +37,11 @@ const StyledHeader = styled.div`
     width: 100%;
     max-width: 1200px;
     padding: 24px 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-areas: '. logo profile';
+    display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
+    justify-content: space-between;
 
     @media (max-width: 1280px) {
         height: 81px;
@@ -51,15 +54,25 @@ const StyledHeader = styled.div`
     }
 `;
 
+const iconStyles = css`
+    height: 32px;
+    width: 32px;
+`;
+
+const Home = styled.img`
+    ${iconStyles}
+`;
+const UserProfile = styled.img`
+    ${iconStyles}
+    border-radius: 125px;
+`;
+
 const Logo = styled.img`
     width: 167.92px;
     height: 32px;
     background: none;
     border: none;
     padding: 0;
-    grid-area: logo;
-    justify-self: center;
-    cursor: pointer;
 
     @media (max-width: 1280px) {
         height: 22.87px;
@@ -77,16 +90,12 @@ const UserProfile = styled.img`
     cursor: pointer;
 `;
 
-const ProfileLink = styled(Link)`
-    grid-area: profile;
-    justify-self: end;
-    display: flex;
-    align-items: center;
-`;
-
-const LogoLink = styled(Link)`
-    grid-area: logo;
-    justify-self: center;
-    display: flex;
-    align-items: center;
+const RefreshButton = styled.button`
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex: 1;
+    position: relative;
+    left: 32px;
 `;
