@@ -1,23 +1,22 @@
-import { useState } from 'react';
-import styled from 'styled-components';
+import { forwardRef } from 'react';
 import deleteIcon from '../../../assets/icon/Icon-delete.svg';
 import checkIcon from '../../../assets/icon/ic_check.svg';
+import styled, { css } from 'styled-components';
 
-const IdolProfile = ({ idol, selected = false, onDelete, onCheck }) => {
-    const [checked, setChecked] = useState(false);
-
+const IdolProfile = forwardRef(({ idol, selected = false, onCheck = () => {}, checked, onDelete }, ref) => {
+    // 체크표시를 하는 함수
     const handleCheckClick = () => {
         const newChecked = !checked;
-        setChecked(newChecked);
         onCheck(idol, newChecked);
     };
 
+    // 프로필을 삭제하는 함수
     const handleDeleteClick = () => onDelete(idol.id);
 
     return (
-        <IdolCard selected={selected} onClick={handleCheckClick}>
-            <IdolImgContainer selected={selected} onClick={handleCheckClick} checked={checked}>
-                <IdolImg src={idol.profilePicture} selected={selected} checked={checked} />
+        <IdolCard selected={selected} onClick={handleCheckClick} ref={ref}>
+            <IdolImgContainer selected={selected}>
+                <IdolImg src={idol.profilePicture} selected={selected} />
                 {checked && !selected && (
                     <Overlay>
                         <CheckIcon src={checkIcon} alt="체크 아이콘" />
@@ -29,29 +28,61 @@ const IdolProfile = ({ idol, selected = false, onDelete, onCheck }) => {
             {selected && <DeleteButton onClick={handleDeleteClick} src={deleteIcon} alt="삭제버튼" />}
         </IdolCard>
     );
-};
+});
 
 export default IdolProfile;
 
+// IdolCard는 프로필 카드의 외관을 정의
 const IdolCard = styled.div`
     width: ${(props) => (props.selected === false ? '128px' : '100px')};
     height: ${(props) => (props.selected === false ? '183px' : '150px')};
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 32px;
     position: relative;
+    padding: 1px;
     cursor: ${(props) => (props.selected ? 'default' : 'pointer')};
+
+    @media (max-width: 768px) {
+        width: 98px;
+        min-width: 98px;
+        height: ${(props) => (props.selected === false ? '151px' : '121px')};
+    }
 `;
 
-const IdolImg = styled.img`
+// IdolCardStyles는 이미지와 이미지 컨테이너의 공통 스타일을 정의
+const IdolCardStyles = css`
     width: ${(props) => (props.selected === false ? '128px' : '100px')};
     height: ${(props) => (props.selected === false ? '128px' : '100px')};
-    padding: 7.15px;
     border-radius: 50%;
-    z-index: -1;
+
+    @media (max-width: 768px) {
+        width: ${(props) => (props.selected === false ? '98px' : '70px')};
+        height: ${(props) => (props.selected === false ? '98px' : '70px')};
+    }
 `;
 
+// IdolImg는 아이돌의 프로필 이미지를 스타일링
+const IdolImg = styled.img`
+    ${IdolCardStyles}
+    padding: 7.15px;
+    z-index: -1;
+    object-fit: cover;
+
+    @media (max-width: 768px) {
+        padding: 5px;
+    }
+`;
+
+// IdolImgContainer는 프로필 이미지 컨테이너를 스타일링
+const IdolImgContainer = styled.div`
+    ${IdolCardStyles}
+    display: inline-block;
+    outline: 1.43px solid #f96868;
+    position: relative;
+`;
+
+// Overlay는 체크 상태일 때 표시되는 오버레이를 스타일링
 const Overlay = styled.div`
     position: absolute;
     top: 6.52px;
@@ -76,23 +107,23 @@ const Overlay = styled.div`
         z-index: -1;
         border-radius: 50%;
     }
+
+    @media (max-width: 768px) {
+        top: 5px;
+        left: 5px;
+        width: 88px;
+        height: 88px;
+    }
 `;
 
+// CheckIcon은 체크 아이콘의 크기와 위치를 스타일링
 const CheckIcon = styled.img`
     width: 52.27px;
     height: 52.27px;
     z-index: 1;
 `;
 
-const IdolImgContainer = styled.div`
-    width: ${(props) => (props.selected === false ? '128px' : '100px')};
-    height: ${(props) => (props.selected === false ? '128px' : '100px')};
-    display: inline-block;
-    outline: 1.43px solid #f96868;
-    border-radius: 50%;
-    position: relative;
-`;
-
+// IdolName은 아이돌의 이름 텍스트를 스타일링
 const IdolName = styled.p`
     font-weight: 700;
     font-size: 16px;
@@ -101,6 +132,7 @@ const IdolName = styled.p`
     margin: 8px 0 2px;
 `;
 
+//IdolGroup은 아이돌 그룹의 이름 텍스트를 스타일링
 const IdolGroup = styled.p`
     font-weight: 400;
     font-size: 14px;
@@ -108,6 +140,7 @@ const IdolGroup = styled.p`
     color: #ffffff99;
 `;
 
+// DeleteButton은 삭제 버튼의 크기와 위치를 스타일링
 const DeleteButton = styled.img`
     position: absolute;
     width: 31.43px;
@@ -115,4 +148,11 @@ const DeleteButton = styled.img`
     top: 1.43px;
     left: 70px;
     cursor: pointer;
+
+    @media (max-width: 768px) {
+        width: 22px;
+        height: 22px;
+        top: 1px;
+        left: 64px;
+    }
 `;
