@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import creditImg from '../../assets/icon/credit.svg';
-import CreditCharge from '../modals/CreditCharge';
+import CreditCharge from '../../../components/modals/CreditCharge';
+import creditImg from '../../../assets/icon/credit.svg';
 
 const CreditStatus = () => {
     const [modalClose, setModalClose] = useState(true);
-    
+
     const handleChargeModal = () => {
         setModalClose((prev) => !prev);
     };
@@ -32,8 +32,6 @@ export default CreditStatus;
 const Container = styled.div`
     max-width: 1200px;
     width: 100%;
-    margin: auto;
-    margin-top: 130px;
     padding: 30px 80px;
     border: 1px solid rgba(241, 238, 249, 0.8);
     border-radius: 8px;

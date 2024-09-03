@@ -27,6 +27,9 @@ const AlarmModal = ({ setAlertModalClose, setModalClose, title = 'credit' }) => 
         case 'donation':
             description = <p>{title === 'vote' ? '투표가' : '후원이'} 완료되었습니다.</p>;
             break;
+        case 'server':
+            description = <ServerError>서버 오류가 발생했어요. 잠시 후 다시 시도해주세요.</ServerError>;
+            break;
         default:
             description = <p>오류가 발생했어요. 잠시 후 다시 시도해주세요.</p>;
     }
@@ -83,4 +86,9 @@ const Contents = styled.div`
     span {
         color: var(--brand100);
     }
+`;
+
+const ServerError = styled.p`
+  text-align: center;
+  letter-spacing: -1px;
 `;

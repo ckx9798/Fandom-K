@@ -8,6 +8,8 @@ import { postVotes } from '../../api/votes';
 import { ContentsBoxStyle, DisabledBtn, TitleStyle } from './ModalGlobalStyle';
 import CustomRadio from './CustomRadio';
 import { getCharts } from '../../api/charts';
+import { ErrorBoundary } from 'react-error-boundary';
+import useCredit from '../../hooks/list/useCredit';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import mobileArrow from '../../assets/icon/icj_arrow_left.svg';
 import check from '../../assets/icon/ic_check.svg';
@@ -19,6 +21,7 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
     const [modalTitle, setModalTitle] = useState('');
     const [idolList, setIdolList] = useState([]);
     const [isLoading, setLoading] = useState(false);
+    const [credit, setCredit] = useCredit();
 
     // 성별에 따른 전체 데이터 가져오는 함수
     useEffect(() => {
@@ -35,6 +38,9 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
                     console.error('투표하기 모달 getIdolList GET 요청에서 오류 발생', error);
                     setModalTitle('alert');
                     setAlertModalClose(false);
+                } else {
+                  setModalTitle('server');
+                  setAlertModalClose(false);
                 }
             } finally {
                 setLoading(false);
@@ -72,9 +78,7 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
         e.preventDefault();
 
         try {
-            const currentCredit = parseInt(localStorage.getItem('credit'), 10) || 0;
-
-            if (currentCredit < 1000) {
+            if (credit < 1000) {
                 setModalTitle('credit');
                 setAlertModalClose(false);
                 return;
@@ -83,8 +87,9 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
             const response = await postVotes(voteIdol);
 
             if (response) {
-                const adjustCredit = currentCredit - 1000;
+                const adjustCredit = credit - 1000;
                 localStorage.setItem('credit', adjustCredit);
+                setCredit(adjustCredit);
 
                 setModalTitle('vote');
                 setAlertModalClose(false);
@@ -95,81 +100,92 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
 
                 setModalTitle('alert');
                 setAlertModalClose(false);
+            } else {
+              // axios 에러가 아닌 다른 에러일 때 에러처리
+              setModalTitle('server');
+              setAlertModalClose(false);
+              throw error;
             }
         }
     };
 
     return (
-        <ModalContainer handleModalClose={handleModalClose}>
-            <ContentsBox>
-                <Title>
-                    <MobileCloseBtn onClick={handleModalClose}>
-                        <img src={mobileArrow} alt="닫기" />
-                    </MobileCloseBtn>
-                    <h2>이달의 {title === 'female' ? '여자' : '남자'} 아이돌</h2>
-                    <CloseBtn onClick={handleModalClose}>
-                        <img src={closeBtn} alt="닫기" />
-                    </CloseBtn>
-                </Title>
-                <VoteForm onSubmit={handleVote}>
-                    {!isLoading ? (
-                        sortIdol?.length > 0 ? (
-                            sortIdol.map((idol, i) => (
-                                <FormWrapper key={idol.id}>
-                                    <IdolVoteInfo>
-                                        <ImgBox>
-                                            <IdolImg
-                                                src={idol.profilePicture}
-                                                alt="아이돌"
-                                                selected={Number(voteIdol) === idol.id}
-                                            />
-                                            <CheckIcon
-                                                src={check}
-                                                alt="체크 표시"
-                                                selected={Number(voteIdol) === idol.id}
-                                            />
-                                            <CheckBackground selected={Number(voteIdol) === idol.id} />
-                                        </ImgBox>
-                                        <IdolNumber>{i + 1}</IdolNumber>
-                                        <CurrentVoteBox>
-                                            <h3>
-                                                {idol.group} {idol.name}
-                                            </h3>
-                                            <span>{idol.totalVotes.toLocaleString('ko-KR')}표</span>
-                                        </CurrentVoteBox>
-                                    </IdolVoteInfo>
-                                    <CustomRadio
-                                        name="idol"
-                                        value={idol.id}
-                                        checked={Number(voteIdol) === idol.id}
-                                        onChange={handleChangeVote}
-                                    />
-                                </FormWrapper>
-                            ))
+        <ErrorBoundary
+            fallback={
+                !alertModalClose && <AlarmModal setAlertModalClose={setAlertModalClose} setModalClose={setModalClose} title="server" />
+            }
+        >
+            <ModalContainer handleModalClose={handleModalClose}>
+                <ContentsBox>
+                    <Title>
+                        <MobileCloseBtn onClick={handleModalClose}>
+                            <img src={mobileArrow} alt="닫기" />
+                        </MobileCloseBtn>
+                        <h2>이달의 {title === 'female' ? '여자' : '남자'} 아이돌</h2>
+                        <CloseBtn onClick={handleModalClose}>
+                            <img src={closeBtn} alt="닫기" />
+                        </CloseBtn>
+                    </Title>
+                    <VoteForm onSubmit={handleVote}>
+                        {!isLoading ? (
+                            sortIdol?.length > 0 ? (
+                                sortIdol.map((idol, i) => (
+                                    <FormWrapper key={idol.id}>
+                                        <IdolVoteInfo>
+                                            <ImgBox>
+                                                <IdolImg
+                                                    src={idol.profilePicture}
+                                                    alt="아이돌"
+                                                    selected={Number(voteIdol) === idol.id}
+                                                />
+                                                <CheckIcon
+                                                    src={check}
+                                                    alt="체크 표시"
+                                                    selected={Number(voteIdol) === idol.id}
+                                                />
+                                                <CheckBackground selected={Number(voteIdol) === idol.id} />
+                                            </ImgBox>
+                                            <IdolNumber>{i + 1}</IdolNumber>
+                                            <CurrentVoteBox>
+                                                <h3>
+                                                    {idol.group} {idol.name}
+                                                </h3>
+                                                <span>{idol.totalVotes.toLocaleString('ko-KR')}표</span>
+                                            </CurrentVoteBox>
+                                        </IdolVoteInfo>
+                                        <CustomRadio
+                                            name="idol"
+                                            value={idol.id}
+                                            checked={Number(voteIdol) === idol.id}
+                                            onChange={handleChangeVote}
+                                        />
+                                    </FormWrapper>
+                                ))
+                            ) : (
+                                <EmptyList>표시할 아이돌이 없습니다.</EmptyList>
+                            )
                         ) : (
-                            <EmptyList>표시할 아이돌이 없습니다.</EmptyList>
-                        )
-                    ) : (
-                        <EmptyList>데이터를 불러오고 있습니다. 잠시 기다려주세요.</EmptyList>
+                            <EmptyList>데이터를 불러오고 있습니다. 잠시 기다려주세요.</EmptyList>
+                        )}
+                        <VoteBtnBox>
+                            <VoteBtn type="submit" width="327" disabled={isDisabled}>
+                                투표하기
+                            </VoteBtn>
+                            <CreditAlert>
+                                투표하는 데 <span>1000 크레딧</span>이 소모됩니다.
+                            </CreditAlert>
+                        </VoteBtnBox>
+                    </VoteForm>
+                    {!alertModalClose && (
+                        <AlarmModal
+                            setAlertModalClose={setAlertModalClose}
+                            setModalClose={setModalClose}
+                            title={modalTitle}
+                        />
                     )}
-                    <VoteBtnBox>
-                        <VoteBtn type="submit" width="327" disabled={isDisabled}>
-                            투표하기
-                        </VoteBtn>
-                        <CreditAlert>
-                            투표하는 데 <span>1000 크레딧</span>이 소모됩니다.
-                        </CreditAlert>
-                    </VoteBtnBox>
-                </VoteForm>
-                {!alertModalClose && (
-                    <AlarmModal
-                        setAlertModalClose={setAlertModalClose}
-                        setModalClose={setModalClose}
-                        title={modalTitle}
-                    />
-                )}
-            </ContentsBox>
-        </ModalContainer>
+                </ContentsBox>
+            </ModalContainer>
+        </ErrorBoundary>
     );
 };
 
