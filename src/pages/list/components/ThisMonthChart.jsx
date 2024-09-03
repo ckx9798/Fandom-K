@@ -43,6 +43,7 @@ const ThisMonthChart = () => {
             console.error('chart data 오류', error);
         }
     };
+
     // IdolData 적용
     useEffect(() => {
         loadIdolData(true);
@@ -71,7 +72,7 @@ const ThisMonthChart = () => {
             <ChartHeader>
                 <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
                 <Button width="128" height="32" border-radius="3" onClick={() => ViewVoteModalHandler()}>
-                    {isOpen === true ? <VoteModal idolList={IdolData} title={IdolGender} /> : null}
+                    {isOpen === true ? <VoteModal title={IdolGender} setModalClose={setIsOpen} /> : null}
                     <img src={chartImg} alt="차트이미지" />
                     <span> 차트 투표하기 </span>
                 </Button>
@@ -105,13 +106,11 @@ export default ThisMonthChart;
 const ChartContainer = styled.div`
     width: 1200px;
     margin: 0 auto;
-    /* background-color: #02000e; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-bottom: 150px;
-
     @media (max-width: 1280px) {
         width: 95%;
     }
