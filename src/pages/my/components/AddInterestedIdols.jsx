@@ -175,7 +175,7 @@ const ContentWrapper = styled.div`
 
 const ContentTitle = styled.div`
     width: 100%;
-    max-width: 1192px;
+    max-width: 1194px;
     padding-top: 40px;
     display: flex;
     flex-direction: column;
@@ -190,7 +190,7 @@ const ContentTitle = styled.div`
 
 const ContentNav = styled.div`
     width: 100%;
-    max-width: 1192px;
+    max-width: 1194px;
     height: 42px;
     margin-top: 30px;
     display: flex;
@@ -219,7 +219,7 @@ const GenderToggleButton = styled.button`
 
 const CarouselPage = styled.div`
     width: 100%;
-    max-width: 1318px;
+    max-width: 1316px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -271,7 +271,8 @@ const IdolList = styled.div`
     overflow-y: hidden;
     overflow-x: hidden;
     grid-auto-flow: column;
-    width: 1192px;
+    width: 1194px;
+    padding: 0px 1px;
     height: 398px;
     margin: 0;
 

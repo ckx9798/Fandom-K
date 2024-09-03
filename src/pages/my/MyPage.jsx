@@ -47,36 +47,38 @@ const MyPage = () => {
         fetchData();
     }, [option]);
 
+    // 데이터 업데이트 및 오류 처리 함수
+    const handleDataUpdate = (data, errorMessage) => {
+        if (Array.isArray(data)) {
+            setDatas((prevDatas) => [...prevDatas, ...data]);
+        } else {
+            console.error(`오류: ${errorMessage}가 배열이 아님`);
+            // 필요한 추가 오류 처리 (toast 라이브러리?)
+        }
+    };
+
     const handleLoadMoreClick = async (itemsToLoad, option) => {
         if (!cursor) return; // cursor가 없으면 더 이상 요청하지 않음
 
         try {
-            setIsLoading(true);
+            setIsLoading(true); // 추가 데이터 로딩 시작
             let result;
 
+            // 필터 옵션에 따른 추가 데이터 로드
             if (option === 'total') {
                 result = await getIdols({ cursor, pageSize: itemsToLoad });
-                if (result && Array.isArray(result.list)) {
-                    // result.list가 배열인지 확인
-                    setDatas((prevDatas) => [...prevDatas, ...result.list]);
-                } else {
-                    console.error('오류: result.list가 배열이 아님');
-                    handleLoadMoreClick();
-                }
+                handleDataUpdate(result?.list, 'result.list');
             } else if (option === 'female' || option === 'male') {
                 result = await getCharts({ gender: option, cursor, pageSize: itemsToLoad });
-                if (result && Array.isArray(result.idols)) {
-                    // result.idols가 배열인지 확인
-                    setDatas((prevDatas) => [...prevDatas, ...result.idols]);
-                } else {
-                    console.error('오류: result.idols가 배열이 아님');
-                }
+                handleDataUpdate(result?.idols, 'result.idols');
             }
-            setCursor(result?.nextCursor); // result가 정의되어 있으면 cursor 업데이트
+
+            setCursor(result?.nextCursor); // 다음 커서 업데이트
         } catch (error) {
             console.error('추가 데이터 로딩 오류:', error);
+            // 필요시 오류에 대한 추가 처리
         } finally {
-            setIsLoading(false);
+            setIsLoading(false); // 추가 데이터 로딩 종료
         }
     };
 
