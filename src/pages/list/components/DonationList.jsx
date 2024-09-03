@@ -26,6 +26,7 @@ const DonationList = () => {
     const [hasNext, setHasNext] = useState(true);
     const [pageSize, setPageSize] = useState(getPageSize());
     const [page, setPage] = useState(0);
+    const [error, setError] = useState(false);
 
     // 터치 스크롤을 위한 state
     const [isDragging, setIsDragging] = useState(false);
@@ -76,9 +77,8 @@ const DonationList = () => {
             setIdols((prev) => [...prev, ...apiData.list]);
             setCursor(apiData.nextCursor);
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.error('데이터 불러오기 에러', error);
-            }
+            console.log(error);
+            console.log('에러 발생');
         } finally {
             setIsLoading(false);
         }
@@ -196,20 +196,15 @@ const PageButton = styled.button`
         }
     }
     @media (max-width: 1380px) {
-        .button {
-            &.left {
-                left: 0px;
-            }
-            &.right {
-                right: 0px;
-            }
+        &.left {
+            left: 0px;
+        }
+        &.right {
+            right: 0px;
         }
     }
     @media (max-width: 1280px) {
-        width: 100%;
-        .button {
-            display: none;
-        }
+        display: none;
     }
 `;
 
