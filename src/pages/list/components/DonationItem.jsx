@@ -18,8 +18,9 @@ const DonationItem = forwardRef(({ item, pageSize }, ref) => {
             <div className="imgBox">
                 <img src={item.idol.profilePicture} alt="프로필 사진" />
                 <div className="overlay" />
-                {pageSize !== 'mobile' && <Button onClick={handleChargeModal}>후원하기</Button>}
-                {pageSize === 'mobile' && (
+                {pageSize !== 'mobile' ? (
+                    <Button onClick={handleChargeModal}>후원하기</Button>
+                ) : (
                     <Button width={142} height={31} onClick={handleChargeModal}>
                         후원하기
                     </Button>
