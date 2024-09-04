@@ -21,10 +21,8 @@ const CreditCharge = ({ setModalClose }) => {
     };
 
     // 사용자가 선택한 버튼 감지 및 값 할당함수
-    const handleChangeRadio = (e) => {
-        const { value } = e.target;
-
-        setChargeAmount(Number(value));
+    const handleChangeRadio = (total) => {
+        setChargeAmount(Number(total));
         setCustomCharge('');
     };
 
@@ -76,7 +74,7 @@ const CreditCharge = ({ setModalClose }) => {
                 </TitleStyle>
                 <CreditForm onSubmit={handleCharge}>
                     {creditArr.map((credit) => (
-                        <Credit key={credit.total} selected={chargeAmount === credit.total}>
+                        <Credit key={credit.total} selected={chargeAmount === credit.total} onClick={() => handleChangeRadio(credit.total)}>
                             <CreditRadioBox>
                                 <img src={creditImg} alt="크레딧" />
                                 <CreditAmount selected={chargeAmount === credit.total}>{credit.total}</CreditAmount>
@@ -85,7 +83,7 @@ const CreditCharge = ({ setModalClose }) => {
                                 type="radio"
                                 name="credit"
                                 value={credit.total}
-                                onChange={handleChangeRadio}
+                                onChange={() => handleChangeRadio(credit.total)}
                                 checked={chargeAmount === credit.total}
                             />
                         </Credit>

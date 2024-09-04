@@ -67,10 +67,8 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
     };
 
     // 투표할 아이돌 받는 함수
-    const handleChangeVote = (e) => {
-        const { value } = e.target;
-
-        setVoteIdol(value);
+    const handleChangeVote = (idolId) => {
+        setVoteIdol(idolId);
     };
 
     // 투표하기 버튼 누르면 실행되는 함수
@@ -128,7 +126,7 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
                         {!isLoading ? (
                             sortIdol?.length > 0 ? (
                                 sortIdol.map((idol, i) => (
-                                    <FormWrapper key={idol.id}>
+                                    <FormWrapper key={idol.id} onClick={() => handleChangeVote(idol.id)}>
                                         <IdolVoteInfo>
                                             <ImgBox>
                                                 <IdolImg
@@ -155,7 +153,7 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
                                             name="idol"
                                             value={idol.id}
                                             checked={Number(voteIdol) === idol.id}
-                                            onChange={handleChangeVote}
+                                            onChange={() => handleChangeVote(idol.id)}
                                         />
                                     </FormWrapper>
                                 ))
