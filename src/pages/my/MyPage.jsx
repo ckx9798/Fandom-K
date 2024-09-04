@@ -19,6 +19,7 @@ const MyPage = () => {
     const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
     const [option, setOption] = useState('total');
     const dataNum = useDataNum();
+    const [error, setError] = useState(false);
 
     // 초기 데이터 로딩
     useEffect(() => {
@@ -37,6 +38,7 @@ const MyPage = () => {
                 setCursor(result.nextCursor);
             } catch (error) {
                 console.error('데이터 로딩 오류:', error);
+                setError(true);
                 setDatas([]);
             } finally {
                 setIsLoading(false);
@@ -52,7 +54,6 @@ const MyPage = () => {
             setDatas((prevDatas) => [...prevDatas, ...data]);
         } else {
             console.error(`오류: ${errorMessage}가 배열이 아님`);
-            // 필요한 추가 오류 처리 (toast 라이브러리?)
         }
     };
 
@@ -75,7 +76,7 @@ const MyPage = () => {
             setCursor(result?.nextCursor); // 다음 커서 업데이트
         } catch (error) {
             console.error('추가 데이터 로딩 오류:', error);
-            // 필요시 오류에 대한 추가 처리
+            setError(true);
         } finally {
             setIsLoading(false); // 추가 데이터 로딩 종료
         }
@@ -94,6 +95,7 @@ const MyPage = () => {
                         loadMore={handleLoadMoreClick}
                         option={option}
                         setOption={setOption}
+                        error={error}
                     />
                 </MyDispatchContext.Provider>
             </MyStateContext.Provider>

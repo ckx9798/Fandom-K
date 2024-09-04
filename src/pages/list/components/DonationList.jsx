@@ -5,6 +5,7 @@ import DonationItem from './DonationItem';
 import rightBtnIcon from '../../../assets/icon/btn_pagination_right.svg';
 import lefgBtnIcon from '../../../assets/icon/btn_pagination_left.svg';
 import useScrollTo from '../../../hooks/useScrollTo ';
+import usePagination from '../../../hooks/usePagination';
 
 const PC_SIZE = 4;
 
@@ -26,7 +27,6 @@ const DonationList = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [hasNext, setHasNext] = useState(true);
     const [pageSize, setPageSize] = useState(getPageSize());
-    const [page, setPage] = useState(0);
     const [error, setError] = useState(false);
 
     // 터치 스크롤을 위한 state
@@ -37,9 +37,7 @@ const DonationList = () => {
     const { ref: cardListRef, scrollTo } = useScrollTo();
     const lastItemRef = useRef(null);
 
-    useEffect(() => {
-        scrollTo('next', 24 * page);
-    }, [page]);
+    const { page, handleNextPage, handlePrevPage } = usePagination(scrollTo);
 
     // 마우스 스크롤 이벤트
     const handleMouseDown = (e) => {
@@ -122,7 +120,7 @@ const DonationList = () => {
     return (
         <Container>
             <h2>후원을 기다리는 조공</h2>
-            <PageButton className="left" disabled={page === 0} onClick={() => setPage(page - 1)}>
+            <PageButton className="left" disabled={page === 0} onClick={handlePrevPage}>
                 <img src={lefgBtnIcon} />
             </PageButton>
             <Carousel
@@ -147,7 +145,7 @@ const DonationList = () => {
             <PageButton
                 className="button right"
                 disabled={(page + 1) * PC_SIZE >= idols.length && !hasNext}
-                onClick={() => setPage(page + 1)}
+                onClick={handleNextPage}
             >
                 <img src={rightBtnIcon} />
             </PageButton>

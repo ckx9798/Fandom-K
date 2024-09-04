@@ -5,21 +5,23 @@ import Button from '../../../components/Button';
 import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyDispatchContext, MyStateContext } from '../MyPage';
+import RefreshButton from './RefreshButton';
 import useDataNum from '../../../hooks/useDataNum';
 import useScrollTo from '../../../hooks/useScrollTo ';
+import usePagination from '../../../hooks/usePagination';
 
-const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption }) => {
+const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption, error }) => {
     const { datas, selectedDatas, checkedIdols } = useContext(MyStateContext);
     const { setSelectedDatas, setCheckedIdols } = useContext(MyDispatchContext);
-    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지를 관리함.
     const dataNum = useDataNum(); // 페이지당 렌더링되어야 할 아이템 수를 가져옴.
     const lastItemRef = useRef(null); // 마지막 아이템을 참조하는 ref.
     const { ref: idolListRef, scrollTo } = useScrollTo(); // 훅 사용
+    const { page, handleNextPage, handlePrevPage } = usePagination(scrollTo);
 
     // 옵션 변경 시 호출되는 함수
     const handleChange = (e) => {
         setOption(e.target.value); // 옵션을 업데이트함.
-        setCurrentPage(1); // 페이지를 1로 초기화.
+        setPage(0); // 페이지를 0으로 초기화.
         setCursor(null); // 커서를 초기화.
         setCheckedIdols([]); // 체크된 아이돌을 초기화.
     };
@@ -62,7 +64,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
                     }
                 }
             },
-            { threshold: 0.5 },
+            { threshold: 0.25 },
         );
 
         if (lastItemRef.current) {
@@ -78,20 +80,6 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
         loadMoreDatas();
     }, [datas]);
 
-    // 다음 페이지로 이동하는 함수
-    const handleNextPage = () => {
-        scrollTo('next');
-        setCurrentPage(currentPage + 1); // 현재 페이지를 증가.
-    };
-
-    // 이전 페이지로 이동하는 함수
-    const handlePrevPage = () => {
-        scrollTo('prev');
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1); // 현재 페이지를 감소.
-        }
-    };
-
     // 성별 필터 버튼 배열
     const genderBtnArr = [
         { value: 'total', option: 'total', title: '전체 아이돌' },
@@ -100,52 +88,58 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
     ];
 
     // 더 이상 로드할 데이터가 없는지 판단하는 변수.
-    const isDisabled = !cursor && currentPage * dataNum >= sortedDatas.length;
+    const isDisabled = !cursor && (page + 1) * dataNum >= sortedDatas.length;
 
     return (
         <ContentWrapper>
-            <ContentTitle>
-                <h2>관심 있는 아이돌을 추가해보세요.</h2>
-                <ContentNav>
-                    {genderBtnArr.map((gender) => (
-                        <GenderToggleButton
-                            key={gender.value}
-                            onClick={handleChange}
-                            value={gender.value}
-                            selected={option === gender.option}
-                        >
-                            {gender.title}
-                        </GenderToggleButton>
-                    ))}
-                </ContentNav>
-            </ContentTitle>
+            {!error ? (
+                <>
+                    <ContentTitle>
+                        <h2>관심 있는 아이돌을 추가해보세요.</h2>
+                        <ContentNav>
+                            {genderBtnArr.map((gender) => (
+                                <GenderToggleButton
+                                    key={gender.value}
+                                    onClick={handleChange}
+                                    value={gender.value}
+                                    selected={option === gender.option}
+                                >
+                                    {gender.title}
+                                </GenderToggleButton>
+                            ))}
+                        </ContentNav>
+                    </ContentTitle>
 
-            <CarouselPage>
-                <CarouselButton onClick={handlePrevPage} disabled={isLoading || currentPage === 1}>
-                    <img src={arrowIcon} alt="이전" />
-                </CarouselButton>
-                <IdolList ref={idolListRef}>
-                    {sortedDatas.map((idol, index) => (
-                        <IdolProfile
-                            key={idol.id}
-                            idol={idol}
-                            onCheck={handleCheck}
-                            checked={checkedIdols.some((checkedIdol) => checkedIdol.id === idol.id)}
-                            ref={index === sortedDatas.length - 1 ? lastItemRef : null}
-                        />
-                    ))}
-                </IdolList>
+                    <CarouselPage>
+                        <CarouselButton onClick={handlePrevPage} disabled={isLoading || page === 0}>
+                            <img src={arrowIcon} alt="이전" />
+                        </CarouselButton>
+                        <IdolList ref={idolListRef}>
+                            {sortedDatas.map((idol, index) => (
+                                <IdolProfile
+                                    key={idol.id}
+                                    idol={idol}
+                                    onCheck={handleCheck}
+                                    checked={checkedIdols.some((checkedIdol) => checkedIdol.id === idol.id)}
+                                    ref={index === sortedDatas.length - 1 ? lastItemRef : null}
+                                />
+                            ))}
+                        </IdolList>
 
-                <CarouselButton onClick={handleNextPage} disabled={isLoading || isDisabled}>
-                    <RotatedIcon src={arrowIcon} alt="다음" />
-                </CarouselButton>
-            </CarouselPage>
-            <Button onClick={handleAddClick} width="255" height="48" radius="24">
-                <ButtonInner>
-                    <img src={plusIcon} alt="추가" />
-                    <span>추가하기</span>
-                </ButtonInner>
-            </Button>
+                        <CarouselButton onClick={handleNextPage} disabled={isLoading || isDisabled}>
+                            <RotatedIcon src={arrowIcon} alt="다음" />
+                        </CarouselButton>
+                    </CarouselPage>
+                    <Button onClick={handleAddClick} width="255" height="48" radius="24">
+                        <ButtonInner>
+                            <img src={plusIcon} alt="추가" />
+                            <span>추가하기</span>
+                        </ButtonInner>
+                    </Button>
+                </>
+            ) : (
+                <RefreshButton />
+            )}
         </ContentWrapper>
     );
 };
