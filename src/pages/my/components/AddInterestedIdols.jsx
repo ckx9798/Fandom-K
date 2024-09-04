@@ -5,15 +5,16 @@ import Button from '../../../components/Button';
 import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyDispatchContext, MyStateContext } from '../MyPage';
-import useItemsPerPage from '../../../hooks/my/useItemsPerPage';
+import useDataNum from '../../../hooks/useDataNum';
+import useScrollTo from '../../../hooks/useScrollTo ';
 
 const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption }) => {
     const { datas, selectedDatas, checkedIdols } = useContext(MyStateContext);
     const { setSelectedDatas, setCheckedIdols } = useContext(MyDispatchContext);
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지를 관리함.
-    const itemsPerPage = useItemsPerPage(); // 페이지당 렌더링되어야 할 아이템 수를 가져옴.
+    const dataNum = useDataNum(); // 페이지당 렌더링되어야 할 아이템 수를 가져옴.
     const lastItemRef = useRef(null); // 마지막 아이템을 참조하는 ref.
-    const idolListRef = useRef(null); // IdolList의 ref.
+    const { ref: idolListRef, scrollTo } = useScrollTo(); // 훅 사용
 
     // 옵션 변경 시 호출되는 함수
     const handleChange = (e) => {
@@ -27,6 +28,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
     const handleAddClick = () => {
         if (!checkedIdols.length) return;
         setSelectedDatas([...selectedDatas, ...checkedIdols]); // 선택된 아이돌을 추가함.
+
         setCheckedIdols([]); // 체크된 아이돌을 초기화.
     };
 
@@ -42,20 +44,8 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
     // 관심 목록에 있는 데이터를 제외하고 정렬된 데이터를 생성함.
     const sortedDatas = useMemo(() => {
         if (!datas || datas.length === 0) return [];
-
-        console.log(datas.length);
         return datas.filter((item) => !selectedDatas.some((selected) => selected.id === item.id));
-    }, [datas, option, selectedDatas]);
-
-    const scrollTo = (direction) => {
-        if (!idolListRef.current) return;
-
-        const scrollAmount = idolListRef.current.offsetWidth + 24;
-        idolListRef.current.scrollBy({
-            left: direction === 'next' ? scrollAmount : -scrollAmount,
-            behavior: 'smooth',
-        });
-    };
+    }, [datas, option, selectedDatas, checkedIdols]);
 
     // 데이터를 더 로드하는 함수
     const loadMoreDatas = useCallback(() => {
@@ -64,7 +54,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
         const observerInstance = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
-                    loadMore(itemsPerPage, option);
+                    loadMore(dataNum, option);
 
                     // loadMore 호출 후 관찰 중지
                     if (lastItemRef.current) {
@@ -82,11 +72,11 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
         return () => {
             observerInstance.disconnect(); // 옵저버를 해제.
         };
-    }, [isLoading, cursor, itemsPerPage, option, loadMore]);
+    }, [isLoading, cursor, dataNum, option, loadMore]);
 
     useEffect(() => {
         loadMoreDatas();
-    }, [loadMoreDatas]);
+    }, [datas]);
 
     // 다음 페이지로 이동하는 함수
     const handleNextPage = () => {
@@ -110,7 +100,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
     ];
 
     // 더 이상 로드할 데이터가 없는지 판단하는 변수.
-    const isDisabled = !cursor && currentPage * itemsPerPage >= sortedDatas.length;
+    const isDisabled = !cursor && currentPage * dataNum >= sortedDatas.length;
 
     return (
         <ContentWrapper>

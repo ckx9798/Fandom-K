@@ -4,7 +4,7 @@ import logoImg from '../../../assets/image/logo.svg';
 import mainImg from '../../../assets/image/Main.svg';
 import Button from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
-import useIntersectionObserver from '../../../hooks/main/useIntersectionObserver';
+import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
 
 const LandingTitle = () => {
     const nav = useNavigate();

@@ -4,6 +4,7 @@ import { getDonations } from '../../../api/donations';
 import DonationItem from './DonationItem';
 import rightBtnIcon from '../../../assets/icon/btn_pagination_right.svg';
 import lefgBtnIcon from '../../../assets/icon/btn_pagination_left.svg';
+import useScrollTo from '../../../hooks/useScrollTo ';
 
 const PC_SIZE = 4;
 
@@ -33,15 +34,11 @@ const DonationList = () => {
     const [startX, setStartX] = useState(0);
     const [scrollLeft, setScrollLeft] = useState(0);
 
-    const cardListRef = useRef(null);
+    const { ref: cardListRef, scrollTo } = useScrollTo();
     const lastItemRef = useRef(null);
 
     useEffect(() => {
-        const scrollAmount = cardListRef.current.offsetWidth + 24;
-        cardListRef.current.scrollTo({
-            left: scrollAmount * page,
-            behavior: 'smooth',
-        });
+        scrollTo('next', 24 * page);
     }, [page]);
 
     // 마우스 스크롤 이벤트

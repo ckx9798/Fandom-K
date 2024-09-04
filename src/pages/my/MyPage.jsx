@@ -6,7 +6,7 @@ import AddInterestedIdols from './components/AddInterestedIdols';
 import { getIdols } from '../../api/idols';
 import { createContext } from 'react';
 import { getCharts } from '../../api/charts';
-import useItemsPerPage from '../../hooks/my/useItemsPerPage';
+import useDataNum from '../../hooks/useDataNum';
 
 export const MyStateContext = createContext();
 export const MyDispatchContext = createContext();
@@ -18,7 +18,7 @@ const MyPage = () => {
     const [cursor, setCursor] = useState(null);
     const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
     const [option, setOption] = useState('total');
-    const itemsPerPage = useItemsPerPage();
+    const dataNum = useDataNum();
 
     // 초기 데이터 로딩
     useEffect(() => {
@@ -26,13 +26,12 @@ const MyPage = () => {
             try {
                 setIsLoading(true);
                 let result;
-                let selectedCount = selectedDatas.length;
 
                 if (option === 'total') {
-                    result = await getIdols({ cursor, pageSize: itemsPerPage + selectedCount });
+                    result = await getIdols({ cursor, pageSize: dataNum });
                     setDatas(result.list);
                 } else if (option === 'female' || option === 'male') {
-                    result = await getCharts({ gender: option, cursor, pageSize: itemsPerPage + selectedCount });
+                    result = await getCharts({ gender: option, cursor, pageSize: dataNum });
                     setDatas(result.idols);
                 }
                 setCursor(result.nextCursor);
@@ -86,7 +85,7 @@ const MyPage = () => {
         <StyledMyPage>
             <Header />
             <MyStateContext.Provider value={{ datas, selectedDatas, checkedIdols }}>
-                <MyDispatchContext.Provider value={{ setSelectedDatas, setCheckedIdols }}>
+                <MyDispatchContext.Provider value={{ setDatas, setSelectedDatas, setCheckedIdols }}>
                     <InterestedIdols />
                     <AddInterestedIdols
                         cursor={cursor}

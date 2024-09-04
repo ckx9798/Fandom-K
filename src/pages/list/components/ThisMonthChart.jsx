@@ -6,25 +6,14 @@ import IdolCard from './IdolCard.jsx';
 import GenderToggleButton from './GenderToggleButton.jsx';
 import VoteModal from '../../../components/modals/VoteModal.jsx';
 import { getCharts } from '../../../api/charts.js';
+import useDataNum from '../../../hooks/useDataNum.jsx';
 
 const ThisMonthChart = () => {
     const [IdolData, setIdolData] = useState([]);
     const [IdolGender, setIdolGender] = useState('female');
-    const [IdolDataNum, setIdolDataNum] = useState(10);
+    const IdolDataNum = useDataNum({ mobile: 5, tablet: 5, desktop: 10 });
     const [cursor, setCusor] = useState(null);
 
-    // 반응형 디자인
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth <= 1280) {
-                setIdolDataNum(5);
-            } else {
-                setIdolDataNum(10);
-            }
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-    });
     // refresh가 있으면, IdolData 초기화
     const loadIdolData = async (refresh) => {
         try {
@@ -71,7 +60,9 @@ const ThisMonthChart = () => {
             <ChartHeader>
                 <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
                 <Button width="128" height="32" border-radius="3" onClick={() => ViewVoteModalHandler()}>
-                    {isOpen === true ? <VoteModal idolList={IdolData} title={IdolGender} setModalClose={setIsOpen} /> : null}
+                    {isOpen === true ? (
+                        <VoteModal idolList={IdolData} title={IdolGender} setModalClose={setIsOpen} />
+                    ) : null}
                     <img src={chartImg} alt="차트이미지" />
                     <span> 차트 투표하기 </span>
                 </Button>
