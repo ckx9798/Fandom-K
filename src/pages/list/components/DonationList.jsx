@@ -67,9 +67,10 @@ const DonationList = () => {
 
     // 후원 목록 불러 오는 함수
     const loadMore = async ({ pageSize }) => {
-        if (isLoading || !hasNext) return;
+        if (isLoading || !hasNext || error) return;
         try {
             setIsLoading(true);
+            setError(false);
             const apiData = await getDonations({ cursor, pageSize });
             if (apiData.list.length < 4) {
                 setHasNext(false);
@@ -77,16 +78,15 @@ const DonationList = () => {
             setIdols((prev) => [...prev, ...apiData.list]);
             setCursor(apiData.nextCursor);
         } catch (error) {
-            console.log(error);
-            console.log('에러 발생');
+            setError(true);
         } finally {
             setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        loadMore({ pageSize: 8 });
-    }, []);
+        loadMore({ pageSize: 4 });
+    }, [error]);
 
     // 화면 크기 변경 시 pageSize변경
     useEffect(() => {
@@ -145,11 +145,26 @@ const DonationList = () => {
                             />
                         );
                     })}
+                    {error && (
+                        <ErrorContainer>
+                            <button
+                                onClick={() => {
+                                    setError(false);
+                                }}
+                            >
+                                새로고침
+                            </button>
+                            <h2>
+                                데이터를 불러오는데
+                                <br /> 실패했습니다.
+                            </h2>
+                        </ErrorContainer>
+                    )}
                 </CardList>
             </Carousel>
             <PageButton
                 className="button right"
-                disabled={(page + 1) * PC_SIZE >= idols.length && !hasNext}
+                disabled={(page + 1) * PC_SIZE >= idols.length && !error}
                 onClick={() => setPage(page + 1)}
             >
                 <img src={rightBtnIcon} />
@@ -217,7 +232,7 @@ const Carousel = styled.div`
 
 const CardList = styled.div`
     position: relative;
-    overflow: hidden;
+    overflow: scroll;
     margin: 24px 0 0;
     display: flex;
     gap: 24px;
@@ -229,5 +244,39 @@ const CardList = styled.div`
     @media (max-width: 1280px) {
         overflow: scroll;
         width: 100%;
+    }
+`;
+
+const ErrorContainer = styled.div`
+    min-width: 282px;
+    width: 1200px;
+    height: 405px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    text-align: center;
+    button {
+        max-width: 400px;
+        width: 90%;
+        height: 50px;
+    }
+    br {
+        display: none;
+    }
+    h2 {
+        font-size: 16px;
+    }
+    @media (max-width: 1280px) {
+        width: 1200px;
+        min-width: 158px;
+        height: auto;
+        h2 {
+            font-size: 16px;
+        }
+        br {
+            display: block;
+        }
     }
 `;
