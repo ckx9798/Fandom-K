@@ -21,7 +21,7 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
     const [modalTitle, setModalTitle] = useState('');
     const [idolList, setIdolList] = useState([]);
     const [isLoading, setLoading] = useState(false);
-    const [credit, setCredit] = useCredit();
+    const [credit] = useCredit();
 
     // 성별에 따른 전체 데이터 가져오는 함수
     useEffect(() => {
@@ -39,8 +39,8 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
                     setModalTitle('alert');
                     setAlertModalClose(false);
                 } else {
-                  setModalTitle('server');
-                  setAlertModalClose(false);
+                    setModalTitle('server');
+                    setAlertModalClose(false);
                 }
             } finally {
                 setLoading(false);
@@ -87,9 +87,7 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
             const response = await postVotes(voteIdol);
 
             if (response) {
-                const adjustCredit = credit - 1000;
-                localStorage.setItem('credit', adjustCredit);
-                setCredit(adjustCredit);
+                localStorage.setItem('credit', credit - 1000);
 
                 setModalTitle('vote');
                 setAlertModalClose(false);
@@ -101,10 +99,10 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
                 setModalTitle('alert');
                 setAlertModalClose(false);
             } else {
-              // axios 에러가 아닌 다른 에러일 때 에러처리
-              setModalTitle('server');
-              setAlertModalClose(false);
-              throw error;
+                // axios 에러가 아닌 다른 에러일 때 에러처리
+                setModalTitle('server');
+                setAlertModalClose(false);
+                throw error;
             }
         }
     };
@@ -112,7 +110,7 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
     return (
         <ErrorBoundary
             fallback={
-                !alertModalClose && <AlarmModal setAlertModalClose={setAlertModalClose} setModalClose={setModalClose} title="server" />
+                <AlarmModal setAlertModalClose={setAlertModalClose} setModalClose={setModalClose} title="server" />
             }
         >
             <ModalContainer handleModalClose={handleModalClose}>

@@ -17,7 +17,7 @@ const SupportModal = ({ item, setModalClose }) => {
     const [isLoading, setLoading] = useState(false);
     const [alertModalClose, setAlertModalClose] = useState(true);
     const [modalTitle, setModalTitle] = useState('');
-    const [credit, setCredit] = useCredit();
+    const [credit] = useCredit();
 
     const isDisabled = userDonation > credit;
 
@@ -43,9 +43,7 @@ const SupportModal = ({ item, setModalClose }) => {
             const response = await putContribute(item.id, userDonation);
 
             if (response) {
-                const newCredit = credit - userDonation;
-                localStorage.setItem('credit', newCredit);
-                setCredit(newCredit);
+                localStorage.setItem('credit', credit - userDonation);
               
                 setUserDonation('');
                 setModalTitle('donation');
@@ -102,7 +100,7 @@ const SupportModal = ({ item, setModalClose }) => {
                             </InputBox>
                             {isDisabled && <p>갖고 있는 크레딧보다 더 많이 후원할 수 없어요</p>}
                         </InputContainer>
-                        <DonationBtn type="submit" disabled={isDisabled || userDonation === 0} width="100%">
+                        <DonationBtn type="submit" disabled={isDisabled || userDonation === ""} width="100%">
                             {isLoading ? '잠시만 기다리세요.' : '후원하기'}
                         </DonationBtn>
                     </DonationForm>
