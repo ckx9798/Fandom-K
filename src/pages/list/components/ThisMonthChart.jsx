@@ -18,7 +18,17 @@ const ThisMonthChart = () => {
     const [error, setError] = useState(null);
 
     // 반응형 디자인
-    useItemsPerPage({ tablet: 5, desktop: 10 });
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 1280) {
+                setIdolDataNum(5);
+            } else {
+                setIdolDataNum(10);
+            }
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+    });
 
     // refresh가 있으면, IdolData 초기화
     const loadIdolData = async (refresh) => {
@@ -26,7 +36,7 @@ const ThisMonthChart = () => {
             const response = await getCharts({
                 gender: IdolGender,
                 cursor: refresh ? null : cursor,
-                pageSize: IdolDataNum,
+                pageSize: window.innerWidth <= 1280 ? 5 : 10,
             });
             if (refresh) {
                 setIdolData(response.idols);
@@ -54,6 +64,9 @@ const ThisMonthChart = () => {
     const [isOpen, setIsOpen] = useState(false);
     const ViewVoteModalHandler = () => {
         setIsOpen(!isOpen);
+    };
+    const qwe = () => {
+        throw error;
     };
     // 더보기 버튼 제거
     const ShowMoreBtn = () => {
