@@ -1,6 +1,8 @@
 import styled from 'styled-components';
-import RefreshImg from '../../../assets/icon/reflash.svg';
+import AlertImg from '../../../assets/icon/alert.svg';
+import RefreshImg from '../../../assets/icon/refresh.svg';
 import Button from '../../../components/Button';
+import { ButtonInner } from '../components/AddInterestedIdols';
 
 const RefreshButton = () => {
     const handleReflash = () => {
@@ -9,10 +11,13 @@ const RefreshButton = () => {
 
     return (
         <StyledRefreshButton>
-            <img src={RefreshImg} alt="새로고침" width="100" height="100" />
+            <img src={AlertImg} alt="새로고침" width="100" height="100" />
             <p>페이지 로딩에 실패했습니다.🥹</p>
-            <Button onClick={handleReflash} radius="24">
-                새로 고침
+            <Button onClick={handleReflash} width="255" height="48" radius="24">
+                <ButtonInner>
+                    <img src={RefreshImg} alt="새로 고침" />
+                    <span>새로 고침</span>
+                </ButtonInner>
             </Button>
         </StyledRefreshButton>
     );
@@ -23,17 +28,13 @@ export default RefreshButton;
 const StyledRefreshButton = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
     color: white;
     align-items: center;
     padding: 98px 0;
 
-    img {
-        cursor: pointer;
-    }
-
     p {
         font-size: 16px;
-        margin-bottom: 42px;
+        margin-bottom: 54px;
     }
 `;

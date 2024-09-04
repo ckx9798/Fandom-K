@@ -284,7 +284,7 @@ const IdolList = styled.div`
     scrollbar-width: none;
 `;
 
-const ButtonInner = styled.div`
+export const ButtonInner = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;

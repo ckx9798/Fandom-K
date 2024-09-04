@@ -16,7 +16,7 @@ const MyPage = () => {
     const [checkedIdols, setCheckedIdols] = useState([]);
     const [selectedDatas, setSelectedDatas] = useState([]);
     const [cursor, setCursor] = useState(null);
-    const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
+    const [isLoading, setIsLoading] = useState(false);
     const [option, setOption] = useState('total');
     const dataNum = useDataNum();
     const [error, setError] = useState(false);
