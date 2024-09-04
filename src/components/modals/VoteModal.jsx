@@ -21,7 +21,7 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
     const [modalTitle, setModalTitle] = useState('');
     const [idolList, setIdolList] = useState([]);
     const [isLoading, setLoading] = useState(false);
-    const [credit] = useCredit();
+    const credit = useCredit();
 
     // 성별에 따른 전체 데이터 가져오는 함수
     useEffect(() => {

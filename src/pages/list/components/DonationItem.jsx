@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../../components/Button';
 import { dDay } from '../../../utils/dDay';
 import SupportModal from '../../../components/modals/SupportModal';
 import creditImg from '../../../assets/icon/credit.svg';
 
-const DonationItem = ({ item, pageSize }) => {
+const DonationItem = forwardRef(({ item, pageSize }, ref) => {
     const [modalClose, setModalClose] = useState(false);
     const ratio = Math.floor((item.receivedDonations / item.targetDonation) * 100);
 
@@ -14,7 +14,7 @@ const DonationItem = ({ item, pageSize }) => {
     };
 
     return (
-        <StyledCard $ratio={ratio}>
+        <StyledCard $ratio={ratio} ref={ref}>
             <div className="imgBox">
                 <img src={item.idol.profilePicture} alt="프로필 사진" />
                 <div className="overlay" />
@@ -40,7 +40,7 @@ const DonationItem = ({ item, pageSize }) => {
             {modalClose && <SupportModal item={item} setModalClose={setModalClose} />}
         </StyledCard>
     );
-};
+});
 
 export default DonationItem;
 

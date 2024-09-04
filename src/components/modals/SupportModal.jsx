@@ -17,7 +17,7 @@ const SupportModal = ({ item, setModalClose }) => {
     const [isLoading, setLoading] = useState(false);
     const [alertModalClose, setAlertModalClose] = useState(true);
     const [modalTitle, setModalTitle] = useState('');
-    const [credit] = useCredit();
+    const credit = useCredit();
 
     const isDisabled = userDonation > credit;
 

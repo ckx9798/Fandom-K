@@ -54,7 +54,7 @@ const IdolWrapper = styled.div`
     border-bottom: 1px solid #ffffff1a;
 
     @media (max-width: 1280px) {
-        max-width: 584px;
+        max-width: 696px;
     }
     @media (max-width: 768px) {
         max-width: 328px;

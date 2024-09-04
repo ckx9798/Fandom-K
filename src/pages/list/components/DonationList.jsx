@@ -26,59 +26,67 @@ const DonationList = () => {
     const [hasNext, setHasNext] = useState(true);
     const [pageSize, setPageSize] = useState(getPageSize());
     const [page, setPage] = useState(0);
-    const cardListRef = useRef(null);
+    const [error, setError] = useState(false);
 
-    const [isDragging, setIsDragging] = useState(false); //
+    // 터치 스크롤을 위한 state
+    const [isDragging, setIsDragging] = useState(false);
+    const [startX, setStartX] = useState(0);
     const [scrollLeft, setScrollLeft] = useState(0);
 
-    // 페이지 넘기기 버튼
-    const NextSlide = () => {
-        setPage((prev) => prev + 1);
-    };
-    const PrevSlide = () => {
-        setPage((prev) => prev - 1);
-    };
+    const cardListRef = useRef(null);
+    const lastItemRef = useRef(null);
+
+    useEffect(() => {
+        const scrollAmount = cardListRef.current.offsetWidth + 24;
+        cardListRef.current.scrollTo({
+            left: scrollAmount * page,
+            behavior: 'smooth',
+        });
+    }, [page]);
 
     // 마우스 스크롤 이벤트
     const handleMouseDown = (e) => {
+        // pc 화면일 경우 마우스 스크롤 방지
+        if (pageSize === 'pc') return;
         setIsDragging(true);
+        setStartX(e.pageX - cardListRef.current.offsetLeft);
         setScrollLeft(cardListRef.current.scrollLeft);
     };
 
-    const handleMouseUp = () => {
+    const handleMouseUpOrLeave = () => {
         setIsDragging(false);
     };
 
     const handleMouseMove = (e) => {
         if (!isDragging) return;
         e.preventDefault();
-        cardListRef.current.scrollLeft = scrollLeft;
+        const x = e.pageX - cardListRef.current.offsetLeft;
+        const walk = x - startX;
+        cardListRef.current.scrollLeft = scrollLeft - walk;
     };
 
     // 후원 목록 불러 오는 함수
-    const loadMore = async () => {
+    const loadMore = async ({ pageSize }) => {
         if (isLoading || !hasNext) return;
-
         try {
             setIsLoading(true);
-            const apiData = await getDonations({ cursor, pageSize: 8 });
-            if (apiData.list.length < 8) {
+            const apiData = await getDonations({ cursor, pageSize });
+            if (apiData.list.length < 4) {
                 setHasNext(false);
             }
             setIdols((prev) => [...prev, ...apiData.list]);
             setCursor(apiData.nextCursor);
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.error('데이터 불러오기 에러', error);
-            }
+            console.log(error);
+            console.log('에러 발생');
         } finally {
             setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        loadMore();
-    }, [page]);
+        loadMore({ pageSize: 8 });
+    }, []);
 
     // 화면 크기 변경 시 pageSize변경
     useEffect(() => {
@@ -91,33 +99,61 @@ const DonationList = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Carousel 작동
+    // 무한 스크롤
     useEffect(() => {
-        const { current } = cardListRef;
-        const scrollAmount = current.offsetWidth + 24;
-        cardListRef.current.style.transform = `translateX(-${scrollAmount * page}px)`;
-    }, [page]);
+        if (!lastItemRef.current) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    loadMore({ pageSize: 4 });
+                }
+            },
+            {
+                threshold: 0.25,
+            },
+        );
+
+        const lastItemElement = lastItemRef.current;
+        if (lastItemElement) observer.observe(lastItemElement);
+
+        return () => {
+            if (lastItemElement) observer.unobserve(lastItemElement);
+        };
+    }, [idols.length, lastItemRef, loadMore]);
 
     return (
         <Container>
             <h2>후원을 기다리는 조공</h2>
-            <button className="button left" disabled={page === 0 || pageSize !== 'pc'} onClick={PrevSlide}>
+            <PageButton className="left" disabled={page === 0} onClick={() => setPage(page - 1)}>
                 <img src={lefgBtnIcon} />
-            </button>
-            <Carousel onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}>
-                <div className="cardList" ref={cardListRef}>
-                    {idols.map((item) => {
-                        return <DonationItem key={item.id} item={item} pageSize={pageSize} />;
+            </PageButton>
+            <Carousel
+                onMouseDown={handleMouseDown}
+                onMouseLeave={handleMouseUpOrLeave}
+                onMouseUp={handleMouseUpOrLeave}
+                onMouseMove={handleMouseMove}
+            >
+                <CardList ref={cardListRef}>
+                    {idols.map((item, index) => {
+                        return (
+                            <DonationItem
+                                key={item.id}
+                                item={item}
+                                pageSize={pageSize}
+                                ref={index === idols.length - 1 ? lastItemRef : null}
+                            />
+                        );
                     })}
-                </div>
+                </CardList>
             </Carousel>
-            <button
+            <PageButton
                 className="button right"
-                disabled={page + 1 >= idols.length / PC_SIZE || pageSize !== 'pc'}
-                onClick={NextSlide}
+                disabled={(page + 1) * PC_SIZE >= idols.length && !hasNext}
+                onClick={() => setPage(page + 1)}
             >
                 <img src={rightBtnIcon} />
-            </button>
+            </PageButton>
         </Container>
     );
 };
@@ -132,63 +168,66 @@ const Container = styled.div`
         font-weight: 700;
         color: var(--white200);
     }
-    .button {
-        width: 40px;
-        height: 78px;
-        border: 0;
-        background-color: unset;
-        position: absolute;
-        z-index: 10;
-        &.left {
-            left: -80px;
-            top: 220px;
-            &:disabled {
-                display: none;
-            }
-        }
-        &.right {
-            right: -80px;
-            top: 220px;
-            &:disabled {
-                display: none;
-            }
-        }
-    }
-    p {
-        color: var(--white200);
-    }
-    @media (max-width: 1380px) {
-        .button {
-            &.left {
-                left: 0px;
-            }
-            &.right {
-                right: 0px;
-            }
-        }
-    }
+
     @media (max-width: 1280px) {
         width: 100%;
     }
 `;
 
-const Carousel = styled.div`
-    overflow: hidden;
-    .cardList {
-        margin: 24px 0 0;
-        display: flex;
-        gap: 24px;
-        transition: all 0.5s ease-in-out;
-        scroll-behavior: smooth;
+const PageButton = styled.button`
+    width: 40px;
+    height: 78px;
+    border: 0;
+    background-color: unset;
+    position: absolute;
+    z-index: 10;
+    &.left {
+        left: -80px;
+        top: 220px;
+        &:disabled {
+            display: none;
+        }
+    }
+    &.right {
+        right: -80px;
+        top: 220px;
+        &:disabled {
+            display: none;
+        }
+    }
+    @media (max-width: 1380px) {
+        &.left {
+            left: 0px;
+        }
+        &.right {
+            right: 0px;
+        }
     }
     @media (max-width: 1280px) {
+        display: none;
+    }
+`;
+
+const Carousel = styled.div`
+    overflow: hidden;
+    @media (max-width: 1280px) {
         width: 100%;
-        .cardList {
-            width: 100%;
-            overflow: scroll;
-            &::-webkit-scrollbar {
-                display: none;
-            }
-        }
+    }
+`;
+
+const CardList = styled.div`
+    position: relative;
+    overflow: hidden;
+    margin: 24px 0 0;
+    display: flex;
+    gap: 24px;
+    scroll-behavior: smooth;
+    user-select: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    @media (max-width: 1280px) {
+        overflow: scroll;
+        width: 100%;
     }
 `;

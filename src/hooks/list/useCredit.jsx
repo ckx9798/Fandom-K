@@ -19,7 +19,7 @@ const useCredit = () => {
         };
     }, []);
 
-    return [ credit, setCredit ];
+    return credit;
 };
 
 export default useCredit;
