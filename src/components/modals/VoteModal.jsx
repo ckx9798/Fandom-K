@@ -100,7 +100,6 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
                 // axios 에러가 아닌 다른 에러일 때 에러처리
                 setModalTitle('server');
                 setAlertModalClose(false);
-                throw error;
             }
         }
     };
@@ -108,7 +107,7 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
     return (
         <ErrorBoundary
             fallback={
-                <AlarmModal setAlertModalClose={setAlertModalClose} setModalClose={setModalClose} title="server" />
+                <AlarmModal setAlertModalClose={setAlertModalClose} setModalClose={setModalClose} title={modalTitle} />
             }
         >
             <ModalContainer handleModalClose={handleModalClose}>

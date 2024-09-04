@@ -36,15 +36,14 @@ const SupportModal = ({ item, setModalClose }) => {
     // 후원하기 버튼누르면 실행되는 함수
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        
+
         try {
             setLoading(true);
             const response = await putContribute(item.id, userDonation);
 
             if (response) {
                 localStorage.setItem('credit', credit - userDonation);
-              
+
                 setUserDonation('');
                 setModalTitle('donation');
                 setAlertModalClose(false);
@@ -56,15 +55,16 @@ const SupportModal = ({ item, setModalClose }) => {
                 setModalTitle('alert');
                 setAlertModalClose(false);
             } else {
-              // axios 에러가 아닌 다른 에러일 때 에러처리
-              setModalTitle('server');
-              setAlertModalClose(false);
+                // axios 에러가 아닌 다른 에러일 때 에러처리
+
+                setModalTitle('server');
+                setAlertModalClose(false);
             }
         } finally {
             setLoading(false);
         }
     };
-    
+
     return (
         <ErrorBoundary
             fallback={
@@ -100,7 +100,7 @@ const SupportModal = ({ item, setModalClose }) => {
                             </InputBox>
                             {isDisabled && <p>갖고 있는 크레딧보다 더 많이 후원할 수 없어요</p>}
                         </InputContainer>
-                        <DonationBtn type="submit" disabled={isDisabled || userDonation === ""} width="100%">
+                        <DonationBtn type="submit" disabled={isDisabled || userDonation === ''} width="100%">
                             {isLoading ? '잠시만 기다리세요.' : '후원하기'}
                         </DonationBtn>
                     </DonationForm>

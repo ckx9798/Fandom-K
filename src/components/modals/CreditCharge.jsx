@@ -4,8 +4,10 @@ import styled from 'styled-components';
 import Button from '../Button';
 import { ContentsBoxStyle, DisabledBtn, NumberInput, TitleStyle } from './ModalGlobalStyle';
 import CustomRadio from './CustomRadio';
+import useCredit from '../../hooks/list/useCredit';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
+import creditChargeImg from '../../assets/icon/creditCharge.svg';
 
 // 크레딧 충전 모달창
 const CreditCharge = ({ setModalClose }) => {
@@ -14,7 +16,8 @@ const CreditCharge = ({ setModalClose }) => {
     const [chargeAmount, setChargeAmount] = useState(0);
     const [customCharge, setCustomCharge] = useState('');
     const [error, setError] = useState(false);
-
+    const credit = useCredit();
+    
     // 모달창 닫는 함수
     const handleModalClose = () => {
         setModalClose((prev) => !prev);
@@ -38,13 +41,12 @@ const CreditCharge = ({ setModalClose }) => {
     const handleCharge = (e) => {
         e.preventDefault();
 
-        const currentCredit = parseInt(localStorage.getItem('credit'), 10) || 0;
         let totalCredit = 0;
 
         if (chargeAmount > 0) {
-            totalCredit = currentCredit + chargeAmount;
+            totalCredit = credit + chargeAmount;
         } else {
-            totalCredit = currentCredit + customCharge;
+            totalCredit = credit + customCharge;
         }
 
         localStorage.setItem('credit', totalCredit);
@@ -74,7 +76,11 @@ const CreditCharge = ({ setModalClose }) => {
                 </TitleStyle>
                 <CreditForm onSubmit={handleCharge}>
                     {creditArr.map((credit) => (
-                        <Credit key={credit.total} selected={chargeAmount === credit.total} onClick={() => handleChangeRadio(credit.total)}>
+                        <Credit
+                            key={credit.total}
+                            selected={chargeAmount === credit.total}
+                            onClick={() => handleChangeRadio(credit.total)}
+                        >
                             <CreditRadioBox>
                                 <img src={creditImg} alt="크레딧" />
                                 <CreditAmount selected={chargeAmount === credit.total}>{credit.total}</CreditAmount>
@@ -96,7 +102,7 @@ const CreditCharge = ({ setModalClose }) => {
                         placeholder="충전할 금액 입력"
                     />
                     <ChargeBtn type="submit" width="100%" disabled={error}>
-                        <img src={creditImg} alt="크레딧" />
+                        <BtnCreditImg src={creditChargeImg} alt="크레딧" />
                         충전하기
                     </ChargeBtn>
                 </CreditForm>
@@ -165,3 +171,5 @@ const CustomChargeInput = styled(NumberInput)`
         border: 1px solid var(--brand100);
     }
 `;
+
+const BtnCreditImg = styled.img``;
