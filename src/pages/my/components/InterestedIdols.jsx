@@ -70,6 +70,7 @@ const InterestedIdolList = styled.div`
     overflow-x: auto;
     overflow-y: hidden;
     align-items: center;
+    padding: 1px 1px;
 
     /* 스크롤바 숨기기 */
     ::-webkit-scrollbar {
