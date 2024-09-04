@@ -123,45 +123,43 @@ const VoteModal = ({ title = 'female', setModalClose }) => {
                         </CloseBtn>
                     </Title>
                     <VoteForm onSubmit={handleVote}>
-                        {!isLoading ? (
-                            sortIdol?.length > 0 ? (
-                                sortIdol.map((idol, i) => (
-                                    <FormWrapper key={idol.id} onClick={() => handleChangeVote(idol.id)}>
-                                        <IdolVoteInfo>
-                                            <ImgBox>
-                                                <IdolImg
-                                                    src={idol.profilePicture}
-                                                    alt="아이돌"
-                                                    selected={Number(voteIdol) === idol.id}
-                                                />
-                                                <CheckIcon
-                                                    src={check}
-                                                    alt="체크 표시"
-                                                    selected={Number(voteIdol) === idol.id}
-                                                />
-                                                <CheckBackground selected={Number(voteIdol) === idol.id} />
-                                            </ImgBox>
-                                            <IdolNumber>{i + 1}</IdolNumber>
-                                            <CurrentVoteBox>
-                                                <h3>
-                                                    {idol.group} {idol.name}
-                                                </h3>
-                                                <span>{idol.totalVotes.toLocaleString('ko-KR')}표</span>
-                                            </CurrentVoteBox>
-                                        </IdolVoteInfo>
-                                        <CustomRadio
-                                            name="idol"
-                                            value={idol.id}
-                                            checked={Number(voteIdol) === idol.id}
-                                            onChange={() => handleChangeVote(idol.id)}
-                                        />
-                                    </FormWrapper>
-                                ))
-                            ) : (
-                                <EmptyList>표시할 아이돌이 없습니다.</EmptyList>
-                            )
-                        ) : (
+                        {isLoading ? (
                             <EmptyList>데이터를 불러오고 있습니다. 잠시 기다려주세요.</EmptyList>
+                        ) : sortIdol?.length > 0 ? (
+                            sortIdol.map((idol, i) => (
+                                <FormWrapper key={idol.id} onClick={() => handleChangeVote(idol.id)}>
+                                    <IdolVoteInfo>
+                                        <ImgBox>
+                                            <IdolImg
+                                                src={idol.profilePicture}
+                                                alt="아이돌"
+                                                selected={Number(voteIdol) === idol.id}
+                                            />
+                                            <CheckIcon
+                                                src={check}
+                                                alt="체크 표시"
+                                                selected={Number(voteIdol) === idol.id}
+                                            />
+                                            <CheckBackground selected={Number(voteIdol) === idol.id} />
+                                        </ImgBox>
+                                        <IdolNumber>{i + 1}</IdolNumber>
+                                        <CurrentVoteBox>
+                                            <h3>
+                                                {idol.group} {idol.name}
+                                            </h3>
+                                            <span>{idol.totalVotes.toLocaleString('ko-KR')}표</span>
+                                        </CurrentVoteBox>
+                                    </IdolVoteInfo>
+                                    <CustomRadio
+                                        name="idol"
+                                        value={idol.id}
+                                        checked={Number(voteIdol) === idol.id}
+                                        onChange={() => handleChangeVote(idol.id)}
+                                    />
+                                </FormWrapper>
+                            ))
+                        ) : (
+                            <EmptyList>표시할 아이돌이 없습니다.</EmptyList>
                         )}
                         <VoteBtnBox>
                             <VoteBtn type="submit" width="327" disabled={isDisabled}>
