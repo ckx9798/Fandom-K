@@ -1,30 +1,25 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../../components/Button.jsx';
-import chartImg from '../../../assets/image/Chart.svg';
 import IdolCard from './IdolCard.jsx';
 import GenderToggleButton from './GenderToggleButton.jsx';
 import VoteModal from '../../../components/modals/VoteModal.jsx';
 import { getCharts } from '../../../api/charts.js';
+import useItemsPerPage from '../../../hooks/my/useItemsPerPage.jsx';
+import RefreshButton from '../../my/components/RefreshButton.jsx';
+
+import chartImg from '../../../assets/image/Chart.svg';
 
 const ThisMonthChart = () => {
     const [IdolData, setIdolData] = useState([]);
     const [IdolGender, setIdolGender] = useState('female');
     const [IdolDataNum, setIdolDataNum] = useState(10);
     const [cursor, setCusor] = useState(null);
+    const [error, setError] = useState(null);
 
     // 반응형 디자인
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth <= 1280) {
-                setIdolDataNum(5);
-            } else {
-                setIdolDataNum(10);
-            }
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-    });
+    useItemsPerPage({ tablet: 5, desktop: 10 });
+
     // refresh가 있으면, IdolData 초기화
     const loadIdolData = async (refresh) => {
         try {
@@ -39,8 +34,10 @@ const ThisMonthChart = () => {
                 setIdolData((prevData) => [...prevData, ...response.idols]);
             }
             setCusor(response.nextCursor);
+            setError(null);
         } catch (error) {
             console.error('chart data 오류', error);
+            setError('에러');
         }
     };
 
@@ -71,7 +68,7 @@ const ThisMonthChart = () => {
         <ChartContainer>
             <ChartHeader>
                 <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
-                <Button width="128" height="32" border-radius="3" onClick={() => ViewVoteModalHandler()}>
+                <Button width="128" height="32" $border-radius="3" onClick={() => ViewVoteModalHandler()}>
                     {isOpen === true ? <VoteModal title={IdolGender} setModalClose={setIsOpen} /> : null}
                     <img src={chartImg} alt="차트이미지" />
                     <span> 차트 투표하기 </span>
@@ -97,6 +94,7 @@ const ThisMonthChart = () => {
                 ))}
             </ChartRankContainer>
             <ShowMoreBtn />
+            {error && <RefreshButton onRetry={loadIdolData} />}
         </ChartContainer>
     );
 };
@@ -173,7 +171,7 @@ const ChartMoreBtn = styled.div`
     align-items: center;
     width: 326px;
     height: 42px;
-    margin-top: 20px;
+    margin-top: 40px;
     color: #ffffff;
     background-color: #ffffff1a;
     border: 1px solid rgba(241, 238, 249, 0.8);
