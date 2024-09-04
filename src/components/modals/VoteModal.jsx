@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import ModalContainer from './ModalContainer';
@@ -7,16 +7,42 @@ import AlarmModal from './AlarmModal';
 import { postVotes } from '../../api/votes';
 import { ContentsBoxStyle, DisabledBtn, TitleStyle } from './ModalGlobalStyle';
 import CustomRadio from './CustomRadio';
+import { getCharts } from '../../api/charts';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import mobileArrow from '../../assets/icon/icj_arrow_left.svg';
 import check from '../../assets/icon/ic_check.svg';
 
 // 투표하기 모달 (setModalClose 파라미터는 부모 컴포넌트로부터 받은 함수로, 투표하기 모달을 닫는 용도입니다.)
-const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
+const VoteModal = ({ title = 'female', setModalClose }) => {
     const [voteIdol, setVoteIdol] = useState(0);
-    const [creditAlert, setCreditAlert] = useState(false);
     const [alertModalClose, setAlertModalClose] = useState(true);
-    const [isVote, setVote] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+    const [idolList, setIdolList] = useState([]);
+    const [isLoading, setLoading] = useState(false);
+
+    // 성별에 따른 전체 데이터 가져오는 함수
+    useEffect(() => {
+        const getIdolList = async () => {
+            try {
+                setLoading(true);
+                const response = await getCharts({ gender: title, cursor: null, pageSize: 50 });
+
+                if (response) {
+                    setIdolList(response.idols);
+                }
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    console.error('투표하기 모달 getIdolList GET 요청에서 오류 발생', error);
+                    setModalTitle('alert');
+                    setAlertModalClose(false);
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getIdolList();
+    }, []);
 
     // 투표수가 많은 순으로 정렬, 투표수가 같으면 id순으로 설정해서 순위가 뒤집어지지 않도록 했습니다.
     const sortIdol = idolList?.sort((a, b) => {
@@ -49,23 +75,26 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
             const currentCredit = parseInt(localStorage.getItem('credit'), 10) || 0;
 
             if (currentCredit < 1000) {
-                setCreditAlert(true);
+                setModalTitle('credit');
                 setAlertModalClose(false);
                 return;
             }
 
-            const adjustCredit = currentCredit - 1000;
-            localStorage.setItem('credit', adjustCredit);
-
             const response = await postVotes(voteIdol);
 
             if (response) {
-                setVote(true);
+                const adjustCredit = currentCredit - 1000;
+                localStorage.setItem('credit', adjustCredit);
+
+                setModalTitle('vote');
                 setAlertModalClose(false);
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.error('투표하기 모달 handleVote POST 요청에서 오류 발생', error);
+
+                setModalTitle('alert');
+                setAlertModalClose(false);
             }
         }
     };
@@ -83,41 +112,45 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
                     </CloseBtn>
                 </Title>
                 <VoteForm onSubmit={handleVote}>
-                    {sortIdol?.length > 0 ? (
-                        sortIdol.map((idol, i) => (
-                            <FormWrapper key={idol.id}>
-                                <IdolVoteInfo>
-                                    <ImgBox>
-                                        <IdolImg
-                                            src={idol.profilePicture}
-                                            alt="아이돌"
-                                            selected={Number(voteIdol) === idol.id}
-                                        />
-                                        <CheckIcon
-                                            src={check}
-                                            alt="체크 표시"
-                                            selected={Number(voteIdol) === idol.id}
-                                        />
-                                        <CheckBackground selected={Number(voteIdol) === idol.id} />
-                                    </ImgBox>
-                                    <IdolNumber>{i + 1}</IdolNumber>
-                                    <CurrentVoteBox>
-                                        <h3>
-                                            {idol.group} {idol.name}
-                                        </h3>
-                                        <span>{idol.totalVotes.toLocaleString('ko-KR')}표</span>
-                                    </CurrentVoteBox>
-                                </IdolVoteInfo>
-                                <CustomRadio
-                                    name="idol"
-                                    value={idol.id}
-                                    checked={Number(voteIdol) === idol.id}
-                                    onChange={handleChangeVote}
-                                />
-                            </FormWrapper>
-                        ))
+                    {!isLoading ? (
+                        sortIdol?.length > 0 ? (
+                            sortIdol.map((idol, i) => (
+                                <FormWrapper key={idol.id}>
+                                    <IdolVoteInfo>
+                                        <ImgBox>
+                                            <IdolImg
+                                                src={idol.profilePicture}
+                                                alt="아이돌"
+                                                selected={Number(voteIdol) === idol.id}
+                                            />
+                                            <CheckIcon
+                                                src={check}
+                                                alt="체크 표시"
+                                                selected={Number(voteIdol) === idol.id}
+                                            />
+                                            <CheckBackground selected={Number(voteIdol) === idol.id} />
+                                        </ImgBox>
+                                        <IdolNumber>{i + 1}</IdolNumber>
+                                        <CurrentVoteBox>
+                                            <h3>
+                                                {idol.group} {idol.name}
+                                            </h3>
+                                            <span>{idol.totalVotes.toLocaleString('ko-KR')}표</span>
+                                        </CurrentVoteBox>
+                                    </IdolVoteInfo>
+                                    <CustomRadio
+                                        name="idol"
+                                        value={idol.id}
+                                        checked={Number(voteIdol) === idol.id}
+                                        onChange={handleChangeVote}
+                                    />
+                                </FormWrapper>
+                            ))
+                        ) : (
+                            <EmptyList>표시할 아이돌이 없습니다.</EmptyList>
+                        )
                     ) : (
-                        <EmptyList>표시할 아이돌이 없습니다.</EmptyList>
+                        <EmptyList>데이터를 불러오고 있습니다. 잠시 기다려주세요.</EmptyList>
                     )}
                     <VoteBtnBox>
                         <VoteBtn type="submit" width="327" disabled={isDisabled}>
@@ -128,14 +161,19 @@ const VoteModal = ({ idolList = [], title = 'female', setModalClose }) => {
                         </CreditAlert>
                     </VoteBtnBox>
                 </VoteForm>
-                {creditAlert && !alertModalClose && <AlarmModal setAlertModalClose={setAlertModalClose} />}
-                {isVote && !alertModalClose && <AlarmModal setAlertModalClose={setAlertModalClose} title="vote" />}
+                {!alertModalClose && (
+                    <AlarmModal
+                        setAlertModalClose={setAlertModalClose}
+                        setModalClose={setModalClose}
+                        title={modalTitle}
+                    />
+                )}
             </ContentsBox>
         </ModalContainer>
     );
 };
 
-export default VoteModal;
+export default memo(VoteModal);
 
 const ContentsBox = styled(ContentsBoxStyle)`
     width: 525px;
@@ -189,9 +227,21 @@ const VoteForm = styled.form`
     gap: 8px;
     width: 477px;
     overflow: auto;
-    padding: 8px 10px;
+    padding: 15px 5px;
     margin: auto;
     margin-top: 0;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    @media (min-width: 1200px) {
+        margin-bottom: 40px;
+    }
+
     @media (min-width: 375px) and (max-width: 767px) {
         width: 327px;
         padding-bottom: 60px;
@@ -205,7 +255,7 @@ const FormWrapper = styled.div`
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     height: 70px;
     margin-bottom: 8px;
-    padding-bottom: 15px;
+    padding-bottom: 20px;
 `;
 
 const IdolVoteInfo = styled.div`
@@ -288,12 +338,17 @@ const VoteBtnBox = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(180deg, rgba(24, 29, 38, 1) 0%, rgba(2, 0, 14, 1) 100%);
 
     @media (min-width: 375px) and (max-width: 767px) {
-        position: fixed;
+        padding-top: 0;
         bottom: 20px;
-        left: 0;
-        background-color: rgba(2, 0, 14, 0.8);
+        background: rgba(2, 0, 14, 0.5);
     }
 `;
 

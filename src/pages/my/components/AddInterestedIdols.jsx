@@ -13,7 +13,6 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지를 관리함.
     const itemsPerPage = useItemsPerPage(); // 페이지당 렌더링되어야 할 아이템 수를 가져옴.
     const lastItemRef = useRef(null); // 마지막 아이템을 참조하는 ref.
-    const hasLoadedMore = useRef(false); // 추가 로딩 여부를 추적하는 ref.
     const idolListRef = useRef(null); // IdolList의 ref.
 
     // 옵션 변경 시 호출되는 함수
@@ -50,6 +49,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
 
     const scrollTo = (direction) => {
         if (!idolListRef.current) return;
+
         const scrollAmount = idolListRef.current.offsetWidth + 24;
         idolListRef.current.scrollBy({
             left: direction === 'next' ? scrollAmount : -scrollAmount,
@@ -57,29 +57,13 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
         });
     };
 
-    // 다음 페이지로 이동하는 함수
-    const handleNextPage = () => {
-        scrollTo('next');
-
-        setCurrentPage(currentPage + 1); // 현재 페이지를 증가.
-    };
-
-    // 이전 페이지로 이동하는 함수
-    const handlePrevPage = () => {
-        scrollTo('prev');
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1); // 현재 페이지를 감소.
-        }
-    };
-
-    // mobile 반응형에서 데이터를 더 로드하는 함수
+    // 데이터를 더 로드하는 함수
     const loadMoreDatas = useCallback(() => {
         if (isLoading || !cursor || !lastItemRef.current) return;
 
         const observerInstance = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting && !hasLoadedMore.current) {
-                    hasLoadedMore.current = true;
+                if (entry.isIntersecting) {
                     loadMore(itemsPerPage, option);
 
                     // loadMore 호출 후 관찰 중지
@@ -102,10 +86,21 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
 
     useEffect(() => {
         loadMoreDatas();
-        return () => {
-            hasLoadedMore.current = false; // 로드된 상태를 초기화.
-        };
     }, [loadMoreDatas]);
+
+    // 다음 페이지로 이동하는 함수
+    const handleNextPage = () => {
+        scrollTo('next');
+        setCurrentPage(currentPage + 1); // 현재 페이지를 증가.
+    };
+
+    // 이전 페이지로 이동하는 함수
+    const handlePrevPage = () => {
+        scrollTo('prev');
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1); // 현재 페이지를 감소.
+        }
+    };
 
     // 성별 필터 버튼 배열
     const genderBtnArr = [
@@ -180,7 +175,7 @@ const ContentWrapper = styled.div`
 
 const ContentTitle = styled.div`
     width: 100%;
-    max-width: 1200px;
+    max-width: 1194px;
     padding-top: 40px;
     display: flex;
     flex-direction: column;
@@ -195,7 +190,7 @@ const ContentTitle = styled.div`
 
 const ContentNav = styled.div`
     width: 100%;
-    max-width: 1200px;
+    max-width: 1194px;
     height: 42px;
     margin-top: 30px;
     display: flex;
@@ -272,10 +267,12 @@ const IdolList = styled.div`
     place-items: center;
     justify-content: start;
     margin: 0 auto;
-    overflow-x: scroll;
+
     overflow-y: hidden;
+    overflow-x: hidden;
     grid-auto-flow: column;
     width: 1194px;
+    padding: 0px 1px;
     height: 398px;
     padding: 0px 1px;
 
@@ -292,14 +289,15 @@ const IdolList = styled.div`
 
         width: 328px;
         height: 326px;
+        overflow-x: scroll;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
     }
 
     -ms-overflow-style: none;
     scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
 `;
 
 const ButtonInner = styled.div`
