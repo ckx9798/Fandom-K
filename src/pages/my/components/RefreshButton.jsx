@@ -4,16 +4,12 @@ import RefreshImg from '../../../assets/icon/refresh.svg';
 import Button from '../../../components/Button';
 import { ButtonInner } from '../components/AddInterestedIdols';
 
-const RefreshButton = () => {
-    const handleReflash = () => {
-        window.location.reload();
-    };
-
+const RefreshButton = ({ onRetry }) => {
     return (
         <StyledRefreshButton>
             <img src={AlertImg} alt="새로고침" width="100" height="100" />
             <p>페이지 로딩에 실패했습니다.🥹</p>
-            <Button onClick={handleReflash} width="255" height="48" radius="24">
+            <Button onClick={onRetry} width="255" height="48" radius="24">
                 <ButtonInner>
                     <img src={RefreshImg} alt="새로 고침" />
                     <span>새로 고침</span>

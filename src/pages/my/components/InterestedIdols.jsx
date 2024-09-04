@@ -47,17 +47,16 @@ export default InterestedIdols;
 
 // IdolWrapper는 관심 아이돌 섹션의 컨테이너를 스타일링
 const IdolWrapper = styled.div`
-    width: 100%;
-    max-width: 1200px;
+    width: 1200px;
     margin: 0px auto;
     padding: 76px 0px 40px;
     border-bottom: 1px solid #ffffff1a;
 
     @media (max-width: 1280px) {
-        max-width: 696px;
+        width: 700px;
     }
     @media (max-width: 768px) {
-        max-width: 328px;
+        width: 328px;
     }
 `;
 

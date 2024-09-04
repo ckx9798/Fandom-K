@@ -7,6 +7,7 @@ import { getIdols } from '../../api/idols';
 import { createContext } from 'react';
 import { getCharts } from '../../api/charts';
 import useDataNum from '../../hooks/useDataNum';
+import axios from 'axios';
 
 export const MyStateContext = createContext();
 export const MyDispatchContext = createContext();
@@ -37,9 +38,12 @@ const MyPage = () => {
                 }
                 setCursor(result.nextCursor);
             } catch (error) {
-                console.error('데이터 로딩 오류:', error);
+                if (axios.isAxiosError(error)) {
+                    console.error('AxiosError 로딩 오류:', error);
+                } else {
+                    console.error('데이터 로딩 오류:', error);
+                }
                 setError(true);
-                setDatas([]);
             } finally {
                 setIsLoading(false);
             }
@@ -75,10 +79,23 @@ const MyPage = () => {
 
             setCursor(result?.nextCursor); // 다음 커서 업데이트
         } catch (error) {
-            console.error('추가 데이터 로딩 오류:', error);
-            setError(true);
+            if (axios.isAxiosError(error)) {
+                console.error('AxiosError 로딩 오류:', error);
+            } else {
+                console.error('데이터 로딩 오류:', error);
+            }
         } finally {
             setIsLoading(false); // 추가 데이터 로딩 종료
+        }
+    };
+
+    // 에러 발생 시 재시도 함수
+    const retryFetchData = () => {
+        setError(false);
+        if (datas.length === 0) {
+            fetchData();
+        } else {
+            handleLoadMoreClick(dataNum, option);
         }
     };
 
@@ -96,6 +113,7 @@ const MyPage = () => {
                         option={option}
                         setOption={setOption}
                         error={error}
+                        onRetry={retryFetchData}
                     />
                 </MyDispatchContext.Provider>
             </MyStateContext.Provider>

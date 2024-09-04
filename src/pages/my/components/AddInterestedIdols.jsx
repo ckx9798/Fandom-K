@@ -10,13 +10,13 @@ import useDataNum from '../../../hooks/useDataNum';
 import useScrollTo from '../../../hooks/useScrollTo ';
 import usePagination from '../../../hooks/usePagination';
 
-const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption, error }) => {
+const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption, error, onRetry }) => {
     const { datas, selectedDatas, checkedIdols } = useContext(MyStateContext);
     const { setSelectedDatas, setCheckedIdols } = useContext(MyDispatchContext);
     const dataNum = useDataNum(); // 페이지당 렌더링되어야 할 아이템 수를 가져옴.
     const lastItemRef = useRef(null); // 마지막 아이템을 참조하는 ref.
     const { ref: idolListRef, scrollTo } = useScrollTo(); // 훅 사용
-    const { page, handleNextPage, handlePrevPage } = usePagination(scrollTo);
+    const { page, setPage, handleNextPage, handlePrevPage } = usePagination(scrollTo);
 
     // 옵션 변경 시 호출되는 함수
     const handleChange = (e) => {
@@ -138,7 +138,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
                     </Button>
                 </>
             ) : (
-                <RefreshButton />
+                <RefreshButton onRetry={onRetry} />
             )}
         </ContentWrapper>
     );
@@ -158,33 +158,31 @@ const ContentWrapper = styled.div`
 `;
 
 const ContentTitle = styled.div`
-    width: 100%;
-    max-width: 1194px;
+    width: 1200px;
     padding-top: 40px;
     display: flex;
     flex-direction: column;
 
     @media (max-width: 1280px) {
-        max-width: 696px;
+        width: 700px;
     }
     @media (max-width: 768px) {
-        max-width: 328px;
+        width: 328px;
     }
 `;
 
 const ContentNav = styled.div`
-    width: 100%;
-    max-width: 1194px;
+    width: 1200px;
     height: 42px;
     margin-top: 30px;
     display: flex;
     flex-direction: row;
 
     @media (max-width: 1280px) {
-        max-width: 680px;
+        width: 700px;
     }
     @media (max-width: 768px) {
-        max-width: 328px;
+        width: 328px;
     }
 `;
 
@@ -202,8 +200,7 @@ const GenderToggleButton = styled.button`
 `;
 
 const CarouselPage = styled.div`
-    width: 100%;
-    max-width: 1316px;
+    width: 1322px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -212,11 +209,11 @@ const CarouselPage = styled.div`
     margin: 32px 0 48px;
 
     @media (max-width: 1280px) {
-        max-width: 696px;
+        width: 700px;
         gap: 27px;
     }
     @media (max-width: 768px) {
-        max-width: 328px;
+        width: 328px;
     }
 `;
 
@@ -263,16 +260,16 @@ const IdolList = styled.div`
     @media (max-width: 1280px) {
         grid-template-columns: repeat(4, 128px);
 
-        width: 584px;
-        height: 390px;
+        width: 586px;
+        height: 394px;
     }
 
     @media (max-width: 768px) {
         grid-template-columns: repeat(3, 98px);
         grid-column-gap: 17px;
 
-        width: 328px;
-        height: 326px;
+        width: 330px;
+        height: 330px;
         overflow-x: scroll;
     }
 
