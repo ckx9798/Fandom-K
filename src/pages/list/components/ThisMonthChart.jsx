@@ -5,9 +5,7 @@ import IdolCard from './IdolCard.jsx';
 import GenderToggleButton from './GenderToggleButton.jsx';
 import VoteModal from '../../../components/modals/VoteModal.jsx';
 import { getCharts } from '../../../api/charts.js';
-import useItemsPerPage from '../../../hooks/my/useItemsPerPage.jsx';
 import RefreshButton from '../../my/components/RefreshButton.jsx';
-
 import chartImg from '../../../assets/image/Chart.svg';
 
 const ThisMonthChart = () => {
@@ -65,9 +63,7 @@ const ThisMonthChart = () => {
     const ViewVoteModalHandler = () => {
         setIsOpen(!isOpen);
     };
-    const qwe = () => {
-        throw error;
-    };
+
     // 더보기 버튼 제거
     const ShowMoreBtn = () => {
         if (cursor) {
