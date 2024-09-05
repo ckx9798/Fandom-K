@@ -153,7 +153,7 @@ const ContentWrapper = styled.div`
     padding-bottom: 81px;
 
     @media (max-width: 1280px) {
-        padding: 0 24px;
+        padding-bottom: 40px;
     }
 `;
 
@@ -289,7 +289,7 @@ export const ButtonInner = styled.div`
     font-size: 16px;
     line-height: 26px;
     gap: 8px;
-
+    
     img {
         width: 24px;
         height: 24px;
