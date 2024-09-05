@@ -2,23 +2,23 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import CreditCharge from '../../../components/modals/CreditCharge';
 import creditImg from '../../../assets/icon/credit.svg';
+import useCredit from '../../../hooks/list/useCredit';
 
 const CreditStatus = () => {
     const [modalClose, setModalClose] = useState(true);
+    const credit = useCredit();
 
     const handleChargeModal = () => {
         setModalClose((prev) => !prev);
     };
-
-    const currentCredit = parseInt(localStorage.getItem('credit'), 10) || 0;
-
+    
     return (
         <Container>
             <MyCreditBox>
                 <h2>내 크레딧</h2>
                 <MyCreditAmount>
                     <img src={creditImg} alt="크레딧" />
-                    {currentCredit !== 0 ? currentCredit.toLocaleString('ko-KR') : 0}
+                    {credit !== 0 ? credit?.toLocaleString('ko-KR') : 0}
                 </MyCreditAmount>
             </MyCreditBox>
             <ChargeBtn onClick={handleChargeModal}>충전하기</ChargeBtn>

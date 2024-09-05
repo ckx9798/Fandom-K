@@ -6,8 +6,10 @@ import AddInterestedIdols from './components/AddInterestedIdols';
 import { getIdols } from '../../api/idols';
 import { createContext } from 'react';
 import { getCharts } from '../../api/charts';
+import { ErrorBoundary } from 'react-error-boundary';
 import useDataNum from '../../hooks/useDataNum';
 import axios from 'axios';
+import ErrorPage from '../../components/ErrorPage';
 
 export const MyStateContext = createContext();
 export const MyDispatchContext = createContext();
@@ -92,23 +94,25 @@ const MyPage = () => {
     };
 
     return (
-        <StyledMyPage>
-            <Header />
-            <MyStateContext.Provider value={{ datas, selectedDatas, checkedIdols }}>
-                <MyDispatchContext.Provider value={{ setDatas, setSelectedDatas, setCheckedIdols }}>
-                    <InterestedIdols />
-                    <AddInterestedIdols
-                        cursor={cursor}
-                        setCursor={setCursor}
-                        isLoading={isLoading}
-                        loadMore={handleLoadMoreClick}
-                        option={option}
-                        setOption={setOption}
-                        error={error}
-                    />
-                </MyDispatchContext.Provider>
-            </MyStateContext.Provider>
-        </StyledMyPage>
+        <ErrorBoundary FallbackComponent={ErrorPage}>
+            <StyledMyPage>
+                <Header />
+                <MyStateContext.Provider value={{ datas, selectedDatas, checkedIdols }}>
+                    <MyDispatchContext.Provider value={{ setDatas, setSelectedDatas, setCheckedIdols }}>
+                        <InterestedIdols />
+                        <AddInterestedIdols
+                            cursor={cursor}
+                            setCursor={setCursor}
+                            isLoading={isLoading}
+                            loadMore={handleLoadMoreClick}
+                            option={option}
+                            setOption={setOption}
+                            error={error}
+                        />
+                    </MyDispatchContext.Provider>
+                </MyStateContext.Provider>
+            </StyledMyPage>
+        </ErrorBoundary>
     );
 };
 
