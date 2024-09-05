@@ -17,7 +17,7 @@ const ThisMonthChart = () => {
     const [error, setError] = useState(false);
 
     // 반응형 디자인
-    useDataNum({ IdolDataNum });
+    // useDataNum({ IdolDataNum });
     // useEffect(() => {
     //     const handleResize = () => {
     //         if (window.innerWidth <= 1280) {
@@ -36,7 +36,7 @@ const ThisMonthChart = () => {
             const response = await getCharts({
                 gender: IdolGender,
                 cursor: refresh ? null : cursor,
-                pageSize: window.innerWidth <= 1280 ? 5 : 10,
+                pageSize: IdolDataNum,
             });
             if (refresh) {
                 setIdolData(response.idols);
@@ -46,7 +46,6 @@ const ThisMonthChart = () => {
             setCusor(response.nextCursor);
             setError(false);
         } catch (error) {
-            console.error('chart data 오류', error);
             setError(true);
         }
     };
