@@ -16,20 +16,6 @@ const ThisMonthChart = () => {
     const [cursor, setCusor] = useState(null);
     const [error, setError] = useState(false);
 
-    // 반응형 디자인
-    // useDataNum({ IdolDataNum });
-    // useEffect(() => {
-    //     const handleResize = () => {
-    //         if (window.innerWidth <= 1280) {
-    //             setIdolDataNum(5);
-    //         } else {
-    //             setIdolDataNum(10);
-    //         }
-    //     };
-    //     handleResize();
-    //     window.addEventListener('resize', handleResize);
-    // });
-
     // refresh가 있으면, IdolData 초기화
     const loadIdolData = async (refresh) => {
         try {
