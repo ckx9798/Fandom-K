@@ -14,20 +14,21 @@ const ThisMonthChart = () => {
     const [IdolGender, setIdolGender] = useState('female');
     const IdolDataNum = useDataNum({ mobile: 5, tablet: 5, desktop: 10 });
     const [cursor, setCusor] = useState(null);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(false);
 
     // 반응형 디자인
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth <= 1280) {
-                setIdolDataNum(5);
-            } else {
-                setIdolDataNum(10);
-            }
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-    });
+    useDataNum({ IdolDataNum });
+    // useEffect(() => {
+    //     const handleResize = () => {
+    //         if (window.innerWidth <= 1280) {
+    //             setIdolDataNum(5);
+    //         } else {
+    //             setIdolDataNum(10);
+    //         }
+    //     };
+    //     handleResize();
+    //     window.addEventListener('resize', handleResize);
+    // });
 
     // refresh가 있으면, IdolData 초기화
     const loadIdolData = async (refresh) => {
@@ -43,10 +44,10 @@ const ThisMonthChart = () => {
                 setIdolData((prevData) => [...prevData, ...response.idols]);
             }
             setCusor(response.nextCursor);
-            setError(null);
+            setError(false);
         } catch (error) {
             console.error('chart data 오류', error);
-            setError('에러');
+            setError(true);
         }
     };
 
@@ -78,7 +79,7 @@ const ThisMonthChart = () => {
         <ChartContainer>
             <ChartHeader>
                 <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
-                <Button width="128" height="32" radius="3" onClick={() => ViewVoteModalHandler()}>
+                <Button width="128" height="32" radius="3" onClick={ViewVoteModalHandler}>
                     {isOpen === true ? <VoteModal title={IdolGender} setModalClose={setIsOpen} /> : null}
                     <ChartVote>
                         <img src={chartImg} alt="차트이미지" />

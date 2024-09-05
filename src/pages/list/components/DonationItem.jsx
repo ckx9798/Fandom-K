@@ -8,6 +8,7 @@ import creditImg from '../../../assets/icon/credit.svg';
 const DonationItem = forwardRef(({ item, pageSize }, ref) => {
     const [modalClose, setModalClose] = useState(false);
     const ratio = Math.floor((item.receivedDonations / item.targetDonation) * 100);
+    const deadline = item.receivedDonations >= item.targetDonation ? true : false;
 
     const handleChargeModal = () => {
         setModalClose((prev) => !prev);
@@ -18,10 +19,13 @@ const DonationItem = forwardRef(({ item, pageSize }, ref) => {
             <div className="imgBox">
                 <img src={item.idol.profilePicture} alt="프로필 사진" />
                 <div className="overlay" />
-                {pageSize !== 'mobile' && <Button onClick={handleChargeModal}>후원하기</Button>}
-                {pageSize === 'mobile' && (
-                    <Button width={142} height={31} onClick={handleChargeModal}>
-                        후원하기
+                {pageSize !== 'mobile' ? (
+                    <Button onClick={handleChargeModal} disabled={deadline}>
+                        {deadline ? '후원마감' : '후원하기'}
+                    </Button>
+                ) : (
+                    <Button width={142} height={31} onClick={handleChargeModal} disabled={deadline}>
+                        {deadline ? '후원마감' : '후원하기'}
                     </Button>
                 )}
             </div>

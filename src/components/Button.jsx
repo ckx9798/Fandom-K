@@ -21,4 +21,8 @@ const StyledButton = styled.button`
     &:hover {
         opacity: 0.8;
     }
+    &:disabled {
+        background: var(--gray300);
+        opacity: 1;
+    }
 `;
