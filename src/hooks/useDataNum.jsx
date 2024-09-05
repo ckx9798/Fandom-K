@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { SIZES } from '../../utils/Constants';
+import { SIZES } from '../utils/Constants';
 
-function useItemsPerPage(items = { mobile: 6, tablet: 8, desktop: 16 }) {
-    const [itemsPerPage, setItemsPerPage] = useState(() => {
+function useDataNum(items = { mobile: 6, tablet: 8, desktop: 16 }) {
+    const [dataNum, setDataNum] = useState(() => {
         const width = window.innerWidth;
         if (width <= SIZES.mobile) {
             return items.mobile;
@@ -14,27 +14,27 @@ function useItemsPerPage(items = { mobile: 6, tablet: 8, desktop: 16 }) {
     });
 
     // 화면 크기에 따라 아이템 개수를 업데이트하는 함수
-    const updateItemsPerPage = () => {
+    const updateDataNum = () => {
         const width = window.innerWidth;
         if (width <= SIZES.mobile) {
-            setItemsPerPage(items.mobile); // 모바일 화면일 때
+            setDataNum(items.mobile); // 모바일 화면일 때
         } else if (width <= SIZES.tablet) {
-            setItemsPerPage(items.tablet); // 태블릿 화면일 때
+            setDataNum(items.tablet); // 태블릿 화면일 때
         } else {
-            setItemsPerPage(items.desktop); // 데스크탑 화면일 때
+            setDataNum(items.desktop); // 데스크탑 화면일 때
         }
     };
 
     useEffect(() => {
-        window.addEventListener('resize', updateItemsPerPage);
+        window.addEventListener('resize', updateDataNum);
 
         // 컴포넌트 언마운트 시 이벤트 리스너 제거
         return () => {
-            window.removeEventListener('resize', updateItemsPerPage);
+            window.removeEventListener('resize', updateDataNum);
         };
     }, []);
 
-    return itemsPerPage;
+    return dataNum;
 }
 
-export default useItemsPerPage;
+export default useDataNum;
