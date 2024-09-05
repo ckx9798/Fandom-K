@@ -5,7 +5,7 @@ import Button from '../../../components/Button';
 import plusIcon from '../../../assets/icon/Icon-plus.svg';
 import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyDispatchContext, MyStateContext } from '../MyPage';
-import RefreshButton from './RefreshButton';
+import RefreshButton from '../../../components/RefreshButton';
 import useDataNum from '../../../hooks/useDataNum';
 import useScrollTo from '../../../hooks/useScrollTo ';
 import usePagination from '../../../hooks/usePagination';
@@ -138,7 +138,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
                     </Button>
                 </>
             ) : (
-                <RefreshButton onRetry={onRetry} />
+                <RefreshButton />
             )}
         </ContentWrapper>
     );

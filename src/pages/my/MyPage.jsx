@@ -36,13 +36,15 @@ const MyPage = () => {
                     result = await getCharts({ gender: option, cursor, pageSize: dataNum });
                     setDatas(result.idols);
                 }
-                setCursor(result.nextCursor);
+
+                setCursor(result?.nextCursor);
             } catch (error) {
                 if (axios.isAxiosError(error)) {
                     console.error('AxiosError 로딩 오류:', error);
                 } else {
                     console.error('데이터 로딩 오류:', error);
                 }
+
                 setError(true);
             } finally {
                 setIsLoading(false);
@@ -76,7 +78,6 @@ const MyPage = () => {
                 result = await getCharts({ gender: option, cursor, pageSize: itemsToLoad });
                 handleDataUpdate(result?.idols, 'result.idols');
             }
-
             setCursor(result?.nextCursor); // 다음 커서 업데이트
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -84,18 +85,9 @@ const MyPage = () => {
             } else {
                 console.error('데이터 로딩 오류:', error);
             }
+            setError(true);
         } finally {
             setIsLoading(false); // 추가 데이터 로딩 종료
-        }
-    };
-
-    // 에러 발생 시 재시도 함수
-    const retryFetchData = () => {
-        setError(false);
-        if (datas.length === 0) {
-            fetchData();
-        } else {
-            handleLoadMoreClick(dataNum, option);
         }
     };
 
@@ -113,7 +105,6 @@ const MyPage = () => {
                         option={option}
                         setOption={setOption}
                         error={error}
-                        onRetry={retryFetchData}
                     />
                 </MyDispatchContext.Provider>
             </MyStateContext.Provider>
