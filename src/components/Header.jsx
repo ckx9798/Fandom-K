@@ -82,14 +82,6 @@ const Logo = styled.img`
         height: 20.58px;
     }
 `;
-
-const UserProfile = styled.img`
-    height: 32px;
-    width: 32px;
-    border-radius: 125px;
-    cursor: pointer;
-`;
-
 const RefreshButton = styled.button`
     background: none;
     border: none;
