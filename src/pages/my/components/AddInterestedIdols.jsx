@@ -158,8 +158,7 @@ const ContentWrapper = styled.div`
 `;
 
 const ContentTitle = styled.div`
-    width: 100%;
-    max-width: 1194px;
+    width: 1200px;
     padding-top: 40px;
     display: flex;
     flex-direction: column;
