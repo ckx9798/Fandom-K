@@ -11,7 +11,7 @@ const CreditStatus = () => {
     const handleChargeModal = () => {
         setModalClose((prev) => !prev);
     };
-
+    
     return (
         <Container>
             <MyCreditBox>

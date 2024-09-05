@@ -8,7 +8,6 @@ import { postVotes } from '../../api/votes';
 import { ContentsBoxStyle, DisabledBtn, TitleStyle } from './ModalGlobalStyle';
 import CustomRadio from './CustomRadio';
 import { getCharts } from '../../api/charts';
-import { ErrorBoundary } from 'react-error-boundary';
 import useCredit from '../../hooks/list/useCredit';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import mobileArrow from '../../assets/icon/icj_arrow_left.svg';

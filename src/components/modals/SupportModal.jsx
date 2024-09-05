@@ -6,7 +6,6 @@ import ModalContainer from './ModalContainer';
 import AlarmModal from './AlarmModal';
 import Button from '../Button';
 import { ContentsBoxStyle, DisabledBtn, NumberInput, TitleStyle } from './ModalGlobalStyle';
-import { ErrorBoundary } from 'react-error-boundary';
 import useCredit from '../../hooks/list/useCredit';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
@@ -40,7 +39,7 @@ const SupportModal = ({ item, setModalClose }) => {
         try {
             setLoading(true);
             const response = await putContribute(item.id, userDonation);
-
+            
             if (response) {
                 localStorage.setItem('credit', credit - userDonation);
 
