@@ -1,17 +1,21 @@
-import CreditStatus from '../../components/list/CreditStatus';
+import CreditStatus from './components/CreditStatus';
 import ThisMonthChart from './components/ThisMonthChart';
 import Header from '../../components/Header';
 import DonationList from './components/DonationList';
 import styled from 'styled-components';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorPage from '../../components/ErrorPage';
 
 const ListPage = () => {
     return (
-        <Container>
-            <Header />
-            <CreditStatus />
-            <DonationList />
-            <ThisMonthChart />
-        </Container>
+        <ErrorBoundary FallbackComponent={ErrorPage}>
+            <Container>
+                <Header />
+                <CreditStatus />
+                <DonationList />
+                <ThisMonthChart />
+            </Container>
+        </ErrorBoundary>
     );
 };
 

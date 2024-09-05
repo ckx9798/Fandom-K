@@ -5,13 +5,14 @@ import IdolCard from './IdolCard.jsx';
 import GenderToggleButton from './GenderToggleButton.jsx';
 import VoteModal from '../../../components/modals/VoteModal.jsx';
 import { getCharts } from '../../../api/charts.js';
+import useDataNum from '../../../hooks/useDataNum.jsx';
 import RefreshButton from '../../my/components/RefreshButton.jsx';
 import chartImg from '../../../assets/image/Chart.svg';
 
 const ThisMonthChart = () => {
     const [IdolData, setIdolData] = useState([]);
     const [IdolGender, setIdolGender] = useState('female');
-    const [IdolDataNum, setIdolDataNum] = useState(10);
+    const IdolDataNum = useDataNum({ mobile: 5, tablet: 5, desktop: 10 });
     const [cursor, setCusor] = useState(null);
     const [error, setError] = useState(null);
 

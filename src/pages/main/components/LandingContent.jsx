@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import styled from 'styled-components';
-import useIntersectionObserver from '../../../hooks/main/useIntersectionObserver';
+import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
 import isPropValid from '@emotion/is-prop-valid';
 const LandingContent = ({ ...props }) => {
     const textRef = useRef(null);

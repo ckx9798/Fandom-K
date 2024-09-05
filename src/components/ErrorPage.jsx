@@ -3,6 +3,11 @@ import { Link } from 'react-router-dom';
 import ErrorImg from '../assets/image/error.png';
 
 const ErrorPage = () => {
+    const listArr = [
+        { id: 1, contents: '입력하신 경로가 잘못된 경로일 수 있어요.' },
+        { id: 2, contents: '서버 오류가 발생해서 이 화면이 보일 수 있어요.' },
+  ];
+  
     return (
         <ErrorContainer>
             <ErrorWrapper>
@@ -10,10 +15,15 @@ const ErrorPage = () => {
                     <img src={ErrorImg} alt="에러" />
                     <ContentsBox>
                         <h2>앗! 오류가 발생했어요.</h2>
-                        <p>입력하신 경로를 다시 한번 확인해주세요.</p>
+                        <p>아래의 내용을 확인하시고 돌아가기를 눌러주세요.</p>
                     </ContentsBox>
                 </Contents>
-                <HomeLink to="/">돌아가기</HomeLink>
+                <ContentsList>
+                    {listArr.map((list) => (
+                        <li key={list.id}>{list.contents}</li>
+                    ))}
+                </ContentsList>
+                <HomeLink to="/list">돌아가기</HomeLink>
             </ErrorWrapper>
         </ErrorContainer>
     );
@@ -68,6 +78,13 @@ const ContentsBox = styled.div`
 
     @media (min-width: 375px) and (max-width: 768px) {
         align-items: center;
+    }
+`;
+
+const ContentsList = styled.ul`
+    li {
+        color: var(--white200);
+        line-height: 1.5rem;
     }
 `;
 

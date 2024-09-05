@@ -6,6 +6,7 @@ import ModalContainer from './ModalContainer';
 import AlarmModal from './AlarmModal';
 import Button from '../Button';
 import { ContentsBoxStyle, DisabledBtn, NumberInput, TitleStyle } from './ModalGlobalStyle';
+import useCredit from '../../hooks/list/useCredit';
 import closeBtn from '../../assets/image/btn_delete_24px.svg';
 import creditImg from '../../assets/icon/credit.svg';
 
@@ -15,9 +16,9 @@ const SupportModal = ({ item, setModalClose }) => {
     const [isLoading, setLoading] = useState(false);
     const [alertModalClose, setAlertModalClose] = useState(true);
     const [modalTitle, setModalTitle] = useState('');
+    const credit = useCredit();
 
-    const currentCredit = parseInt(localStorage.getItem('credit'), 10) || 0;
-    const isDisabled = userDonation > currentCredit;
+    const isDisabled = userDonation > credit;
 
     // 모달창 닫는 함수
     const handleModalClose = () => {
@@ -37,11 +38,11 @@ const SupportModal = ({ item, setModalClose }) => {
 
         try {
             setLoading(true);
-
             const response = await putContribute(item.id, userDonation);
-
+            
             if (response) {
-                localStorage.setItem('credit', currentCredit - userDonation);
+                localStorage.setItem('credit', credit - userDonation);
+
                 setUserDonation('');
                 setModalTitle('donation');
                 setAlertModalClose(false);
@@ -51,6 +52,11 @@ const SupportModal = ({ item, setModalClose }) => {
                 console.error('후원하기 모달 handleSubmit PUT 요청에서 오류 발생', error);
 
                 setModalTitle('alert');
+                setAlertModalClose(false);
+            } else {
+                // axios 에러가 아닌 다른 에러일 때 에러처리
+
+                setModalTitle('server');
                 setAlertModalClose(false);
             }
         } finally {
@@ -88,7 +94,7 @@ const SupportModal = ({ item, setModalClose }) => {
                         </InputBox>
                         {isDisabled && <p>갖고 있는 크레딧보다 더 많이 후원할 수 없어요</p>}
                     </InputContainer>
-                    <DonationBtn type="submit" disabled={isDisabled || userDonation === 0} width="100%">
+                    <DonationBtn type="submit" disabled={isDisabled || userDonation === ''} width="100%">
                         {isLoading ? '잠시만 기다리세요.' : '후원하기'}
                     </DonationBtn>
                 </DonationForm>
