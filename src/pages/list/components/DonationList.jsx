@@ -6,6 +6,7 @@ import rightBtnIcon from '../../../assets/icon/btn_pagination_right.svg';
 import lefgBtnIcon from '../../../assets/icon/btn_pagination_left.svg';
 import useScrollTo from '../../../hooks/useScrollTo ';
 import usePagination from '../../../hooks/usePagination';
+import RefreshButton from '../../my/components/RefreshButton';
 
 const PC_SIZE = 4;
 
@@ -142,24 +143,14 @@ const DonationList = () => {
                     })}
                     {error && (
                         <ErrorContainer>
-                            <button
-                                onClick={() => {
-                                    setError(false);
-                                }}
-                            >
-                                새로고침
-                            </button>
-                            <h2>
-                                데이터를 불러오는데
-                                <br /> 실패했습니다.
-                            </h2>
+                            <RefreshButton />
                         </ErrorContainer>
                     )}
                 </CardList>
             </Carousel>
             <PageButton
                 className="button right"
-                disabled={(page + 1) * PC_SIZE >= idols.length && !hasNext}
+                disabled={(page + 1) * PC_SIZE >= idols.length}
                 onClick={handleNextPage}
             >
                 <img src={rightBtnIcon} />
@@ -243,7 +234,7 @@ const CardList = styled.div`
 `;
 
 const ErrorContainer = styled.div`
-    min-width: 282px;
+    /* min-width: 282px; */
     width: 1200px;
     height: 405px;
     display: flex;
@@ -264,7 +255,7 @@ const ErrorContainer = styled.div`
         font-size: 16px;
     }
     @media (max-width: 1280px) {
-        width: 1200px;
+        width: 100%;
         min-width: 158px;
         height: auto;
         h2 {
