@@ -1,4 +1,4 @@
-import CreditStatus from '../../components/list/CreditStatus';
+import CreditStatus from './components/CreditStatus';
 import ThisMonthChart from './components/ThisMonthChart';
 import Header from '../../components/Header';
 import DonationList from './components/DonationList';

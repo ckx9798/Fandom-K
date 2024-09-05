@@ -6,7 +6,7 @@ import AddInterestedIdols from './components/AddInterestedIdols';
 import { getIdols } from '../../api/idols';
 import { createContext } from 'react';
 import { getCharts } from '../../api/charts';
-import useItemsPerPage from '../../hooks/my/useItemsPerPage';
+import useDataNum from '../../hooks/useDataNum';
 
 export const MyStateContext = createContext();
 export const MyDispatchContext = createContext();
@@ -18,7 +18,8 @@ const MyPage = () => {
     const [cursor, setCursor] = useState(null);
     const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
     const [option, setOption] = useState('total');
-    const itemsPerPage = useItemsPerPage();
+    const dataNum = useDataNum();
+    const [error, setError] = useState(false);
 
     // 초기 데이터 로딩
     useEffect(() => {
@@ -26,18 +27,18 @@ const MyPage = () => {
             try {
                 setIsLoading(true);
                 let result;
-                let selectedCount = selectedDatas.length;
 
                 if (option === 'total') {
-                    result = await getIdols({ cursor, pageSize: itemsPerPage + selectedCount });
+                    result = await getIdols({ cursor, pageSize: dataNum });
                     setDatas(result.list);
                 } else if (option === 'female' || option === 'male') {
-                    result = await getCharts({ gender: option, cursor, pageSize: itemsPerPage + selectedCount });
+                    result = await getCharts({ gender: option, cursor, pageSize: dataNum });
                     setDatas(result.idols);
                 }
                 setCursor(result.nextCursor);
             } catch (error) {
                 console.error('데이터 로딩 오류:', error);
+                setError(true);
                 setDatas([]);
             } finally {
                 setIsLoading(false);
@@ -53,7 +54,6 @@ const MyPage = () => {
             setDatas((prevDatas) => [...prevDatas, ...data]);
         } else {
             console.error(`오류: ${errorMessage}가 배열이 아님`);
-            // 필요한 추가 오류 처리 (toast 라이브러리?)
         }
     };
 
@@ -76,7 +76,7 @@ const MyPage = () => {
             setCursor(result?.nextCursor); // 다음 커서 업데이트
         } catch (error) {
             console.error('추가 데이터 로딩 오류:', error);
-            // 필요시 오류에 대한 추가 처리
+            setError(true);
         } finally {
             setIsLoading(false); // 추가 데이터 로딩 종료
         }
@@ -86,7 +86,7 @@ const MyPage = () => {
         <StyledMyPage>
             <Header />
             <MyStateContext.Provider value={{ datas, selectedDatas, checkedIdols }}>
-                <MyDispatchContext.Provider value={{ setSelectedDatas, setCheckedIdols }}>
+                <MyDispatchContext.Provider value={{ setDatas, setSelectedDatas, setCheckedIdols }}>
                     <InterestedIdols />
                     <AddInterestedIdols
                         cursor={cursor}
@@ -95,6 +95,7 @@ const MyPage = () => {
                         loadMore={handleLoadMoreClick}
                         option={option}
                         setOption={setOption}
+                        error={error}
                     />
                 </MyDispatchContext.Provider>
             </MyStateContext.Provider>
