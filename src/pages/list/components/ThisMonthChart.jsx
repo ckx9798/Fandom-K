@@ -77,10 +77,12 @@ const ThisMonthChart = () => {
         <ChartContainer>
             <ChartHeader>
                 <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
-                <Button width="128" height="32" $border-radius="3" onClick={() => ViewVoteModalHandler()}>
+                <Button width="128" height="32" radius="3" onClick={() => ViewVoteModalHandler()}>
                     {isOpen === true ? <VoteModal title={IdolGender} setModalClose={setIsOpen} /> : null}
-                    <img src={chartImg} alt="차트이미지" />
-                    <span> 차트 투표하기 </span>
+                    <ChartVote>
+                        <img src={chartImg} alt="차트이미지" />
+                        <span> 차트 투표하기 </span>
+                    </ChartVote>
                 </Button>
             </ChartHeader>
             <ChartThisMonth>
@@ -140,6 +142,13 @@ const ChartHeaderTitle = styled.div`
     line-height: 26px;
     color: #ffffff;
     line-height: 26px;
+`;
+
+const ChartVote = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
 `;
 
 const ChartThisMonth = styled.div`
