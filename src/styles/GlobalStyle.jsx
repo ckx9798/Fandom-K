@@ -8,13 +8,6 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  @font-face {
-  font-family: 'Pretendard-Regular';
-  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
-}
-
   :root {
     --black100: #02000e;
     --black200: #181D26;
@@ -27,9 +20,8 @@ const GlobalStyle = createGlobalStyle`
     --brand200: #FE5493;
   }
 
-
   body {
-    font-family: 'Pretendard-Regular';
+    font-family: 'Pretendard';
     background-color: var(--black100);
   }
 
