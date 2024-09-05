@@ -66,54 +66,48 @@ const SupportModal = ({ item, setModalClose }) => {
     };
 
     return (
-        <ErrorBoundary
-            fallback={
-                <AlarmModal setAlertModalClose={setAlertModalClose} setModalClose={setModalClose} title={modalTitle} />
-            }
-        >
-            <ModalContainer handleModalClose={handleModalClose}>
-                <ContentsBox>
-                    <TitleStyle>
-                        <h2>후원하기</h2>
-                        <button onClick={handleModalClose}>
-                            <img src={closeBtn} alt="닫기" />
-                        </button>
-                    </TitleStyle>
-                    <IdolBox>
-                        <IdolImg src={item.idol.profilePicture} alt="아이돌 이미지" />
-                        <DonationTitleBox>
-                            <h3>{item.subtitle}</h3>
-                            <p>{item.title}</p>
-                        </DonationTitleBox>
-                    </IdolBox>
-                    <DonationForm onSubmit={handleSubmit}>
-                        <InputContainer>
-                            <InputBox>
-                                <Input
-                                    type="number"
-                                    name="donation"
-                                    value={userDonation}
-                                    onChange={handleUserDonation}
-                                    placeholder="크레딧 입력"
-                                />
-                                <img src={creditImg} alt="크레딧" />
-                            </InputBox>
-                            {isDisabled && <p>갖고 있는 크레딧보다 더 많이 후원할 수 없어요</p>}
-                        </InputContainer>
-                        <DonationBtn type="submit" disabled={isDisabled || userDonation === ''} width="100%">
-                            {isLoading ? '잠시만 기다리세요.' : '후원하기'}
-                        </DonationBtn>
-                    </DonationForm>
-                    {!alertModalClose && (
-                        <AlarmModal
-                            setAlertModalClose={setAlertModalClose}
-                            setModalClose={setModalClose}
-                            title={modalTitle}
-                        />
-                    )}
-                </ContentsBox>
-            </ModalContainer>
-        </ErrorBoundary>
+        <ModalContainer handleModalClose={handleModalClose}>
+            <ContentsBox>
+                <TitleStyle>
+                    <h2>후원하기</h2>
+                    <button onClick={handleModalClose}>
+                        <img src={closeBtn} alt="닫기" />
+                    </button>
+                </TitleStyle>
+                <IdolBox>
+                    <IdolImg src={item.idol.profilePicture} alt="아이돌 이미지" />
+                    <DonationTitleBox>
+                        <h3>{item.subtitle}</h3>
+                        <p>{item.title}</p>
+                    </DonationTitleBox>
+                </IdolBox>
+                <DonationForm onSubmit={handleSubmit}>
+                    <InputContainer>
+                        <InputBox>
+                            <Input
+                                type="number"
+                                name="donation"
+                                value={userDonation}
+                                onChange={handleUserDonation}
+                                placeholder="크레딧 입력"
+                            />
+                            <img src={creditImg} alt="크레딧" />
+                        </InputBox>
+                        {isDisabled && <p>갖고 있는 크레딧보다 더 많이 후원할 수 없어요</p>}
+                    </InputContainer>
+                    <DonationBtn type="submit" disabled={isDisabled || userDonation === ''} width="100%">
+                        {isLoading ? '잠시만 기다리세요.' : '후원하기'}
+                    </DonationBtn>
+                </DonationForm>
+                {!alertModalClose && (
+                    <AlarmModal
+                        setAlertModalClose={setAlertModalClose}
+                        setModalClose={setModalClose}
+                        title={modalTitle}
+                    />
+                )}
+            </ContentsBox>
+        </ModalContainer>
     );
 };
 
