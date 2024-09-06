@@ -6,7 +6,7 @@ import HomeImg from '../assets/icon/Home.svg';
 
 const Header = () => {
     const location = useLocation();
-    const isLanding = location.pathname === '/';
+    const isHeaderDisplay = location.pathname === '/list' || location.pathname === '/my';
 
     //현재 위치가 list이면 새로고침
     const handleLogoClick = (e) => {
@@ -18,7 +18,7 @@ const Header = () => {
 
     return (
         <>
-            {!isLanding && (
+            {isHeaderDisplay && (
                 <StyledHeader>
                     <Link to="/">
                         <Home src={HomeImg} alt="홈" />
