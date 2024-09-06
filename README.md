@@ -21,30 +21,30 @@ https://fandom-k-9-4.netlify.app/
 
 # 개발 팀 소개
 
-| ![image](https://github.com/user-attachments/assets/4241e134-685a-46a4-879a-d45061f775ad)                | ![image](https://github.com/user-attachments/assets/520afd17-12e7-488f-a0cc-766a77f8e1e9)                                                   | ![image](https://github.com/user-attachments/assets/b34a97fa-0a95-4e53-86bb-d44b965857dc)                                                      | ![image](https://github.com/user-attachments/assets/47322861-d05f-4f36-b25f-b4b06205ea18) | ![image](https://github.com/user-attachments/assets/9a601237-1ce2-4cb2-b19d-f5fd498cac50)                                         |
-| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| 김민준                                                                                                   | 박문균                                                                                                                                      | 김충오                                                                                                                                         | 박상욱                                                                                    | 문창기                                                                                                                            |
-| - Project leader로서 팀 운영<br/>- List 페이지의 이달의 차트 기능 구현<br/>- 아이돌 프로필 컴포넌트 제작 | - 랜딩 페이지 구현<br/>- 버튼 컴포넌트 제작<br/>- My 페이지 아이돌 추가,삭제 구현<br/>- My 페이지 무한스크롤 기능 구현<br/>- 헤더 일부 수정 | - List 페이지의 조공 컴포넌트 구현<br/>- API 세팅<br/>- List 페이지 무한스크롤 기능 구현<br/>- 아이돌 데이터 추가<br/>- GitHub 레포지토리 세팅 | - 헤더 컴포넌트 제작<br/>- My 페이지 제작<br/>- 아이돌 데이터 추가<br/>- PPT 제작         | - 모달 컴포넌트 제작<br/>- List 페이지 크레딧 컴포넌트 제작<br/>- 노션의 트러블슈팅 업데이트 <br/>- 아이돌 데이터 추가<br/>- 발표 |
+|![image](https://github.com/user-attachments/assets/4241e134-685a-46a4-879a-d45061f775ad)|![image](https://github.com/user-attachments/assets/520afd17-12e7-488f-a0cc-766a77f8e1e9)|![image](https://github.com/user-attachments/assets/b34a97fa-0a95-4e53-86bb-d44b965857dc)|![image](https://github.com/user-attachments/assets/47322861-d05f-4f36-b25f-b4b06205ea18)|![image](https://github.com/user-attachments/assets/9a601237-1ce2-4cb2-b19d-f5fd498cac50)|
+|---|---|---|---|---|
+| 김민준 | 박문균 | 김충오 | 박상욱 | 문창기 |
+|-  Project leader로서 팀 운영<br/>- List 페이지의 이달의 차트 기능 구현<br/>- 아이돌 프로필 컴포넌트 제작|- 랜딩 페이지 구현<br/>- 버튼 컴포넌트 제작<br/>- My 페이지 아이돌 추가,삭제  구현<br/>- My 페이지 무한스크롤 기능 구현<br/>- 헤더 일부 수정|- List 페이지의 조공 컴포넌트 구현<br/>- API 세팅<br/>- List 페이지 무한스크롤 기능 구현<br/>- 아이돌 데이터 추가<br/>- GitHub 레포지토리 세팅|- 헤더 컴포넌트 제작<br/>- My 페이지 제작<br/>- 아이돌 데이터 추가<br/>- PPT 제작|- 모달 컴포넌트 제작<br/>- List 페이지 크레딧 컴포넌트 제작<br/>- 노션의 트러블슈팅 업데이트 <br/>- 아이돌 데이터 추가<br/>- 발표 |
 
 <br/>
 
 # 기술 스택
 
-| <img src="https://github.com/user-attachments/assets/215587a1-fb56-4dfd-87c4-5bb85517017a" width='100'/> | <img src="https://github.com/user-attachments/assets/ddf2f58e-6d06-4de1-8cda-d7d0660054f4" width='100'/> | <img src="https://github.com/user-attachments/assets/68263649-2ef8-46ae-82b5-51c9f617b7e6" width="100" /> |
-| :------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------: |
-|                                                JavaScript                                                |                                                   HTML                                                   |                                                    CSS                                                    |
+|<img src="https://github.com/user-attachments/assets/215587a1-fb56-4dfd-87c4-5bb85517017a" width='100'/>|<img src="https://github.com/user-attachments/assets/ddf2f58e-6d06-4de1-8cda-d7d0660054f4" width='100'/>|<img src="https://github.com/user-attachments/assets/68263649-2ef8-46ae-82b5-51c9f617b7e6" width="100" /> |
+|:---:|:---:|:---:|
+| JavaScript | HTML | CSS |
 
 <br/>
 
-| <img src="https://github.com/user-attachments/assets/bbc20c4a-359b-4b5b-b416-e9caa4ecfff2" width="100" /> | <img src="https://github.com/user-attachments/assets/140d878b-63b4-4236-8a1a-8a9b22423ce9" width='100'/> |
-| :-------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: |
-|                                                    Git                                                    |                                                  GitHub                                                  |
+|<img src="https://github.com/user-attachments/assets/bbc20c4a-359b-4b5b-b416-e9caa4ecfff2" width="100" />|<img src="https://github.com/user-attachments/assets/140d878b-63b4-4236-8a1a-8a9b22423ce9" width='100'/>|
+|:---:|:---:|
+|Git|GitHub|
 
 <br/>
 
-| <img src="https://github.com/user-attachments/assets/4c914f4d-fa28-4789-beb0-25a383f0c5c0" width="100" /> | <img src="https://github.com/user-attachments/assets/51bf9b58-75c7-41f4-8f17-554ae03ef51d" width='100'/> | <img src="https://github.com/user-attachments/assets/6dde6a31-33dd-4817-b2ff-5d7a83adc132" width='100'/> |
-| :-------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: |
-|                                                   React                                                   |                                                   Vite                                                   |                                               React-Router                                               |
+|<img src="https://github.com/user-attachments/assets/4c914f4d-fa28-4789-beb0-25a383f0c5c0" width="100" /> |<img src="https://github.com/user-attachments/assets/51bf9b58-75c7-41f4-8f17-554ae03ef51d" width='100'/>|<img src="https://github.com/user-attachments/assets/6dde6a31-33dd-4817-b2ff-5d7a83adc132" width='100'/>|
+|:---:|:---:|:---:|
+|React|Vite|React-Router|
 
 <br/>
 
@@ -90,11 +90,34 @@ https://fandom-k-9-4.netlify.app/
 # 데모영상
 
 -   랜딩페이지
+
+
+
 -   크레딧 충전하기
+
+![충전하기](https://github.com/user-attachments/assets/06f46290-5309-42ea-9ed3-c2460291bdb2)
+
+
 -   충전된 크레딧으로 후원하기
+
+![후원하기](https://github.com/user-attachments/assets/6cf4cda3-214a-46c7-a053-bb5f437e754b)
+
+
 -   투표 순위를 볼 수 있는 이달의 차트
+
+![차트](https://github.com/user-attachments/assets/4d57f714-d87d-4e04-817a-75c5d9804587)
+
+
 -   충전된 크레딧으로 투표하기
+
+![투표하기](https://github.com/user-attachments/assets/72d1e1ba-47e7-4d93-8dff-a584dd9c6c8a)
+
+
 -   관심있는 아이돌을 추가 할 수 있는 마이페이지
+
+![마이페이지 반응형](https://github.com/user-attachments/assets/d8d47cf5-2f18-4947-8848-4b707acdd85b)
+
+  
 -   데이터 받아 오기 실패 시 에러메시지 출력
 
 ![오류](https://github.com/user-attachments/assets/c5b79c83-ea75-4b82-82eb-4012d65af6ca)
