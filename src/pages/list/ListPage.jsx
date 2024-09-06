@@ -3,21 +3,26 @@ import ThisMonthChart from './components/ThisMonthChart';
 import Header from '../../components/Header';
 import DonationList from './components/DonationList';
 import styled from 'styled-components';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorPage from '../../components/ErrorPage';
 
 const ListPage = () => {
     return (
-        <Container>
+        <ErrorBoundary FallbackComponent={ErrorPage}>
             <Header />
-            <CreditStatus />
-            <DonationList />
-            <ThisMonthChart />
-        </Container>
+            <Container>
+                <CreditStatus />
+                <DonationList />
+                <ThisMonthChart />
+            </Container>
+        </ErrorBoundary>
     );
 };
 
 export default ListPage;
 
 const Container = styled.div`
+    margin: 50px 0 0;
     padding: 0 24px;
     display: flex;
     flex-direction: column;

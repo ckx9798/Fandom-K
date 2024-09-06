@@ -82,3 +82,12 @@ const Logo = styled.img`
         height: 20.58px;
     }
 `;
+const RefreshButton = styled.button`
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    flex: 1;
+    position: relative;
+    left: 32px;
+`;

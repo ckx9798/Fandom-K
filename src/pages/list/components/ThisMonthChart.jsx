@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../../components/Button.jsx';
-import chartImg from '../../../assets/image/Chart.svg';
 import IdolCard from './IdolCard.jsx';
 import GenderToggleButton from './GenderToggleButton.jsx';
 import VoteModal from '../../../components/modals/VoteModal.jsx';
 import { getCharts } from '../../../api/charts.js';
 import useDataNum from '../../../hooks/useDataNum.jsx';
+import RefreshButton from '../../../components/RefreshButton.jsx';
+import chartImg from '../../../assets/image/Chart.svg';
 
 const ThisMonthChart = () => {
     const [IdolData, setIdolData] = useState([]);
     const [IdolGender, setIdolGender] = useState('female');
     const IdolDataNum = useDataNum({ mobile: 5, tablet: 5, desktop: 10 });
     const [cursor, setCusor] = useState(null);
+    const [error, setError] = useState(false);
 
     // refresh가 있으면, IdolData 초기화
     const loadIdolData = async (refresh) => {
@@ -28,10 +30,12 @@ const ThisMonthChart = () => {
                 setIdolData((prevData) => [...prevData, ...response.idols]);
             }
             setCusor(response.nextCursor);
+            setError(false);
         } catch (error) {
-            console.error('chart data 오류', error);
+            setError(true);
         }
     };
+
     // IdolData 적용
     useEffect(() => {
         loadIdolData(true);
@@ -46,6 +50,7 @@ const ThisMonthChart = () => {
     const ViewVoteModalHandler = () => {
         setIsOpen(!isOpen);
     };
+
     // 더보기 버튼 제거
     const ShowMoreBtn = () => {
         if (cursor) {
@@ -59,12 +64,12 @@ const ThisMonthChart = () => {
         <ChartContainer>
             <ChartHeader>
                 <ChartHeaderTitle>이달의 차트</ChartHeaderTitle>
-                <Button width="128" height="32" border-radius="3" onClick={() => ViewVoteModalHandler()}>
-                    {isOpen === true ? (
-                        <VoteModal idolList={IdolData} title={IdolGender} setModalClose={setIsOpen} />
-                    ) : null}
-                    <img src={chartImg} alt="차트이미지" />
-                    <span> 차트 투표하기 </span>
+                <Button width="128" height="32" radius="3" onClick={ViewVoteModalHandler}>
+                    {isOpen === true ? <VoteModal title={IdolGender} setModalClose={setIsOpen} /> : null}
+                    <ChartVote>
+                        <img src={chartImg} alt="차트이미지" />
+                        <span> 차트 투표하기 </span>
+                    </ChartVote>
                 </Button>
             </ChartHeader>
             <ChartThisMonth>
@@ -87,6 +92,7 @@ const ThisMonthChart = () => {
                 ))}
             </ChartRankContainer>
             <ShowMoreBtn />
+            {error && <RefreshButton />}
         </ChartContainer>
     );
 };
@@ -96,13 +102,11 @@ export default ThisMonthChart;
 const ChartContainer = styled.div`
     width: 1200px;
     margin: 0 auto;
-    /* background-color: #02000e; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-bottom: 150px;
-
     @media (max-width: 1280px) {
         width: 95%;
     }
@@ -125,6 +129,13 @@ const ChartHeaderTitle = styled.div`
     line-height: 26px;
     color: #ffffff;
     line-height: 26px;
+`;
+
+const ChartVote = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
 `;
 
 const ChartThisMonth = styled.div`
@@ -165,7 +176,7 @@ const ChartMoreBtn = styled.div`
     align-items: center;
     width: 326px;
     height: 42px;
-    margin-top: 20px;
+    margin-top: 40px;
     color: #ffffff;
     background-color: #ffffff1a;
     border: 1px solid rgba(241, 238, 249, 0.8);
