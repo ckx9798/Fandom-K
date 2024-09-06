@@ -12,7 +12,7 @@ import usePagination from '../../../hooks/usePagination';
 
 const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption, error, onRetry }) => {
     const { datas, selectedDatas, checkedIdols } = useContext(MyStateContext);
-    const { setSelectedDatas, setCheckedIdols } = useContext(MyDispatchContext);
+    const { setDatas, setSelectedDatas, setCheckedIdols } = useContext(MyDispatchContext);
     const dataNum = useDataNum(); // 페이지당 렌더링되어야 할 아이템 수를 가져옴.
     const lastItemRef = useRef(null); // 마지막 아이템을 참조하는 ref.
     const { ref: idolListRef, scrollTo } = useScrollTo(); // 훅 사용
@@ -22,6 +22,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
     const handleChange = (e) => {
         setOption(e.target.value); // 옵션을 업데이트함.
         setPage(0); // 페이지를 0으로 초기화.
+        setDatas([]);
         setCursor(null); // 커서를 초기화.
         setCheckedIdols([]); // 체크된 아이돌을 초기화.
     };
@@ -56,7 +57,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
         const observerInstance = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
-                    loadMore(dataNum, option);
+                    loadMore(dataNum);
 
                     // loadMore 호출 후 관찰 중지
                     if (lastItemRef.current) {
@@ -289,7 +290,7 @@ export const ButtonInner = styled.div`
     font-size: 16px;
     line-height: 26px;
     gap: 8px;
-    
+
     img {
         width: 24px;
         height: 24px;
