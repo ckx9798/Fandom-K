@@ -4,10 +4,12 @@ import MainPage from './pages/main/MainPage';
 import ListPage from './pages/list/ListPage';
 import MyPage from './pages/my/MyPage';
 import ErrorPage from './components/ErrorPage';
+import Header from './components/Header';
 
 const App = () => {
     return (
         <>
+            <Header />
             <Routes>
                 <Route path="/" element={<MainPage />} errorElement={ErrorPage} />
                 <Route path="/list" element={<ListPage />} />
