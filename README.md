@@ -91,6 +91,7 @@ https://fandom-k-9-4.netlify.app/
 
 -   랜딩페이지
 
+![랜딩페이지](https://github.com/user-attachments/assets/8846da6a-ea36-4b09-bf28-209165f41c6d)
 
 
 -   크레딧 충전하기
@@ -114,6 +115,8 @@ https://fandom-k-9-4.netlify.app/
 
 
 -   관심있는 아이돌을 추가 할 수 있는 마이페이지
+
+![마이페이지](https://github.com/user-attachments/assets/07727ce9-bcf6-4246-9acf-2be1a50425f0)
 
 ![마이페이지 반응형](https://github.com/user-attachments/assets/d8d47cf5-2f18-4947-8848-4b707acdd85b)
 
