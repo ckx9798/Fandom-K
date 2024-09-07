@@ -1,4 +1,4 @@
-import { useContext, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useState, useContext, useMemo, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
 import Button from '../../../components/Button';
@@ -9,9 +9,8 @@ import RefreshButton from '../../../components/RefreshButton';
 import useDataNum from '../../../hooks/useDataNum';
 import useScrollTo from '../../../hooks/useScrollTo ';
 import usePagination from '../../../hooks/usePagination';
-import { toast } from 'react-toastify';
 
-const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption, error }) => {
+const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption, error, onRetry }) => {
     const { datas, selectedDatas, checkedIdols } = useContext(MyStateContext);
     const { setSelectedDatas, setCheckedIdols } = useContext(MyDispatchContext);
     const dataNum = useDataNum(); // 페이지당 렌더링되어야 할 아이템 수를 가져옴.
@@ -29,10 +28,9 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
 
     // '추가하기' 버튼 클릭 시 호출되는 함수
     const handleAddClick = () => {
-        if (!checkedIdols.length) {
-            toast.error('카드를 선택해주세요!');
-        }
+        if (!checkedIdols.length) return;
         setSelectedDatas([...selectedDatas, ...checkedIdols]); // 선택된 아이돌을 추가함.
+
         setCheckedIdols([]); // 체크된 아이돌을 초기화.
     };
 

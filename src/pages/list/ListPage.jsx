@@ -9,8 +9,8 @@ import ErrorPage from '../../components/ErrorPage';
 const ListPage = () => {
     return (
         <ErrorBoundary FallbackComponent={ErrorPage}>
-            <Header />
             <Container>
+                <Header />
                 <CreditStatus />
                 <DonationList />
                 <ThisMonthChart />

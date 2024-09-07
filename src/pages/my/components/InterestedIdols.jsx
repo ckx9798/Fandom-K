@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import IdolProfile from './IdolProfile';
+import IdolProfile from './idolProfile';
 import { MyDispatchContext, MyStateContext } from '../MyPage';
 
 const InterestedIdols = () => {

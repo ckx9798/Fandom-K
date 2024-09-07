@@ -32,10 +32,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   button {
-    cursor: pointer;
-    font-family: inherit;
-  }
-
+  cursor: pointer;
+  font-family: inherit;
+}
 `;
 
 export default GlobalStyle;
