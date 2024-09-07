@@ -8,6 +8,7 @@ import { createContext } from 'react';
 import { getCharts } from '../../api/charts';
 import { ErrorBoundary } from 'react-error-boundary';
 import useDataNum from '../../hooks/useDataNum';
+import axios from 'axios';
 import ErrorPage from '../../components/ErrorPage';
 
 export const MyStateContext = createContext();
@@ -18,7 +19,7 @@ const MyPage = () => {
     const [checkedIdols, setCheckedIdols] = useState([]);
     const [selectedDatas, setSelectedDatas] = useState([]);
     const [cursor, setCursor] = useState(null);
-    const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
+    const [isLoading, setIsLoading] = useState(false);
     const [option, setOption] = useState('total');
     const dataNum = useDataNum();
     const [error, setError] = useState(false);
@@ -37,11 +38,16 @@ const MyPage = () => {
                     result = await getCharts({ gender: option, cursor, pageSize: dataNum });
                     setDatas(result.idols);
                 }
-                setCursor(result.nextCursor);
+
+                setCursor(result?.nextCursor);
             } catch (error) {
-                console.error('데이터 로딩 오류:', error);
+                if (axios.isAxiosError(error)) {
+                    console.error('AxiosError 로딩 오류:', error);
+                } else {
+                    console.error('데이터 로딩 오류:', error);
+                }
+
                 setError(true);
-                setDatas([]);
             } finally {
                 setIsLoading(false);
             }
@@ -74,10 +80,13 @@ const MyPage = () => {
                 result = await getCharts({ gender: option, cursor, pageSize: itemsToLoad });
                 handleDataUpdate(result?.idols, 'result.idols');
             }
-
             setCursor(result?.nextCursor); // 다음 커서 업데이트
         } catch (error) {
-            console.error('추가 데이터 로딩 오류:', error);
+            if (axios.isAxiosError(error)) {
+                console.error('AxiosError 로딩 오류:', error);
+            } else {
+                console.error('데이터 로딩 오류:', error);
+            }
             setError(true);
         } finally {
             setIsLoading(false); // 추가 데이터 로딩 종료

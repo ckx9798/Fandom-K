@@ -13,7 +13,7 @@ const usePagination = (scrollTo) => {
         setPage((prevPage) => (prevPage > 0 ? prevPage - 1 : 0));
     }, [scrollTo]);
 
-    return { page, handleNextPage, handlePrevPage };
+    return { page, setPage, handleNextPage, handlePrevPage };
 };
 
 export default usePagination;

@@ -6,7 +6,7 @@ import GenderToggleButton from './GenderToggleButton.jsx';
 import VoteModal from '../../../components/modals/VoteModal.jsx';
 import { getCharts } from '../../../api/charts.js';
 import useDataNum from '../../../hooks/useDataNum.jsx';
-import RefreshButton from '../../my/components/RefreshButton.jsx';
+import RefreshButton from '../../../components/RefreshButton.jsx';
 import chartImg from '../../../assets/image/Chart.svg';
 
 const ThisMonthChart = () => {
@@ -16,26 +16,13 @@ const ThisMonthChart = () => {
     const [cursor, setCusor] = useState(null);
     const [error, setError] = useState(false);
 
-    // 반응형 디자인
-    // useDataNum({ IdolDataNum });
-    // useEffect(() => {
-    //     const handleResize = () => {
-    //         if (window.innerWidth <= 1280) {
-    //             setIdolDataNum(5);
-    //         } else {
-    //             setIdolDataNum(10);
-    //         }
-    //     };
-    //     handleResize();
-    //     window.addEventListener('resize', handleResize);
-    // });
-
     // refresh가 있으면, IdolData 초기화
     const loadIdolData = async (refresh) => {
         try {
             const response = await getCharts({
                 gender: IdolGender,
                 cursor: refresh ? null : cursor,
+                pageSize: IdolDataNum,
                 pageSize: IdolDataNum,
             });
             if (refresh) {
@@ -106,7 +93,7 @@ const ThisMonthChart = () => {
                 ))}
             </ChartRankContainer>
             <ShowMoreBtn />
-            {error && <RefreshButton onRetry={loadIdolData} />}
+            {error && <RefreshButton />}
         </ChartContainer>
     );
 };

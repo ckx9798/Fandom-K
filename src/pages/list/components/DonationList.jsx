@@ -6,7 +6,7 @@ import rightBtnIcon from '../../../assets/icon/btn_pagination_right.svg';
 import lefgBtnIcon from '../../../assets/icon/btn_pagination_left.svg';
 import useScrollTo from '../../../hooks/useScrollTo ';
 import usePagination from '../../../hooks/usePagination';
-import RefreshButton from '../../my/components/RefreshButton';
+import RefreshButton from '../../../components/RefreshButton';
 
 const PC_SIZE = 4;
 
