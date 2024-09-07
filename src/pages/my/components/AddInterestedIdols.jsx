@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useContext, useMemo, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
 import Button from '../../../components/Button';
@@ -9,6 +9,7 @@ import RefreshButton from '../../../components/RefreshButton';
 import useDataNum from '../../../hooks/useDataNum';
 import useScrollTo from '../../../hooks/useScrollTo ';
 import usePagination from '../../../hooks/usePagination';
+import { toast } from 'react-toastify';
 
 const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption, error, onRetry }) => {
     const { datas, selectedDatas, checkedIdols } = useContext(MyStateContext);
@@ -28,7 +29,10 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
 
     // '추가하기' 버튼 클릭 시 호출되는 함수
     const handleAddClick = () => {
-        if (!checkedIdols.length) return;
+        if (!checkedIdols.length) {
+            toast.error('카드를 선택해주세요!');
+            return;
+        }
         setSelectedDatas([...selectedDatas, ...checkedIdols]); // 선택된 아이돌을 추가함.
 
         setCheckedIdols([]); // 체크된 아이돌을 초기화.
@@ -289,7 +293,7 @@ export const ButtonInner = styled.div`
     font-size: 16px;
     line-height: 26px;
     gap: 8px;
-    
+
     img {
         width: 24px;
         height: 24px;

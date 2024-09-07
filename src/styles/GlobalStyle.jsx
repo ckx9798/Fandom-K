@@ -35,6 +35,21 @@ const GlobalStyle = createGlobalStyle`
   cursor: pointer;
   font-family: inherit;
 }
+
+body::-webkit-scrollbar {
+    width: 8px;  
+}
+
+body::-webkit-scrollbar-thumb {
+    height: 20%;
+    background: var(--brand200); 
+    
+    border-radius: 10px;
+}
+
+body::-webkit-scrollbar-track {
+    background: var(--black200)
+  }
 `;
 
 export default GlobalStyle;
