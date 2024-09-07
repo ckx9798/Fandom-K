@@ -4,6 +4,8 @@ import MainPage from './pages/main/MainPage';
 import ListPage from './pages/list/ListPage';
 import MyPage from './pages/my/MyPage';
 import ErrorPage from './components/ErrorPage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
     return (
@@ -14,6 +16,7 @@ const App = () => {
                 <Route path="/my" element={<MyPage />} />
                 <Route path="*" element={<ErrorPage />} />
             </Routes>
+            <ToastContainer />
         </>
     );
 };
