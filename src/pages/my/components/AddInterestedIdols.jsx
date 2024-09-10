@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useContext, useMemo, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
 import Button from '../../../components/Button';
@@ -7,12 +7,13 @@ import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyDispatchContext, MyStateContext } from '../MyPage';
 import RefreshButton from '../../../components/RefreshButton';
 import useDataNum from '../../../hooks/useDataNum';
-import useScrollTo from '../../../hooks/useScrollTo ';
+import useScrollTo from '../../../hooks/useScrollTo';
 import usePagination from '../../../hooks/usePagination';
+import { toast } from 'react-toastify';
 
 const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption, error, onRetry }) => {
     const { datas, selectedDatas, checkedIdols } = useContext(MyStateContext);
-    const { setSelectedDatas, setCheckedIdols } = useContext(MyDispatchContext);
+    const { setDatas, setSelectedDatas, setCheckedIdols } = useContext(MyDispatchContext);
     const dataNum = useDataNum(); // 페이지당 렌더링되어야 할 아이템 수를 가져옴.
     const lastItemRef = useRef(null); // 마지막 아이템을 참조하는 ref.
     const { ref: idolListRef, scrollTo } = useScrollTo(); // 훅 사용
@@ -22,13 +23,17 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
     const handleChange = (e) => {
         setOption(e.target.value); // 옵션을 업데이트함.
         setPage(0); // 페이지를 0으로 초기화.
+        setDatas([]);
         setCursor(null); // 커서를 초기화.
         setCheckedIdols([]); // 체크된 아이돌을 초기화.
     };
 
     // '추가하기' 버튼 클릭 시 호출되는 함수
     const handleAddClick = () => {
-        if (!checkedIdols.length) return;
+        if (!checkedIdols.length) {
+            toast.error('카드를 선택해주세요!');
+            return;
+        }
         setSelectedDatas([...selectedDatas, ...checkedIdols]); // 선택된 아이돌을 추가함.
 
         setCheckedIdols([]); // 체크된 아이돌을 초기화.
@@ -56,7 +61,7 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
         const observerInstance = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
-                    loadMore(dataNum, option);
+                    loadMore(dataNum);
 
                     // loadMore 호출 후 관찰 중지
                     if (lastItemRef.current) {
@@ -125,11 +130,11 @@ const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, se
                                 />
                             ))}
                         </IdolList>
-
                         <CarouselButton onClick={handleNextPage} disabled={isLoading || isDisabled}>
                             <RotatedIcon src={arrowIcon} alt="다음" />
                         </CarouselButton>
                     </CarouselPage>
+
                     <Button onClick={handleAddClick} width="255" height="48" radius="24">
                         <ButtonInner>
                             <img src={plusIcon} alt="추가" />
@@ -255,7 +260,7 @@ const IdolList = styled.div`
     width: 1194px;
     padding: 0px 1px;
     height: 398px;
-    margin: 0;
+    padding: 0px 1px;
 
     @media (max-width: 1280px) {
         grid-template-columns: repeat(4, 128px);
@@ -289,7 +294,7 @@ export const ButtonInner = styled.div`
     font-size: 16px;
     line-height: 26px;
     gap: 8px;
-    
+
     img {
         width: 24px;
         height: 24px;

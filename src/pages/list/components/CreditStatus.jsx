@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import CreditCharge from '../../../components/modals/CreditCharge';
-import creditImg from '../../../assets/icon/credit.svg';
 import useCredit from '../../../hooks/list/useCredit';
+import creditImg from '../../../assets/icon/credit.svg';
 
 const CreditStatus = () => {
     const [modalClose, setModalClose] = useState(true);
     const credit = useCredit();
-
+  
     const handleChargeModal = () => {
         setModalClose((prev) => !prev);
     };
