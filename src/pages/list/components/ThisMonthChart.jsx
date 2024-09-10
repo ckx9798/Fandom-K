@@ -13,7 +13,7 @@ const ThisMonthChart = () => {
     const [IdolData, setIdolData] = useState([]);
     const [IdolGender, setIdolGender] = useState('female');
     const IdolDataNum = useDataNum({ mobile: 5, tablet: 5, desktop: 10 });
-    const [cursor, setCusor] = useState(null);
+    const [cursor, setCursor] = useState(null);
     const [error, setError] = useState(false);
 
     // refresh가 있으면, IdolData 초기화
@@ -29,7 +29,7 @@ const ThisMonthChart = () => {
             } else {
                 setIdolData((prevData) => [...prevData, ...response.idols]);
             }
-            setCusor(response.nextCursor);
+            setCursor(response.nextCursor);
             setError(false);
         } catch (error) {
             setError(true);
@@ -150,11 +150,14 @@ const ChartThisMonth = styled.div`
         background-color: #ffffff1a;
         border: none;
         border-bottom: 1px solid #ffffff;
+        animation: move 2s 1 ease-out;
+        transition: all 0.5s ease-out;
     }
 
     .inactive {
         background-color: inherit;
         color: var(--gray200);
+        border: none;
     }
 `;
 const ChartRankContainer = styled.div`
