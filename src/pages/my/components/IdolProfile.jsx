@@ -68,6 +68,7 @@ const IdolImg = styled.img`
     padding: 7.15px;
     z-index: -1;
     object-fit: cover;
+    display: block;
 
     @media (max-width: 768px) {
         padding: 5px;
