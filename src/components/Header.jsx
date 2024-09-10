@@ -1,11 +1,12 @@
 import styled, { css } from 'styled-components';
+import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/image/logo.svg';
 import userProfileImg from '../assets/image/userProfile.jpg';
 import HomeImg from '../assets/icon/Home.svg';
-import { Link, useLocation } from 'react-router-dom';
 
 const Header = () => {
     const location = useLocation();
+    const isHeaderDisplay = location.pathname === '/list' || location.pathname === '/my';
 
     //현재 위치가 list이면 새로고침
     const handleLogoClick = (e) => {
@@ -16,17 +17,21 @@ const Header = () => {
     };
 
     return (
-        <StyledHeader>
-            <Link to="/">
-                <Home src={HomeImg} alt="홈" />
-            </Link>
-            <Link to="/list" onClick={handleLogoClick}>
-                <Logo src={logo} alt="FANDOM-K 로고" />
-            </Link>
-            <Link to="/my">
-                <UserProfile src={userProfileImg} alt="유저 프로필 이미지" />
-            </Link>
-        </StyledHeader>
+        <>
+            {isHeaderDisplay && (
+                <StyledHeader>
+                    <Link to="/">
+                        <Home src={HomeImg} alt="홈" />
+                    </Link>
+                    <Link to="/list" onClick={handleLogoClick}>
+                        <Logo src={logo} alt="FANDOM-K 로고" />
+                    </Link>
+                    <Link to="/my">
+                        <UserProfile src={userProfileImg} alt="유저 프로필 이미지" />
+                    </Link>
+                </StyledHeader>
+            )}
+        </>
     );
 };
 

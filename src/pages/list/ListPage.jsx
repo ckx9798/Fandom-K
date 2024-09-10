@@ -1,6 +1,5 @@
 import CreditStatus from './components/CreditStatus';
 import ThisMonthChart from './components/ThisMonthChart';
-import Header from '../../components/Header';
 import DonationList from './components/DonationList';
 import styled from 'styled-components';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -9,7 +8,6 @@ import ErrorPage from '../../components/ErrorPage';
 const ListPage = () => {
     return (
         <ErrorBoundary FallbackComponent={ErrorPage}>
-            <Header />
             <Container>
                 <CreditStatus />
                 <DonationList />

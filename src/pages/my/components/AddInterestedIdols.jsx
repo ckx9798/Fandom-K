@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useContext, useMemo, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import IdolProfile from './IdolProfile';
 import Button from '../../../components/Button';
@@ -7,7 +7,7 @@ import arrowIcon from '../../../assets/icon/Icon-arrow.svg';
 import { MyDispatchContext, MyStateContext } from '../MyPage';
 import RefreshButton from '../../../components/RefreshButton';
 import useDataNum from '../../../hooks/useDataNum';
-import useScrollTo from '../../../hooks/useScrollTo ';
+import useScrollTo from '../../../hooks/useScrollTo';
 import usePagination from '../../../hooks/usePagination';
 
 const AddInterestedIdols = ({ cursor, setCursor, isLoading, loadMore, option, setOption, error, onRetry }) => {
